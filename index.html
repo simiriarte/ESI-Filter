@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESI Filter - Task Prioritization Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 ESI Filter</h1>
+            <p class="subtitle">Prioritize tasks by Excitement, Simplicity, and Impact</p>
+        </header>
+
+        <main class="main-grid">
+            <!-- Left Column: Task Input -->
+            <section class="add-task-section">
+                <div class="card sticky-card">
+                    <h2 class="input-section-header">Brain Dump</h2>
+                    <form id="task-form">
+                        <div class="form-group">
+                            <textarea id="brain-dump-text" placeholder="Type one or more tasks below — one per line
+
+Examples:
+• Email client about project updates
+• Buy groceries for dinner
+• Schedule dentist appointment" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" onclick="handleAddBrainDumpTasks(event)">Add Tasks</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Right Column: Prioritized Tasks -->
+            <section class="tasks-section">
+                <div class="card">
+                    <div class="section-header">
+                        <h2>Your Prioritized Tasks</h2>
+                        <div class="task-count">
+                            <span id="task-count">0 tasks</span>
+                        </div>
+                    </div>
+                    
+                    <div id="tasks-container" class="tasks-container">
+                        <div class="empty-state">
+                            <div class="empty-icon">📝</div>
+                            <h3>No tasks yet</h3>
+                            <p>Rated tasks will appear here prioritized by ESI score!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Completed Tasks Section (Full Width Below) -->
+        <section id="completed-tasks-section" class="completed-tasks-section hidden">
+            <div class="card">
+                <div class="section-header">
+                    <h2>✅ Completed Tasks</h2>
+                    <div class="task-count">
+                        <span id="completed-task-count">0 completed</span>
+                    </div>
+                </div>
+                
+                <div id="completed-tasks-container" class="completed-tasks-container">
+                    <!-- Completed tasks will be rendered here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
