@@ -590,6 +590,31 @@ header h1 {
     box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
 }
 
+.input-group .score-input {
+    width: 100%;
+    padding: 0.3rem 0.4rem;
+    border: 1px solid #d97706;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    background: white;
+    cursor: text;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-weight: 600;
+}
+
+.input-group .score-input:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.input-group .score-input::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
+    font-style: italic;
+}
+
 .rate-button {
     background: #f59e0b;
     color: white;
@@ -999,8 +1024,6 @@ header h1 {
 /* To be rated structure */
 .to-be-rated-section .unrated-tasks-container {
     flex: 1;
-    height: 360px;
-    max-height: 360px;
     overflow-y: auto;
     margin-bottom: 1.5rem;
 }

@@ -231,15 +231,15 @@ class ESIFilter {
                 // Preserve existing dropdown values before re-rendering
                 const preservedValues = {};
                 unratedTasks.forEach((task) => {
-                    const excitementSelect = document.getElementById(`unrated-excitement-${task.id}`);
-                    const simplicitySelect = document.getElementById(`unrated-simplicity-${task.id}`);
-                    const impactSelect = document.getElementById(`unrated-impact-${task.id}`);
+                    const excitementInput = document.getElementById(`unrated-excitement-${task.id}`);
+                    const simplicityInput = document.getElementById(`unrated-simplicity-${task.id}`);
+                    const impactInput = document.getElementById(`unrated-impact-${task.id}`);
                     
-                    if (excitementSelect || simplicitySelect || impactSelect) {
+                    if (excitementInput || simplicityInput || impactInput) {
                         preservedValues[task.id] = {
-                            excitement: excitementSelect ? excitementSelect.value : '',
-                            simplicity: simplicitySelect ? simplicitySelect.value : '',
-                            impact: impactSelect ? impactSelect.value : ''
+                            excitement: excitementInput ? excitementInput.value : '',
+                            simplicity: simplicityInput ? simplicityInput.value : '',
+                            impact: impactInput ? impactInput.value : ''
                         };
                     }
                 });
@@ -525,41 +525,65 @@ class ESIFilter {
                 <div class="task-row">
                     <div class="input-group">
                         <label>Excitement</label>
-                        <select id="unrated-excitement-${task.id}" data-preserved-value="${preservedValues?.excitement || ''}">
-                            <option value="">-</option>
-                            <option value="1">1 – Dreading it</option>
-                            <option value="2">2 – Meh</option>
-                            <option value="3">3 – Neutral</option>
-                            <option value="4">4 – Pretty Interested</option>
-                            <option value="5">5 – Super Excited</option>
-                        </select>
+                        <input type="number" 
+                               id="unrated-excitement-${task.id}" 
+                               list="excitement-options-${task.id}"
+                               min="1" 
+                               max="5" 
+                               placeholder="1-5"
+                               value="${preservedValues?.excitement || ''}"
+                               class="score-input"
+                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'excitement')">
+                        <datalist id="excitement-options-${task.id}">
+                            <option value="1" label="Dreading it"></option>
+                            <option value="2" label="Meh"></option>
+                            <option value="3" label="Neutral"></option>
+                            <option value="4" label="Pretty Interested"></option>
+                            <option value="5" label="Super Excited"></option>
+                        </datalist>
                     </div>
                     <div class="input-group">
                         <label>Simplicity</label>
-                        <select id="unrated-simplicity-${task.id}" data-preserved-value="${preservedValues?.simplicity || ''}">
-                            <option value="">-</option>
-                            <option value="1">1 – Complex, several steps</option>
-                            <option value="2">2 – Fairly complex</option>
-                            <option value="3">3 – Moderate complexity</option>
-                            <option value="4">4 – Pretty simple</option>
-                            <option value="5">5 – One single step</option>
-                        </select>
+                        <input type="number" 
+                               id="unrated-simplicity-${task.id}" 
+                               list="simplicity-options-${task.id}"
+                               min="1" 
+                               max="5" 
+                               placeholder="1-5"
+                               value="${preservedValues?.simplicity || ''}"
+                               class="score-input"
+                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
+                        <datalist id="simplicity-options-${task.id}">
+                            <option value="1" label="Complex, several steps"></option>
+                            <option value="2" label="Fairly complex"></option>
+                            <option value="3" label="Moderate complexity"></option>
+                            <option value="4" label="Pretty simple"></option>
+                            <option value="5" label="One single step"></option>
+                        </datalist>
                     </div>
                     <div class="input-group">
                         <label>Impact</label>
-                        <select id="unrated-impact-${task.id}" data-preserved-value="${preservedValues?.impact || ''}">
-                            <option value="">-</option>
-                            <option value="1">1 – Little to no impact</option>
-                            <option value="2">2 – Minimal impact</option>
-                            <option value="3">3 – Small impact</option>
-                            <option value="4">4 – Moderate impact</option>
-                            <option value="5">5 – Noticeable improvement</option>
-                            <option value="6">6 – Significant improvement</option>
-                            <option value="7">7 – Major improvement</option>
-                            <option value="8">8 – Substantial impact</option>
-                            <option value="9">9 – Transformative</option>
-                            <option value="10">10 – Life changing</option>
-                        </select>
+                        <input type="number" 
+                               id="unrated-impact-${task.id}" 
+                               list="impact-options-${task.id}"
+                               min="1" 
+                               max="10" 
+                               placeholder="1-10"
+                               value="${preservedValues?.impact || ''}"
+                               class="score-input"
+                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'impact')">
+                        <datalist id="impact-options-${task.id}">
+                            <option value="1" label="Little to no impact"></option>
+                            <option value="2" label="Minimal impact"></option>
+                            <option value="3" label="Small impact"></option>
+                            <option value="4" label="Moderate impact"></option>
+                            <option value="5" label="Noticeable improvement"></option>
+                            <option value="6" label="Significant improvement"></option>
+                            <option value="7" label="Major improvement"></option>
+                            <option value="8" label="Substantial impact"></option>
+                            <option value="9" label="Transformative"></option>
+                            <option value="10" label="Life changing"></option>
+                        </datalist>
                     </div>
                     <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
                         Rate
@@ -568,116 +592,83 @@ class ESIFilter {
             </div>
         `;
 
-        // Add event listeners to handle the display logic for rating selects
-        setTimeout(() => {
-            this.setupRatingSelectHandlers(task.id);
-            
-            // Restore preserved values if they exist
-            if (preservedValues) {
-                const excitementSelect = document.getElementById(`unrated-excitement-${task.id}`);
-                const simplicitySelect = document.getElementById(`unrated-simplicity-${task.id}`);
-                const impactSelect = document.getElementById(`unrated-impact-${task.id}`);
-                
-                if (excitementSelect && preservedValues.excitement) {
-                    excitementSelect.value = preservedValues.excitement;
-                    // Trigger display logic
-                    if (preservedValues.excitement !== '') {
-                        const selectedOption = excitementSelect.options[excitementSelect.selectedIndex];
-                        selectedOption.textContent = preservedValues.excitement;
-                        excitementSelect.setAttribute('data-display-mode', 'compact');
-                    }
-                }
-                
-                if (simplicitySelect && preservedValues.simplicity) {
-                    simplicitySelect.value = preservedValues.simplicity;
-                    // Trigger display logic
-                    if (preservedValues.simplicity !== '') {
-                        const selectedOption = simplicitySelect.options[simplicitySelect.selectedIndex];
-                        selectedOption.textContent = preservedValues.simplicity;
-                        simplicitySelect.setAttribute('data-display-mode', 'compact');
-                    }
-                }
-                
-                if (impactSelect && preservedValues.impact) {
-                    impactSelect.value = preservedValues.impact;
-                    // Trigger display logic
-                    if (preservedValues.impact !== '') {
-                        const selectedOption = impactSelect.options[impactSelect.selectedIndex];
-                        selectedOption.textContent = preservedValues.impact;
-                        impactSelect.setAttribute('data-display-mode', 'compact');
-                    }
-                }
-            }
-        }, 0);
-
         return taskDiv;
     }
 
-    setupRatingSelectHandlers(taskId) {
-        const excitementSelect = document.getElementById(`unrated-excitement-${taskId}`);
-        const simplicitySelect = document.getElementById(`unrated-simplicity-${taskId}`);
-        const impactSelect = document.getElementById(`unrated-impact-${taskId}`);
-
-        [excitementSelect, simplicitySelect, impactSelect].forEach(select => {
-            if (select) {
-                this.setupSelectDisplayHandler(select);
+    handleScoreInputKeydown(event, taskId, fieldType) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            
+            // Move to next field or submit if on last field
+            if (fieldType === 'excitement') {
+                const simplicityInput = document.getElementById(`unrated-simplicity-${taskId}`);
+                if (simplicityInput) simplicityInput.focus();
+            } else if (fieldType === 'simplicity') {
+                const impactInput = document.getElementById(`unrated-impact-${taskId}`);
+                if (impactInput) impactInput.focus();
+            } else if (fieldType === 'impact') {
+                // On the last field, submit the rating
+                this.rateTask(taskId);
             }
-        });
+        } else if (event.key === 'Tab' && !event.shiftKey && fieldType === 'impact') {
+            // When tabbing out of the last input, move to the next task's first input
+            event.preventDefault();
+            this.focusNextTaskFirstInput(taskId);
+        }
+    }
+
+    focusNextTaskFirstInput(currentTaskId) {
+        const currentTaskElement = document.querySelector(`[data-task-id="${currentTaskId}"]`);
+        if (currentTaskElement) {
+            const nextTaskElement = currentTaskElement.nextElementSibling;
+            if (nextTaskElement) {
+                const nextTaskId = nextTaskElement.getAttribute('data-task-id');
+                const nextExcitementInput = document.getElementById(`unrated-excitement-${nextTaskId}`);
+                if (nextExcitementInput) {
+                    nextExcitementInput.focus();
+                    return;
+                }
+            }
+        }
+        
+        // If no next task, focus on the Rate All button
+        const rateAllBtn = document.querySelector('.to-be-rated-section .btn-primary');
+        if (rateAllBtn) rateAllBtn.focus();
+    }
+
+    setupRatingSelectHandlers(taskId) {
+        // This method is no longer needed since we're using input fields with datalists
+        // instead of select dropdowns, but keeping it for backward compatibility
     }
 
     setupSelectDisplayHandler(selectElement) {
-        // Store original option texts
-        const originalOptions = {};
-        Array.from(selectElement.options).forEach(option => {
-            originalOptions[option.value] = option.textContent;
-        });
-
-        selectElement.addEventListener('change', (e) => {
-            const selectedValue = e.target.value;
-            if (selectedValue && selectedValue !== '') {
-                // Update the selected option to show only the number
-                const selectedOption = e.target.options[e.target.selectedIndex];
-                selectedOption.textContent = selectedValue;
-                
-                // Store the display state
-                selectElement.setAttribute('data-display-mode', 'compact');
-            }
-        });
-
-        selectElement.addEventListener('focus', (e) => {
-            // Restore full descriptions when dropdown opens
-            if (e.target.getAttribute('data-display-mode') === 'compact') {
-                Array.from(e.target.options).forEach(option => {
-                    if (option.value && originalOptions[option.value]) {
-                        option.textContent = originalOptions[option.value];
-                    }
-                });
-            }
-        });
-
-        selectElement.addEventListener('blur', (e) => {
-            // Show only number when dropdown closes (if something is selected)
-            const selectedValue = e.target.value;
-            if (selectedValue && selectedValue !== '') {
-                const selectedOption = e.target.options[e.target.selectedIndex];
-                selectedOption.textContent = selectedValue;
-                e.target.setAttribute('data-display-mode', 'compact');
-            }
-        });
+        // This method is no longer needed since we're using input fields with datalists
+        // instead of select dropdowns, but keeping it for backward compatibility
     }
 
     rateTask(taskId) {
-        const excitementSelect = document.getElementById(`unrated-excitement-${taskId}`);
-        const simplicitySelect = document.getElementById(`unrated-simplicity-${taskId}`);
-        const impactSelect = document.getElementById(`unrated-impact-${taskId}`);
+        const excitementInput = document.getElementById(`unrated-excitement-${taskId}`);
+        const simplicityInput = document.getElementById(`unrated-simplicity-${taskId}`);
+        const impactInput = document.getElementById(`unrated-impact-${taskId}`);
 
-        const excitement = parseInt(excitementSelect.value);
-        const simplicity = parseInt(simplicitySelect.value);
-        const impact = parseInt(impactSelect.value);
+        const excitement = parseInt(excitementInput.value);
+        const simplicity = parseInt(simplicityInput.value);
+        const impact = parseInt(impactInput.value);
 
-        // Validate
-        if (!excitement || !simplicity || !impact) {
-            alert('Please rate all three aspects of this task');
+        // Validate values are numbers and within range
+        if (!excitement || excitement < 1 || excitement > 5) {
+            alert('Please enter a valid Excitement score (1-5)');
+            excitementInput.focus();
+            return;
+        }
+        if (!simplicity || simplicity < 1 || simplicity > 5) {
+            alert('Please enter a valid Simplicity score (1-5)');
+            simplicityInput.focus();
+            return;
+        }
+        if (!impact || impact < 1 || impact > 10) {
+            alert('Please enter a valid Impact score (1-10)');
+            impactInput.focus();
             return;
         }
 
@@ -712,16 +703,18 @@ class ESIFilter {
         
         // Check which tasks have complete ratings
         unratedTasks.forEach(task => {
-            const excitementSelect = document.getElementById(`unrated-excitement-${task.id}`);
-            const simplicitySelect = document.getElementById(`unrated-simplicity-${task.id}`);
-            const impactSelect = document.getElementById(`unrated-impact-${task.id}`);
+            const excitementInput = document.getElementById(`unrated-excitement-${task.id}`);
+            const simplicityInput = document.getElementById(`unrated-simplicity-${task.id}`);
+            const impactInput = document.getElementById(`unrated-impact-${task.id}`);
             
-            const excitement = parseInt(excitementSelect?.value);
-            const simplicity = parseInt(simplicitySelect?.value);
-            const impact = parseInt(impactSelect?.value);
+            const excitement = parseInt(excitementInput?.value);
+            const simplicity = parseInt(simplicityInput?.value);
+            const impact = parseInt(impactInput?.value);
             
-            // Only include tasks with all three ratings
-            if (excitement && simplicity && impact) {
+            // Only include tasks with all three valid ratings
+            if (excitement >= 1 && excitement <= 5 && 
+                simplicity >= 1 && simplicity <= 5 && 
+                impact >= 1 && impact <= 10) {
                 tasksToRate.push({
                     task,
                     excitement,
@@ -732,7 +725,7 @@ class ESIFilter {
         });
         
         if (tasksToRate.length === 0) {
-            alert('No tasks have complete ratings to process. Please fill out Excitement, Simplicity, and Impact for at least one task.');
+            alert('No tasks have complete valid ratings to process. Please fill out Excitement (1-5), Simplicity (1-5), and Impact (1-10) for at least one task.');
             return;
         }
         
