@@ -530,16 +530,15 @@ class ESIFilter {
                                list="excitement-options-${task.id}"
                                min="1" 
                                max="5" 
-                               placeholder="1-5"
                                value="${preservedValues?.excitement || ''}"
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'excitement')">
                         <datalist id="excitement-options-${task.id}">
-                            <option value="1" label="Dreading it"></option>
-                            <option value="2" label="Meh"></option>
-                            <option value="3" label="Neutral"></option>
-                            <option value="4" label="Pretty Interested"></option>
-                            <option value="5" label="Super Excited"></option>
+                            <option value="1">Dreading it</option>
+                            <option value="2">Meh</option>
+                            <option value="3">Neutral</option>
+                            <option value="4">Pretty Interested</option>
+                            <option value="5">Super Excited</option>
                         </datalist>
                     </div>
                     <div class="input-group">
@@ -549,16 +548,15 @@ class ESIFilter {
                                list="simplicity-options-${task.id}"
                                min="1" 
                                max="5" 
-                               placeholder="1-5"
                                value="${preservedValues?.simplicity || ''}"
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
                         <datalist id="simplicity-options-${task.id}">
-                            <option value="1" label="Complex, several steps"></option>
-                            <option value="2" label="Fairly complex"></option>
-                            <option value="3" label="Moderate complexity"></option>
-                            <option value="4" label="Pretty simple"></option>
-                            <option value="5" label="One single step"></option>
+                            <option value="1">Complex, several steps</option>
+                            <option value="2">Fairly complex</option>
+                            <option value="3">Moderate complexity</option>
+                            <option value="4">Pretty simple</option>
+                            <option value="5">One single step</option>
                         </datalist>
                     </div>
                     <div class="input-group">
@@ -568,21 +566,20 @@ class ESIFilter {
                                list="impact-options-${task.id}"
                                min="1" 
                                max="10" 
-                               placeholder="1-10"
                                value="${preservedValues?.impact || ''}"
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'impact')">
                         <datalist id="impact-options-${task.id}">
-                            <option value="1" label="Little to no impact"></option>
-                            <option value="2" label="Minimal impact"></option>
-                            <option value="3" label="Small impact"></option>
-                            <option value="4" label="Moderate impact"></option>
-                            <option value="5" label="Noticeable improvement"></option>
-                            <option value="6" label="Significant improvement"></option>
-                            <option value="7" label="Major improvement"></option>
-                            <option value="8" label="Substantial impact"></option>
-                            <option value="9" label="Transformative"></option>
-                            <option value="10" label="Life changing"></option>
+                            <option value="1">Little to no impact</option>
+                            <option value="2">Minimal impact</option>
+                            <option value="3">Small impact</option>
+                            <option value="4">Moderate impact</option>
+                            <option value="5">Noticeable improvement</option>
+                            <option value="6">Significant improvement</option>
+                            <option value="7">Major improvement</option>
+                            <option value="8">Substantial impact</option>
+                            <option value="9">Transformative</option>
+                            <option value="10">Life changing</option>
                         </datalist>
                     </div>
                     <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
@@ -636,21 +633,12 @@ class ESIFilter {
         if (rateAllBtn) rateAllBtn.focus();
     }
 
-    setupRatingSelectHandlers(taskId) {
-        // This method is no longer needed since we're using input fields with datalists
-        // instead of select dropdowns, but keeping it for backward compatibility
-    }
-
-    setupSelectDisplayHandler(selectElement) {
-        // This method is no longer needed since we're using input fields with datalists
-        // instead of select dropdowns, but keeping it for backward compatibility
-    }
-
     rateTask(taskId) {
         const excitementInput = document.getElementById(`unrated-excitement-${taskId}`);
         const simplicityInput = document.getElementById(`unrated-simplicity-${taskId}`);
         const impactInput = document.getElementById(`unrated-impact-${taskId}`);
 
+        // Extract just the number from the input value (in case full text was selected)
         const excitement = parseInt(excitementInput.value);
         const simplicity = parseInt(simplicityInput.value);
         const impact = parseInt(impactInput.value);
@@ -707,6 +695,7 @@ class ESIFilter {
             const simplicityInput = document.getElementById(`unrated-simplicity-${task.id}`);
             const impactInput = document.getElementById(`unrated-impact-${task.id}`);
             
+            // Extract just the number from the input value (in case full text was selected)
             const excitement = parseInt(excitementInput?.value);
             const simplicity = parseInt(simplicityInput?.value);
             const impact = parseInt(impactInput?.value);

@@ -193,9 +193,37 @@ header h1 {
 .unrated-tasks-container {
     flex: 1;
     overflow-y: auto;
+    overflow-x: visible;
     padding: 0.25rem 0.5rem 0 0;
     min-height: 200px;
     position: relative;
+}
+
+/* Task items should not create stacking contexts that interfere with dropdowns */
+.task-item,
+.unrated-task-item {
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    position: static;
+    overflow: visible;
+}
+
+.task-item .task-card {
+    position: relative;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: visible;
+}
+
+.unrated-task-item .task-card {
+    position: relative;
+    padding: 1rem;
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 12px;
+    overflow: visible;
 }
 
 /* Add extra margin to first task to prevent clipping */
@@ -247,10 +275,7 @@ header h1 {
 
 /* Task Items - Prioritized Tasks */
 .task-item {
-    margin-bottom: 0.5rem;
-    transition: all 0.2s ease;
     width: 100%;
-    position: relative;
 }
 
 /* .task-item::before {
@@ -262,15 +287,6 @@ header h1 {
     width: 4px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 } */
-
-.task-item .task-card {
-    position: relative;
-    padding: 0.75rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    overflow-x: hidden;
-}
 
 .task-item .task-card:hover {
     transform: translateY(-2px);
@@ -517,15 +533,6 @@ header h1 {
     background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
 } */
 
-.unrated-task-item .task-card {
-    position: relative;
-    padding: 1rem;
-    background: #fef3c7;
-    border: 1px solid #fbbf24;
-    border-radius: 12px;
-    overflow-x: hidden;
-}
-
 .unrated-task-item .task-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -553,7 +560,6 @@ header h1 {
     justify-content: space-between;
     flex-wrap: nowrap;
     gap: 0.5rem;
-    overflow-x: hidden;
 }
 
 .input-group {
@@ -573,26 +579,22 @@ header h1 {
     white-space: nowrap;
 }
 
-.input-group select {
-    width: 100%;
-    padding: 0.3rem 0.2rem;
-    border: 1px solid #d97706;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
 .input-group select:focus {
     outline: none;
     border-color: #f59e0b;
     box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
 }
 
-.input-group .score-input {
+/* Custom Dropdown Styles */
+.custom-dropdown {
+    position: relative;
     width: 100%;
-    padding: 0.3rem 0.4rem;
+    overflow: visible;
+}
+
+.dropdown-input {
+    width: 100%;
+    padding: 0.3rem 1.8rem 0.3rem 0.6rem;
     border: 1px solid #d97706;
     border-radius: 6px;
     font-size: 0.75rem;
@@ -601,6 +603,102 @@ header h1 {
     transition: all 0.2s ease;
     text-align: center;
     font-weight: 600;
+    -moz-appearance: textfield; /* Firefox */
+}
+
+/* Hide spinner arrows on Chrome, Safari, Edge */
+.dropdown-input::-webkit-outer-spin-button,
+.dropdown-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.dropdown-input:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.dropdown-arrow {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.6rem;
+    color: #6b7280;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.custom-dropdown.open .dropdown-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.dropdown-options {
+    position: fixed;
+    background: white;
+    border: 1px solid #d97706;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 9999;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    min-width: 150px;
+    max-width: 300px;
+    white-space: nowrap;
+}
+
+.custom-dropdown.open .dropdown-options {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+.dropdown-option {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    color: #374151;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.dropdown-option:hover {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.dropdown-option:active {
+    background-color: #fbbf24;
+}
+
+.input-group .score-input {
+    width: 100%;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid #d97706;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    background: white;
+    cursor: text;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-weight: 600;
+    -moz-appearance: textfield; /* Firefox */
+}
+
+/* Hide spinner arrows on Chrome, Safari, Edge */
+.input-group .score-input::-webkit-outer-spin-button,
+.input-group .score-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .input-group .score-input:focus {
@@ -847,22 +945,27 @@ header h1 {
 
 .task-metrics-top-right {
     position: absolute;
-    top: 0.75rem;
-    right: 2.75rem;
+    top: 2.5rem;
+    right: 0.75rem;
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.25rem;
+}
+
+/* Completed tasks need higher positioning */
+.completed-task-item .task-metrics-top-right {
+    top: 1.75rem;
 }
 
 .task-score-right {
     position: relative;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 16px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
     font-weight: 700;
     font-size: 0.9rem;
-    min-width: 40px;
+    min-width: 32px;
     text-align: center;
 }
 
@@ -899,20 +1002,21 @@ header h1 {
 .delete-btn,
 .task-item .delete-btn {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 0.5rem;
+    right: 0.5rem;
     cursor: pointer;
     background: transparent;
     border: none;
     padding: 0.25rem;
     transition: all 0.2s ease;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.6;
+    opacity: 0.5;
     border-radius: 4px;
+    z-index: 10;
 }
 
 .delete-btn:hover,
@@ -930,8 +1034,8 @@ header h1 {
 }
 
 .trash-icon {
-    width: 10px;
-    height: 12px;
+    width: 8px;
+    height: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -939,7 +1043,7 @@ header h1 {
 }
 
 .trash-lid {
-    width: 12px;
+    width: 10px;
     height: 1.5px;
     background: #9ca3af;
     border-radius: 1px;
@@ -962,8 +1066,8 @@ header h1 {
 }
 
 .trash-body {
-    width: 9px;
-    height: 9px;
+    width: 7px;
+    height: 7px;
     background: #9ca3af;
     border-radius: 0 0 1.5px 1.5px;
     position: relative;
