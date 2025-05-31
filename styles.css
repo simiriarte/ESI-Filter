@@ -195,6 +195,7 @@ header h1 {
     overflow-y: auto;
     padding: 0.25rem 0.5rem 0 0;
     min-height: 200px;
+    position: relative;
 }
 
 /* Add extra margin to first task to prevent clipping */
@@ -540,6 +541,10 @@ header h1 {
     font-weight: 600;
     color: #92400e;
     line-height: 1.3;
+    max-width: calc(100% - 120px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .task-row {
@@ -605,113 +610,6 @@ header h1 {
     box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
 }
 
-/* Delete buttons */
-.delete-btn,
-.task-item .delete-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    padding: 0.25rem;
-    transition: all 0.2s ease;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.6;
-    border-radius: 4px;
-}
-
-.delete-btn:hover,
-.task-item .delete-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
-    background: rgba(239, 68, 68, 0.1);
-}
-
-.delete-btn:focus,
-.task-item .delete-btn:focus {
-    outline: 2px solid #ef4444;
-    outline-offset: 2px;
-    opacity: 1;
-}
-
-.trash-icon {
-    width: 10px;
-    height: 12px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.trash-lid {
-    width: 12px;
-    height: 1.5px;
-    background: #9ca3af;
-    border-radius: 1px;
-    margin-bottom: 1px;
-    position: relative;
-    transition: background 0.2s ease;
-}
-
-.trash-lid::before {
-    content: '';
-    position: absolute;
-    top: -1.5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 1.5px;
-    background: #9ca3af;
-    border-radius: 1px;
-    transition: background 0.2s ease;
-}
-
-.trash-body {
-    width: 9px;
-    height: 9px;
-    background: #9ca3af;
-    border-radius: 0 0 1.5px 1.5px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background 0.2s ease;
-}
-
-.trash-lines {
-    display: flex;
-    gap: 1.5px;
-    height: 6px;
-    align-items: center;
-}
-
-.line {
-    width: 0.8px;
-    height: 4px;
-    background: white;
-    border-radius: 0.5px;
-    transition: background 0.2s ease;
-}
-
-.delete-btn:hover .trash-lid,
-.delete-btn:hover .trash-lid::before,
-.delete-btn:hover .trash-body,
-.task-item .delete-btn:hover .trash-lid,
-.task-item .delete-btn:hover .trash-lid::before,
-.task-item .delete-btn:hover .trash-body {
-    background: #ef4444;
-}
-
-.delete-btn:hover .line,
-.task-item .delete-btn:hover .line {
-    background: white;
-}
-
 /* Completed Tasks */
 .completed-tasks-section {
     margin-top: 2rem;
@@ -727,6 +625,7 @@ header h1 {
     max-height: 250px;
     overflow-y: auto;
     padding-right: 0.5rem;
+    position: relative;
 }
 
 .completed-task-item {
@@ -969,4 +868,145 @@ header h1 {
 
 .rate-all-btn:active {
     transform: translateY(0);
+}
+
+/* Delete buttons */
+.delete-btn,
+.task-item .delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    border-radius: 4px;
+}
+
+.delete-btn:hover,
+.task-item .delete-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.delete-btn:focus,
+.task-item .delete-btn:focus {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+    opacity: 1;
+}
+
+.trash-icon {
+    width: 10px;
+    height: 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.trash-lid {
+    width: 12px;
+    height: 1.5px;
+    background: #9ca3af;
+    border-radius: 1px;
+    margin-bottom: 1px;
+    position: relative;
+    transition: background 0.2s ease;
+}
+
+.trash-lid::before {
+    content: '';
+    position: absolute;
+    top: -1.5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 1.5px;
+    background: #9ca3af;
+    border-radius: 1px;
+    transition: background 0.2s ease;
+}
+
+.trash-body {
+    width: 9px;
+    height: 9px;
+    background: #9ca3af;
+    border-radius: 0 0 1.5px 1.5px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s ease;
+}
+
+.trash-lines {
+    display: flex;
+    gap: 1.5px;
+    height: 6px;
+    align-items: center;
+}
+
+.line {
+    width: 0.8px;
+    height: 4px;
+    background: white;
+    border-radius: 0.5px;
+    transition: background 0.2s ease;
+}
+
+.delete-btn:hover .trash-lid,
+.delete-btn:hover .trash-lid::before,
+.delete-btn:hover .trash-body,
+.task-item .delete-btn:hover .trash-lid,
+.task-item .delete-btn:hover .trash-lid::before,
+.task-item .delete-btn:hover .trash-body {
+    background: #ef4444;
+}
+
+.delete-btn:hover .line,
+.task-item .delete-btn:hover .line {
+    background: white;
+}
+
+/* Ensure proper alignment of buttons at bottom */
+.add-task-section .card,
+.to-be-rated-section .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Brain dump form structure */
+.add-task-section .card > form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-task-section .form-group {
+    flex: 1;
+}
+
+/* To be rated structure */
+.to-be-rated-section .unrated-tasks-container {
+    flex: 1;
+    height: 360px;
+    max-height: 360px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+}
+
+/* Push buttons to bottom */
+.add-task-section .btn-primary,
+.to-be-rated-section .btn-primary {
+    margin-top: auto;
 } 
