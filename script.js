@@ -375,7 +375,7 @@ class ESIFilter {
                         ${taskName}
                         ${priorityText ? `<div style="font-size: 0.8rem; color: ${priorityColor}; font-weight: 500; margin-top: 0.25rem;">${priorityText}</div>` : ''}
                         ${task.dateCreated ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
-                            added on ${new Date(task.dateCreated).toLocaleDateString('en-US', {
+                            added ${new Date(task.dateCreated).toLocaleDateString('en-US', {
                                 month: '2-digit',
                                 day: '2-digit',
                                 year: '2-digit'
@@ -442,7 +442,7 @@ class ESIFilter {
                 <div class="task-name">
                     ${taskName}
                     ${task.completedDate ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
-                        completed on ${task.completedDate}
+                        completed ${task.completedDate}
                     </div>` : ''}
                 </div>
             </div>
@@ -706,6 +706,61 @@ class ESIFilter {
         }
     }
 
+    rateAllTasks() {
+        const unratedTasks = this.tasks.filter(task => task.status === 'unrated');
+        const tasksToRate = [];
+        
+        // Check which tasks have complete ratings
+        unratedTasks.forEach(task => {
+            const excitementSelect = document.getElementById(`unrated-excitement-${task.id}`);
+            const simplicitySelect = document.getElementById(`unrated-simplicity-${task.id}`);
+            const impactSelect = document.getElementById(`unrated-impact-${task.id}`);
+            
+            const excitement = parseInt(excitementSelect?.value);
+            const simplicity = parseInt(simplicitySelect?.value);
+            const impact = parseInt(impactSelect?.value);
+            
+            // Only include tasks with all three ratings
+            if (excitement && simplicity && impact) {
+                tasksToRate.push({
+                    task,
+                    excitement,
+                    simplicity,
+                    impact
+                });
+            }
+        });
+        
+        if (tasksToRate.length === 0) {
+            alert('No tasks have complete ratings to process. Please fill out Excitement, Simplicity, and Impact for at least one task.');
+            return;
+        }
+        
+        // Rate all the complete tasks
+        let ratedCount = 0;
+        tasksToRate.forEach(({task, excitement, simplicity, impact}) => {
+            const taskIndex = this.tasks.findIndex(t => t.id === task.id);
+            if (taskIndex > -1) {
+                this.tasks[taskIndex].excitement = excitement;
+                this.tasks[taskIndex].simplicity = simplicity;
+                this.tasks[taskIndex].impact = impact;
+                this.tasks[taskIndex].score = excitement + simplicity + impact;
+                this.tasks[taskIndex].status = 'start'; // Move to regular tasks
+                ratedCount++;
+            }
+        });
+        
+        // Sort tasks by score
+        this.sortTasks();
+        
+        // Save and render
+        this.saveTasksToStorage();
+        this.renderTasks();
+        
+        // Show success feedback
+        this.showSuccessFeedback(`✅ ${ratedCount} task${ratedCount === 1 ? '' : 's'} rated and added to priority list!`);
+    }
+
     showSuccessFeedback(message) {
         // Create temporary success message
         const successDiv = document.createElement('div');
@@ -812,8 +867,13 @@ class ESIFilter {
             <div class="card">
                 <div class="section-header">
                     <h2>📝 To Be Rated</h2>
-                    <div class="task-count">
-                        <span id="unrated-task-count">0 unrated</span>
+                    <div class="header-actions">
+                        <div class="task-count">
+                            <span id="unrated-task-count">0 unrated</span>
+                        </div>
+                        <button class="rate-all-btn" onclick="esiFilter.rateAllTasks()" title="Rate all tasks with complete scores">
+                            Rate All
+                        </button>
                     </div>
                 </div>
                 
