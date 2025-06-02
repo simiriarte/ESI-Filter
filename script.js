@@ -63,7 +63,10 @@ class ESIFilter {
             simplicity: null,
             impact: null,
             score: null,
-            notes: ""
+            notes: "",
+            actualExcitement: null,
+            actualSimplicity: null,
+            actualImpact: null
         }));
         
         console.log('New tasks created:', newTasks); // Debug log
@@ -97,19 +100,13 @@ class ESIFilter {
             // Update status based on current state
             if (task.status === 'start') {
                 task.status = 'in-progress';
+                this.saveTasksToStorage();
+                this.renderTasks();
             } else if (task.status === 'in-progress') {
-                task.status = 'complete';
-                // Add completion date
-                task.completedDate = new Date().toLocaleDateString('en-US', {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: '2-digit'
-                });
+                // Show reflection modal instead of completing immediately
+                this.showCompletionReflectionModal(taskId);
             }
             // If already complete, do nothing
-            
-            this.saveTasksToStorage();
-            this.renderTasks();
         }
     }
 
@@ -186,6 +183,180 @@ class ESIFilter {
             truncatedText.style.display = 'block';
             fullText.style.display = 'none';
             toggleBtn.textContent = 'View Full Notes';
+        }
+    }
+
+    toggleReflection(taskId) {
+        const reflectionContent = document.getElementById(`reflection-content-${taskId}`);
+        if (reflectionContent) {
+            if (reflectionContent.style.display === 'none') {
+                reflectionContent.style.display = 'block';
+            } else {
+                reflectionContent.style.display = 'none';
+            }
+        }
+    }
+
+    showCompletionReflectionModal(taskId) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        // Create modal overlay
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'reflection-modal-overlay';
+        modalOverlay.id = `reflection-modal-${taskId}`;
+        
+        modalOverlay.innerHTML = `
+            <div class="reflection-modal">
+                <div class="reflection-modal-header">
+                    <h3>🎯 Task Complete!</h3>
+                    <p>So how would you actually rate it now?</p>
+                </div>
+                
+                <div class="reflection-content">
+                    <div class="original-vs-actual">
+                        <div class="rating-comparison">
+                            <div class="original-ratings">
+                                <h4>Your Original Ratings:</h4>
+                                <div class="rating-display">
+                                    <span>Excitement: ${task.excitement}</span>
+                                    <span>Simplicity: ${task.simplicity}</span>
+                                    <span>Impact: ${task.impact}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="actual-ratings-section">
+                        <h4>Actual Experience:</h4>
+                        <div class="reflection-inputs">
+                            <div class="input-group">
+                                <label>Actual Excitement</label>
+                                <select id="actual-excitement-${taskId}" class="reflection-select">
+                                    <option value="">Select...</option>
+                                    <option value="1">1 - Dreading it</option>
+                                    <option value="2">2 - Meh</option>
+                                    <option value="3">3 - Neutral</option>
+                                    <option value="4">4 - Pretty Interested</option>
+                                    <option value="5">5 - Super Excited</option>
+                                </select>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Actual Simplicity</label>
+                                <select id="actual-simplicity-${taskId}" class="reflection-select">
+                                    <option value="">Select...</option>
+                                    <option value="1">1 - Complex, several steps</option>
+                                    <option value="2">2 - Fairly complex</option>
+                                    <option value="3">3 - Moderate complexity</option>
+                                    <option value="4">4 - Pretty simple</option>
+                                    <option value="5">5 - One single step</option>
+                                </select>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Actual Impact</label>
+                                <select id="actual-impact-${taskId}" class="reflection-select">
+                                    <option value="">Select...</option>
+                                    <option value="1">1 - Little to no impact</option>
+                                    <option value="2">2 - Minimal impact</option>
+                                    <option value="3">3 - Small impact</option>
+                                    <option value="4">4 - Moderate impact</option>
+                                    <option value="5">5 - Noticeable improvement</option>
+                                    <option value="6">6 - Significant improvement</option>
+                                    <option value="7">7 - Major improvement</option>
+                                    <option value="8">8 - Substantial impact</option>
+                                    <option value="9">9 - Transformative</option>
+                                    <option value="10">10 - Life changing</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reflection-modal-actions">
+                    <button class="btn-secondary" onclick="esiFilter.closeCompletionReflectionModal(${taskId})">
+                        Skip Reflection
+                    </button>
+                    <button class="btn-primary" onclick="esiFilter.saveReflection(${taskId})">
+                        Save Reflection
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modalOverlay);
+        
+        // Focus on first dropdown
+        const firstSelect = document.getElementById(`actual-excitement-${taskId}`);
+        if (firstSelect) firstSelect.focus();
+    }
+
+    saveReflection(taskId) {
+        const actualExcitement = parseInt(document.getElementById(`actual-excitement-${taskId}`).value);
+        const actualSimplicity = parseInt(document.getElementById(`actual-simplicity-${taskId}`).value);
+        const actualImpact = parseInt(document.getElementById(`actual-impact-${taskId}`).value);
+
+        // Validate that all fields are filled
+        if (!actualExcitement || !actualSimplicity || !actualImpact) {
+            alert('Please fill out all reflection ratings before saving.');
+            return;
+        }
+
+        // Find and update the task
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            
+            // Save actual ratings
+            task.actualExcitement = actualExcitement;
+            task.actualSimplicity = actualSimplicity;
+            task.actualImpact = actualImpact;
+            
+            // Complete the task
+            task.status = 'complete';
+            task.completedDate = new Date().toLocaleDateString('en-US', {
+                month: '2-digit',
+                day: '2-digit',
+                year: '2-digit'
+            });
+
+            this.saveTasksToStorage();
+            this.renderTasks();
+            
+            // Close modal
+            this.closeCompletionReflectionModal(taskId);
+            
+            // Show success feedback
+            const taskName = task.title || task.name;
+            this.showSuccessFeedback(`✅ "${taskName}" completed with reflection saved!`);
+        }
+    }
+
+    closeCompletionReflectionModal(taskId) {
+        const modal = document.getElementById(`reflection-modal-${taskId}`);
+        if (modal) {
+            modal.remove();
+        }
+        
+        // If user skipped reflection, still complete the task
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            if (task.status === 'in-progress') {
+                task.status = 'complete';
+                task.completedDate = new Date().toLocaleDateString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: '2-digit'
+                });
+                
+                this.saveTasksToStorage();
+                this.renderTasks();
+                
+                const taskName = task.title || task.name;
+                this.showSuccessFeedback(`✅ "${taskName}" completed!`);
+            }
         }
     }
 
@@ -274,9 +445,10 @@ class ESIFilter {
             // Show empty state for active tasks
             tasksContainer.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon">📝</div>
+                    <div class="empty-icon">😴</div>
                     <h3>No tasks yet</h3>
-                    <p>Rated tasks will appear here prioritized by ESI score!</p>
+                    <p>Filtered tasks will be prioritized here!</p>
+                    <p>(and free up brain space)</p>
                 </div>
             `;
         } else {
@@ -335,22 +507,22 @@ class ESIFilter {
         
         switch(task.status) {
             case 'start':
-                statusDisplay = '⚪ Ready to Start';
+                statusDisplay = 'Ready to Start';
                 statusButton = 'Start';
                 statusClass = 'status-start';
                 break;
             case 'in-progress':
-                statusDisplay = '🟡 In Progress';
-                statusButton = 'Complete';
+                statusDisplay = 'In Progress';
+                statusButton = 'Done!';
                 statusClass = 'status-progress';
                 break;
             case 'complete':
-                statusDisplay = '✅ Completed';
+                statusDisplay = 'Completed';
                 statusButton = null; // No button for completed tasks
                 statusClass = 'status-complete';
                 break;
             default:
-                statusDisplay = '⚪ Ready to Start';
+                statusDisplay = 'Ready to Start';
                 statusButton = 'Start';
                 statusClass = 'status-start';
         }
@@ -437,6 +609,16 @@ class ESIFilter {
         // Use title if available, fall back to name for compatibility
         const taskName = task.title || task.name;
 
+        // Check if task has actual ratings for reflection
+        const hasReflection = task.actualExcitement && task.actualSimplicity && task.actualImpact;
+        
+        // Generate reflection insights if available
+        let reflectionHTML = '';
+        if (hasReflection) {
+            // We don't need inline HTML anymore - will show in modal
+            reflectionHTML = '';
+        }
+
         taskDiv.innerHTML = `
             <div class="task-header-compact">
                 <div class="task-name">
@@ -482,6 +664,11 @@ class ESIFilter {
                     <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
                         ${task.notes ? '✏️' : '📝'}
                     </button>
+                    ${hasReflection ? `
+                        <button class="analytics-btn has-reflection" onclick="esiFilter.showReflectionModal(${task.id})" title="View reflection insights">
+                            🧠
+                        </button>
+                    ` : ''}
                 </div>
             </div>
             
@@ -848,7 +1035,7 @@ class ESIFilter {
         section.innerHTML = `
             <div class="card">
                 <div class="section-header">
-                    <h2>📝 To Be Rated</h2>
+                    <h2>Filter Tasks</h2>
                     <div class="task-count">
                         <span id="unrated-task-count">0 unrated</span>
                     </div>
@@ -865,6 +1052,174 @@ class ESIFilter {
         `;
         
         return section;
+    }
+
+    closeReflectionInsightsModal(taskId) {
+        const modal = document.getElementById(`reflection-insights-modal-${taskId}`);
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    showReflectionModal(taskId) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (!task || !task.actualExcitement || !task.actualSimplicity || !task.actualImpact) return;
+
+        // Calculate deltas
+        const excitementDelta = task.actualExcitement - task.excitement;
+        const simplicityDelta = task.actualSimplicity - task.simplicity;
+        const impactDelta = task.actualImpact - task.impact;
+        const originalScore = task.excitement + task.simplicity + task.impact;
+        const actualScore = task.actualExcitement + task.actualSimplicity + task.actualImpact;
+        const totalDelta = actualScore - originalScore;
+
+        // Helper function to get delta indicator
+        const getDeltaIndicator = (delta) => {
+            if (delta > 0) return { icon: '🔺', class: 'delta-positive', text: `+${delta}` };
+            if (delta < 0) return { icon: '🔻', class: 'delta-negative', text: `${delta}` };
+            return { icon: '◾', class: 'delta-neutral', text: '0' };
+        };
+
+        const eDelta = getDeltaIndicator(excitementDelta);
+        const sDelta = getDeltaIndicator(simplicityDelta);
+        const iDelta = getDeltaIndicator(impactDelta);
+
+        // Create modal overlay
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'reflection-insights-modal-overlay';
+        modalOverlay.id = `reflection-insights-modal-${taskId}`;
+        
+        const taskName = task.title || task.name;
+        
+        modalOverlay.innerHTML = `
+            <div class="reflection-insights-modal">
+                <div class="reflection-insights-modal-header">
+                    <h3>💭 Reflection Insights</h3>
+                    <p>"${taskName}"</p>
+                    <button class="modal-close-btn" onclick="esiFilter.closeReflectionInsightsModal(${taskId})">×</button>
+                </div>
+                
+                <div class="reflection-insights-content">
+                    <div class="insights-grid">
+                        <div class="insight-metric">
+                            <div class="metric-header">
+                                <span class="metric-icon">🎯</span>
+                                <span class="metric-name">Excitement</span>
+                            </div>
+                            <div class="metric-comparison">
+                                <div class="metric-values">
+                                    <span class="original-value">Expected: ${task.excitement}</span>
+                                    <span class="actual-value">Actual: ${task.actualExcitement}</span>
+                                </div>
+                                <div class="delta-indicator ${eDelta.class}">
+                                    ${eDelta.icon} ${eDelta.text}
+                                </div>
+                            </div>
+                            ${excitementDelta !== 0 ? `
+                                <div class="reflection-prompt">
+                                    <div class="prompt-question">💡 Did this end up being more or less enjoyable than expected? Why?</div>
+                                    <textarea class="reflection-textarea" placeholder="What made this task ${task.actualExcitement > task.excitement ? 'more enjoyable' : 'less enjoyable'} than you thought..."></textarea>
+                                </div>
+                            ` : `
+                                <div class="reflection-prompt">
+                                    <div class="prompt-question">🎯 Your excitement prediction was spot on! What helped you estimate this accurately?</div>
+                                    <textarea class="reflection-textarea" placeholder="What made you able to predict the enjoyment level so well..."></textarea>
+                                </div>
+                            `}
+                        </div>
+                        
+                        <div class="insight-metric">
+                            <div class="metric-header">
+                                <span class="metric-icon">⚡</span>
+                                <span class="metric-name">Simplicity</span>
+                            </div>
+                            <div class="metric-comparison">
+                                <div class="metric-values">
+                                    <span class="original-value">Expected: ${task.simplicity}</span>
+                                    <span class="actual-value">Actual: ${task.actualSimplicity}</span>
+                                </div>
+                                <div class="delta-indicator ${sDelta.class}">
+                                    ${sDelta.icon} ${sDelta.text}
+                                </div>
+                            </div>
+                            ${simplicityDelta !== 0 ? `
+                                <div class="reflection-prompt">
+                                    <div class="prompt-question">💡 Was this easier or harder than you thought? What added or reduced complexity?</div>
+                                    <textarea class="reflection-textarea" placeholder="What made this ${task.actualSimplicity > task.simplicity ? 'simpler' : 'more complex'} than expected..."></textarea>
+                                </div>
+                            ` : `
+                                <div class="reflection-prompt">
+                                    <div class="prompt-question">🎯 You nailed the complexity prediction! What gave you such good insight?</div>
+                                    <textarea class="reflection-textarea" placeholder="What helped you accurately gauge how complex this would be..."></textarea>
+                                </div>
+                            `}
+                        </div>
+                        
+                        <div class="insight-metric">
+                            <div class="metric-header">
+                                <span class="metric-icon">🚀</span>
+                                <span class="metric-name">Impact</span>
+                            </div>
+                            <div class="metric-comparison">
+                                <div class="metric-values">
+                                    <span class="original-value">Expected: ${task.impact}</span>
+                                    <span class="actual-value">Actual: ${task.actualImpact}</span>
+                                </div>
+                                <div class="delta-indicator ${iDelta.class}">
+                                    ${iDelta.icon} ${iDelta.text}
+                                </div>
+                            </div>
+                            ${impactDelta !== 0 ? `
+                                <div class="reflection-prompt">
+                                    <div class="prompt-question">💡 Did this task matter more or less than expected? What changed or opened up?</div>
+                                    <textarea class="reflection-textarea" placeholder="What made this ${task.actualImpact > task.impact ? 'more impactful' : 'less impactful'} than you anticipated..."></textarea>
+                                </div>
+                            ` : `
+                                <div class="reflection-prompt">
+                                    <div class="prompt-question">🎯 Perfect impact prediction! What helped you see the true value beforehand?</div>
+                                    <textarea class="reflection-textarea" placeholder="What made you able to predict the impact so accurately..."></textarea>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                    
+                    <div class="total-score-comparison">
+                        <div class="score-row">
+                            <span class="score-label">Expected Total Score:</span>
+                            <span class="score-value">${originalScore}</span>
+                        </div>
+                        <div class="score-row">
+                            <span class="score-label">Actual Total Score:</span>
+                            <span class="score-value">${actualScore}</span>
+                        </div>
+                        ${Math.abs(totalDelta) > 0 ? `
+                            <div class="total-delta-summary ${totalDelta > 0 ? 'delta-positive' : 'delta-negative'}">
+                                ${totalDelta > 0 ? '🔺' : '🔻'} ${Math.abs(totalDelta)} points ${totalDelta > 0 ? 'higher' : 'lower'} than expected
+                            </div>
+                        ` : `
+                            <div class="total-delta-summary delta-neutral">
+                                ◾ Score matched expectations exactly
+                            </div>
+                        `}
+                    </div>
+                </div>
+                
+                <div class="reflection-insights-modal-actions">
+                    <button class="btn-primary" onclick="esiFilter.closeReflectionInsightsModal(${taskId})">
+                        Close Reflection
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modalOverlay);
+        
+        // Add click outside to close
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                this.closeReflectionInsightsModal(taskId);
+            }
+        });
     }
 }
 
