@@ -197,6 +197,39 @@ class ESIFilter {
         }
     }
 
+    getRatingDescription(value, type) {
+        const descriptions = {
+            excitement: {
+                1: "Dreading it",
+                2: "Meh", 
+                3: "Neutral",
+                4: "Pretty Interested",
+                5: "Super Excited"
+            },
+            simplicity: {
+                1: "Complex, several steps",
+                2: "Fairly complex",
+                3: "Moderate complexity", 
+                4: "Pretty simple",
+                5: "One single step"
+            },
+            impact: {
+                1: "Little to no impact",
+                2: "Minimal impact",
+                3: "Small impact",
+                4: "Moderate impact", 
+                5: "Noticeable improvement",
+                6: "Significant improvement",
+                7: "Major improvement",
+                8: "Substantial impact",
+                9: "Transformative",
+                10: "Life changing"
+            }
+        };
+        
+        return descriptions[type]?.[value] || "";
+    }
+
     showCompletionReflectionModal(taskId) {
         const task = this.tasks.find(t => t.id === taskId);
         if (!task) return;
@@ -209,68 +242,90 @@ class ESIFilter {
         modalOverlay.innerHTML = `
             <div class="reflection-modal">
                 <div class="reflection-modal-header">
-                    <h3>🎯 Task Complete!</h3>
-                    <p>So how would you actually rate it now?</p>
+                    <h3>Wahoo! it's DONE!</h3>
                 </div>
                 
                 <div class="reflection-content">
                     <div class="original-vs-actual">
                         <div class="rating-comparison">
                             <div class="original-ratings">
-                                <h4>Your Original Ratings:</h4>
+                                <h4>Original Ratings:</h4>
                                 <div class="rating-display">
-                                    <span>Excitement: ${task.excitement}</span>
-                                    <span>Simplicity: ${task.simplicity}</span>
-                                    <span>Impact: ${task.impact}</span>
+                                    <span>Excitement: ${task.excitement} - ${this.getRatingDescription(task.excitement, 'excitement')}</span>
+                                    <span>Simplicity: ${task.simplicity} - ${this.getRatingDescription(task.simplicity, 'simplicity')}</span>
+                                    <span>Impact: ${task.impact} - ${this.getRatingDescription(task.impact, 'impact')}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="actual-ratings-section">
-                        <h4>Actual Experience:</h4>
-                        <div class="reflection-inputs">
+                        <h4 class="centered-section-header">Actual Experience – How did it <em>really</em> go down?</h4>
+                        <div class="task-row">
                             <div class="input-group">
-                                <label>Actual Excitement</label>
-                                <select id="actual-excitement-${taskId}" class="reflection-select">
-                                    <option value="">Select...</option>
-                                    <option value="1">1 - Dreading it</option>
-                                    <option value="2">2 - Meh</option>
-                                    <option value="3">3 - Neutral</option>
-                                    <option value="4">4 - Pretty Interested</option>
-                                    <option value="5">5 - Super Excited</option>
-                                </select>
+                                <label>Excitement</label>
+                                <input type="number" 
+                                       id="actual-excitement-${taskId}" 
+                                       list="excitement-options-actual-${taskId}"
+                                       min="1" 
+                                       max="5" 
+                                       class="score-input">
+                                <datalist id="excitement-options-actual-${taskId}">
+                                    <option value="1">Dreading it</option>
+                                    <option value="2">Meh</option>
+                                    <option value="3">Neutral</option>
+                                    <option value="4">Pretty Interested</option>
+                                    <option value="5">Super Excited</option>
+                                </datalist>
                             </div>
                             
                             <div class="input-group">
-                                <label>Actual Simplicity</label>
-                                <select id="actual-simplicity-${taskId}" class="reflection-select">
-                                    <option value="">Select...</option>
-                                    <option value="1">1 - Complex, several steps</option>
-                                    <option value="2">2 - Fairly complex</option>
-                                    <option value="3">3 - Moderate complexity</option>
-                                    <option value="4">4 - Pretty simple</option>
-                                    <option value="5">5 - One single step</option>
-                                </select>
+                                <label>Simplicity</label>
+                                <input type="number" 
+                                       id="actual-simplicity-${taskId}" 
+                                       list="simplicity-options-actual-${taskId}"
+                                       min="1" 
+                                       max="5" 
+                                       class="score-input">
+                                <datalist id="simplicity-options-actual-${taskId}">
+                                    <option value="1">Complex, several steps</option>
+                                    <option value="2">Fairly complex</option>
+                                    <option value="3">Moderate complexity</option>
+                                    <option value="4">Pretty simple</option>
+                                    <option value="5">One single step</option>
+                                </datalist>
                             </div>
                             
                             <div class="input-group">
-                                <label>Actual Impact</label>
-                                <select id="actual-impact-${taskId}" class="reflection-select">
-                                    <option value="">Select...</option>
-                                    <option value="1">1 - Little to no impact</option>
-                                    <option value="2">2 - Minimal impact</option>
-                                    <option value="3">3 - Small impact</option>
-                                    <option value="4">4 - Moderate impact</option>
-                                    <option value="5">5 - Noticeable improvement</option>
-                                    <option value="6">6 - Significant improvement</option>
-                                    <option value="7">7 - Major improvement</option>
-                                    <option value="8">8 - Substantial impact</option>
-                                    <option value="9">9 - Transformative</option>
-                                    <option value="10">10 - Life changing</option>
-                                </select>
+                                <label>Impact</label>
+                                <input type="number" 
+                                       id="actual-impact-${taskId}" 
+                                       list="impact-options-actual-${taskId}"
+                                       min="1" 
+                                       max="10" 
+                                       class="score-input">
+                                <datalist id="impact-options-actual-${taskId}">
+                                    <option value="1">Little to no impact</option>
+                                    <option value="2">Minimal impact</option>
+                                    <option value="3">Small impact</option>
+                                    <option value="4">Moderate impact</option>
+                                    <option value="5">Noticeable improvement</option>
+                                    <option value="6">Significant improvement</option>
+                                    <option value="7">Major improvement</option>
+                                    <option value="8">Substantial impact</option>
+                                    <option value="9">Transformative</option>
+                                    <option value="10">Life changing</option>
+                                </datalist>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="quick-reflection-section">
+                        <h4>wadja learn?</h4>
+                        <textarea 
+                            id="quick-reflection-${taskId}" 
+                            class="quick-reflection-textarea" 
+                            placeholder="What felt different than I expected? Would I approach this differently next time? Was the impact internal (clarity, energy, relief) or external (result, feedback, progress)?"></textarea>
                     </div>
                 </div>
                 
@@ -296,6 +351,7 @@ class ESIFilter {
         const actualExcitement = parseInt(document.getElementById(`actual-excitement-${taskId}`).value);
         const actualSimplicity = parseInt(document.getElementById(`actual-simplicity-${taskId}`).value);
         const actualImpact = parseInt(document.getElementById(`actual-impact-${taskId}`).value);
+        const quickReflection = document.getElementById(`quick-reflection-${taskId}`).value.trim();
 
         // Validate that all fields are filled
         if (!actualExcitement || !actualSimplicity || !actualImpact) {
@@ -312,6 +368,11 @@ class ESIFilter {
             task.actualExcitement = actualExcitement;
             task.actualSimplicity = actualSimplicity;
             task.actualImpact = actualImpact;
+            
+            // Save quick reflection if provided
+            if (quickReflection) {
+                task.quickReflection = quickReflection;
+            }
             
             // Complete the task
             task.status = 'complete';

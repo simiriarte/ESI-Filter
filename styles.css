@@ -64,7 +64,7 @@ header h1 {
 .subtitle {
     font-size: 1.2rem;
     opacity: 0.9;
-    font-weight: 300;
+    font-weight: 600;
     color:#1a1a1a
 }
 
@@ -111,10 +111,10 @@ header h1 {
 
 /* Main grid cards */
 .main-grid .card {
-    background: white;
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 20px;
     overflow: hidden; /* Ensures shadow and children stay inside */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
   
     height: 100%;
     max-height: 70vh;
@@ -123,7 +123,7 @@ header h1 {
     flex: 1;
     width: 100%;
     min-width: 0;
-  }
+}
 
 /* Sticky card for brain dump */
 .sticky-card {
@@ -215,7 +215,7 @@ header h1 {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:active {
@@ -912,22 +912,22 @@ header h1 {
 }
 
 .analytics-btn.has-reflection {
-    background: #f0fdfa;
-    border-color: #1abc9c;
-    color: #17937a;
+    background: #f0f9ff;
+    border-color: #0097f2;
+    color: #004876;
 }
 
 .analytics-btn.has-reflection:hover {
-    background: #1abc9c;
-    color: #17937a;
+    background: #0095f27a;
+    color: #004876;
 }
 
 /* Simplified reflection content */
 .reflection-content {
     margin: 1rem 0;
     padding: 1rem;
-    background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
-    border: 1px solid #5eead4;
+    background: #f0f9ff;
+    border: 1px solid #60a5fa;
     border-radius: 12px;
     font-size: 0.875rem;
     transition: all 0.2s ease;
@@ -937,8 +937,8 @@ header h1 {
 .reflection-insights {
     margin: 1rem 0;
     padding: 1rem;
-    background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
-    border: 1px solid #5eead4;
+    background: #f0f9ff;
+    border: 1px solid #60a5fa;
     border-radius: 12px;
     font-size: 0.875rem;
 }
@@ -955,19 +955,19 @@ header h1 {
 }
 
 .reflection-header:hover {
-    background: rgba(26, 188, 156, 0.1);
+    background: rgba(0, 151, 242, 0.1);
 }
 
 .insight-header {
     font-weight: 600;
-    color: #17937a;
+    color: #004876;
     font-size: 0.8rem;
     opacity: 0.9;
 }
 
 .reflection-toggle-btn {
     background: transparent;
-    border: 1px solid #5eead4;
+    border: 1px solid #60a5fa;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.8rem;
@@ -978,12 +978,12 @@ header h1 {
     justify-content: center;
     min-width: 28px;
     height: 28px;
-    color: #17937a;
+    color: #004876;
 }
 
 .reflection-toggle-btn:hover {
-    background: rgba(26, 188, 156, 0.1);
-    border-color: #1abc9c;
+    background: rgba(0, 151, 242, 0.1);
+    border-color: #0097f2;
 }
 
 .rating-comparison-compact {
@@ -1188,7 +1188,7 @@ header h1 {
 .rate-all-btn:hover {
     background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .rate-all-btn:active {
@@ -1419,6 +1419,10 @@ header h1 {
     font-weight: 600;
     color: #374151;
     margin-bottom: 1rem;
+}
+
+.centered-section-header {
+    text-align: center;
 }
 
 .reflection-inputs {
@@ -1810,10 +1814,8 @@ header h1 {
 }
 
 .btn-pain-cave {
-    display: inline-block;
-    background: linear-gradient(135deg, #1abc9c 0%, #17937a 100%);
+    background: #1abc9c;
     color: white;
-    text-decoration: none;
     border: none;
     padding: 1rem 2rem;
     border-radius: 12px;
@@ -1822,32 +1824,17 @@ header h1 {
     cursor: pointer;
     transition: all 0.2s ease;
     width: 100%;
-    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-pain-cave::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+    display: inline-block;
 }
 
 .btn-pain-cave:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px #17937a;
-    background: linear-gradient(135deg, #1abc9c 0%,#17937a 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #1abc9c;
     text-decoration: none;
     color: white;
-}
-
-.btn-pain-cave:hover::before {
-    left: 100%;
 }
 
 .btn-pain-cave:active {
@@ -1861,4 +1848,60 @@ header h1 {
         font-size: 1rem;
         width: 100%;
     }
+}
+
+/* Quick reflection section */
+.quick-reflection-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.quick-reflection-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+    text-transform: lowercase;
+    font-style: italic;
+}
+
+.quick-reflection-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    line-height: 1.5;
+    resize: vertical;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.quick-reflection-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.quick-reflection-textarea::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.reflection-modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.section-question {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    font-style: italic;
 } 
