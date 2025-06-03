@@ -207,11 +207,11 @@ class ESIFilter {
                 5: "Super Excited"
             },
             simplicity: {
-                1: "Complex, several steps",
-                2: "Fairly complex",
-                3: "Moderate complexity", 
-                4: "Pretty simple",
-                5: "One single step"
+                1: "tonna steps",
+                2: "several steps",
+                3: "handful of steps", 
+                4: "a few steps",
+                5: "just one step"
             },
             impact: {
                 1: "Little to no impact",
@@ -234,15 +234,21 @@ class ESIFilter {
         const task = this.tasks.find(t => t.id === taskId);
         if (!task) return;
 
+        // Check if task is already completed
+        const isCompleted = task.status === 'complete';
+        const modalTitle = isCompleted ? 'Update Reflection' : 'Wahoo! it\'s DONE!';
+        const buttonText = isCompleted ? 'Update Reflection' : 'Save Reflection';
+
         // Create modal overlay
         const modalOverlay = document.createElement('div');
         modalOverlay.className = 'reflection-modal-overlay';
         modalOverlay.id = `reflection-modal-${taskId}`;
         
         modalOverlay.innerHTML = `
-            <div class="reflection-modal">
+            <div class="reflection-modal" id="reflection-modal-content-${taskId}">
+                <div class="scroll-indicator" id="scroll-indicator-${taskId}">↓</div>
                 <div class="reflection-modal-header">
-                    <h3>Wahoo! it's DONE!</h3>
+                    <h3>${modalTitle}</h3>
                 </div>
                 
                 <div class="reflection-content">
@@ -260,7 +266,8 @@ class ESIFilter {
                     </div>
                     
                     <div class="actual-ratings-section">
-                        <h4 class="centered-section-header">Actual Experience – How did it <em>really</em> go down?</h4>
+                        <h4 class="centered-section-header">Actual Experience</h4>
+                        <p class="section-subtext">How did it <em>really</em> go down?</p>
                         <div class="task-row">
                             <div class="input-group">
                                 <label>Excitement</label>
@@ -269,7 +276,8 @@ class ESIFilter {
                                        list="excitement-options-actual-${taskId}"
                                        min="1" 
                                        max="5" 
-                                       class="score-input">
+                                       class="score-input"
+                                       value="${task.actualExcitement || ''}">
                                 <datalist id="excitement-options-actual-${taskId}">
                                     <option value="1">Dreading it</option>
                                     <option value="2">Meh</option>
@@ -286,13 +294,14 @@ class ESIFilter {
                                        list="simplicity-options-actual-${taskId}"
                                        min="1" 
                                        max="5" 
-                                       class="score-input">
+                                       class="score-input"
+                                       value="${task.actualSimplicity || ''}">
                                 <datalist id="simplicity-options-actual-${taskId}">
-                                    <option value="1">Complex, several steps</option>
-                                    <option value="2">Fairly complex</option>
-                                    <option value="3">Moderate complexity</option>
-                                    <option value="4">Pretty simple</option>
-                                    <option value="5">One single step</option>
+                                    <option value="1">tonna steps</option>
+                                    <option value="2">several steps</option>
+                                    <option value="3">handful of steps</option>
+                                    <option value="4">a few steps</option>
+                                    <option value="5">just one step</option>
                                 </datalist>
                             </div>
                             
@@ -303,7 +312,8 @@ class ESIFilter {
                                        list="impact-options-actual-${taskId}"
                                        min="1" 
                                        max="10" 
-                                       class="score-input">
+                                       class="score-input"
+                                       value="${task.actualImpact || ''}">
                                 <datalist id="impact-options-actual-${taskId}">
                                     <option value="1">Little to no impact</option>
                                     <option value="2">Minimal impact</option>
@@ -321,26 +331,57 @@ class ESIFilter {
                     </div>
                     
                     <div class="quick-reflection-section">
-                        <h4>wadja learn?</h4>
+                        <h4>To remember about this experience</h4>
                         <textarea 
                             id="quick-reflection-${taskId}" 
-                            class="quick-reflection-textarea" 
-                            placeholder="What felt different than I expected? Would I approach this differently next time? Was the impact internal (clarity, energy, relief) or external (result, feedback, progress)?"></textarea>
+                            class="quick-reflection-textarea">${task.quickReflection || ''}</textarea>
                     </div>
                 </div>
                 
                 <div class="reflection-modal-actions">
                     <button class="btn-secondary" onclick="esiFilter.closeCompletionReflectionModal(${taskId})">
-                        Skip Reflection
+                        ${isCompleted ? 'Cancel' : 'Skip Reflection'}
                     </button>
                     <button class="btn-primary" onclick="esiFilter.saveReflection(${taskId})">
-                        Save Reflection
+                        ${buttonText}
                     </button>
                 </div>
             </div>
         `;
 
         document.body.appendChild(modalOverlay);
+        
+        // Set up scroll indicator
+        const modalContent = document.getElementById(`reflection-modal-content-${taskId}`);
+        const scrollIndicator = document.getElementById(`scroll-indicator-${taskId}`);
+        
+        // Function to check scroll position and update indicator
+        const updateScrollIndicator = () => {
+            const scrollTop = modalContent.scrollTop;
+            const scrollHeight = modalContent.scrollHeight;
+            const clientHeight = modalContent.clientHeight;
+            
+            // Hide indicator if we can't scroll or if we're near the bottom
+            if (scrollHeight <= clientHeight || scrollTop >= scrollHeight - clientHeight - 20) {
+                scrollIndicator.classList.add('hidden');
+            } else {
+                scrollIndicator.classList.remove('hidden');
+            }
+        };
+        
+        // Add scroll event listener
+        modalContent.addEventListener('scroll', updateScrollIndicator);
+        
+        // Initial check
+        setTimeout(updateScrollIndicator, 100);
+        
+        // Click indicator to scroll down
+        scrollIndicator.addEventListener('click', () => {
+            modalContent.scrollBy({
+                top: 200,
+                behavior: 'smooth'
+            });
+        });
         
         // Focus on first dropdown
         const firstSelect = document.getElementById(`actual-excitement-${taskId}`);
@@ -363,24 +404,30 @@ class ESIFilter {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
             const task = this.tasks[taskIndex];
+            const wasAlreadyCompleted = task.status === 'complete';
             
-            // Save actual ratings
+            // Save actual ratings (can be updated anytime)
             task.actualExcitement = actualExcitement;
             task.actualSimplicity = actualSimplicity;
             task.actualImpact = actualImpact;
             
-            // Save quick reflection if provided
+            // Save quick reflection if provided (can be updated anytime)
             if (quickReflection) {
                 task.quickReflection = quickReflection;
+            } else {
+                // If reflection is cleared, remove it
+                delete task.quickReflection;
             }
             
-            // Complete the task
-            task.status = 'complete';
-            task.completedDate = new Date().toLocaleDateString('en-US', {
-                month: '2-digit',
-                day: '2-digit',
-                year: '2-digit'
-            });
+            // Only set completion status and date if not already completed
+            if (!wasAlreadyCompleted) {
+                task.status = 'complete';
+                task.completedDate = new Date().toLocaleDateString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: '2-digit'
+                });
+            }
 
             this.saveTasksToStorage();
             this.renderTasks();
@@ -390,7 +437,10 @@ class ESIFilter {
             
             // Show success feedback
             const taskName = task.title || task.name;
-            this.showSuccessFeedback(`✅ "${taskName}" completed with reflection saved!`);
+            const feedbackMessage = wasAlreadyCompleted 
+                ? `✅ Reflection for "${taskName}" updated!`
+                : `✅ "${taskName}" completed with reflection saved!`;
+            this.showSuccessFeedback(feedbackMessage);
         }
     }
 
@@ -726,10 +776,14 @@ class ESIFilter {
                         ${task.notes ? '✏️' : '📝'}
                     </button>
                     ${hasReflection ? `
-                        <button class="analytics-btn has-reflection" onclick="esiFilter.showReflectionModal(${task.id})" title="View reflection insights">
+                        <button class="analytics-btn has-reflection" onclick="esiFilter.showCompletionReflectionModal(${task.id})" title="Complete reflection">
                             🧠
                         </button>
-                    ` : ''}
+                    ` : `
+                        <button class="analytics-btn" onclick="esiFilter.showCompletionReflectionModal(${task.id})" title="Complete reflection">
+                            🧠
+                        </button>
+                    `}
                 </div>
             </div>
             
@@ -800,11 +854,11 @@ class ESIFilter {
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
                         <datalist id="simplicity-options-${task.id}">
-                            <option value="1">Complex, several steps</option>
-                            <option value="2">Fairly complex</option>
-                            <option value="3">Moderate complexity</option>
-                            <option value="4">Pretty simple</option>
-                            <option value="5">One single step</option>
+                            <option value="1">tonna steps</option>
+                            <option value="2">several steps</option>
+                            <option value="3">handful of steps</option>
+                            <option value="4">a few steps</option>
+                            <option value="5">just one step</option>
                         </datalist>
                     </div>
                     <div class="input-group">
