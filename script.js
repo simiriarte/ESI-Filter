@@ -249,23 +249,22 @@ class ESIFilter {
                 <div class="scroll-indicator" id="scroll-indicator-${taskId}">↓</div>
                 <div class="reflection-modal-header">
                     <h3>${modalTitle}</h3>
-                    <p class="task-subtitle">Task: ${task.title || task.name}</p>
+                    <p class="task-subtitle">${task.title || task.name}</p>
                 </div>
                 
                 <div class="reflection-content">
                     <div class="original-vs-actual">
                         <div class="original-ratings">
                             <h4>Original Ratings:</h4>
-                            <div class="original-ratings-simple">
-                                <div class="rating-item">
-                                    <strong>Energy:</strong> ${task.energy} - ${this.getRatingDescription(task.energy, 'energy')}
-                                </div>
-                                <div class="rating-item">
-                                    <strong>Simplicity:</strong> ${task.simplicity} - ${this.getRatingDescription(task.simplicity, 'simplicity')}
-                                </div>
-                                <div class="rating-item">
-                                    <strong>Impact:</strong> ${task.impact} - ${this.getRatingDescription(task.impact, 'impact')}
-                                </div>
+                            <div class="original-ratings-grid">
+                                <div class="metric-label-box">Energy</div>
+                                <div class="metric-value-box">${task.energy} - ${this.getRatingDescription(task.energy, 'energy')}</div>
+                                
+                                <div class="metric-label-box">Simplicity</div>
+                                <div class="metric-value-box">${task.simplicity} - ${this.getRatingDescription(task.simplicity, 'simplicity')}</div>
+                                
+                                <div class="metric-label-box">Impact</div>
+                                <div class="metric-value-box">${task.impact} - ${this.getRatingDescription(task.impact, 'impact')}</div>
                             </div>
                         </div>
                     </div>

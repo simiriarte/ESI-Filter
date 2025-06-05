@@ -1347,8 +1347,23 @@ header h1 {
     margin-top: auto;
 }
 
-/* Reflection Modal Styles */
-.reflection-modal-overlay {
+/* 
+ * UNIFIED MODAL SYSTEM
+ * 
+ * Both reflection modals (.reflection-modal and .reflection-insights-modal) now use 
+ * identical styling. Any changes to one should be applied to both to maintain consistency.
+ * 
+ * Key shared properties:
+ * - Same size: max-width: 500px, max-height: 80vh
+ * - Same padding: 2rem
+ * - Same border-radius: 20px
+ * - Same header styling
+ * - Same action button layout
+ * - Same mobile responsiveness
+ */
+
+/* Shared Modal Base Styles */
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -1363,6 +1378,29 @@ header h1 {
     animation: fadeIn 0.2s ease;
 }
 
+.modal-base {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideInUp 0.3s ease;
+    position: relative;
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.modal-base::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+/* Apply base styles to both modals */
 .reflection-modal {
     background: white;
     border-radius: 20px;
@@ -1383,6 +1421,21 @@ header h1 {
     width: 0;
     height: 0;
     display: none;
+}
+
+.reflection-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
 }
 
 /* Scroll indicator */
@@ -1475,27 +1528,6 @@ header h1 {
     margin-bottom: 1rem;
 }
 
-.original-ratings-simple {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.rating-item {
-    background: white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    color: #374151;
-    border: 1px solid #e5e7eb;
-    line-height: 1.4;
-}
-
-.rating-item strong {
-    color: #1f2937;
-    font-weight: 600;
-}
-
 .actual-ratings-section h4 {
     font-size: 1rem;
     font-weight: 600;
@@ -1566,17 +1598,26 @@ header h1 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-secondary:hover {
     background: #e5e7eb;
     color: #374151;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .reflection-modal .btn-primary {
+    background: #0097f2;
     padding: 0.75rem 1.5rem;
     font-size: 0.875rem;
     width: auto;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+}
+
+.reflection-modal .btn-primary:hover {
+    background: #0075c2;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 @keyframes fadeIn {
@@ -1616,7 +1657,7 @@ header h1 {
     }
 }
 
-/* Reflection Insights Modal */
+/* Reflection Insights Modal - Now identical to completion modal */
 .reflection-insights-modal-overlay {
     position: fixed;
     top: 0;
@@ -1636,55 +1677,51 @@ header h1 {
     background: white;
     border-radius: 20px;
     padding: 2rem;
-    max-width: 600px;
+    max-width: 500px;
     width: 90%;
-    max-height: 85vh;
+    max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: slideInUp 0.3s ease;
     position: relative;
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.reflection-insights-modal::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .reflection-insights-modal-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .reflection-insights-modal-header h3 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #17937a;
+    color: #1f2937;
     margin-bottom: 0.5rem;
 }
 
 .reflection-insights-modal-header p {
     color: #6b7280;
     font-size: 1rem;
-    font-style: italic;
 }
 
-.modal-close-btn {
-    position: absolute;
-    top: -0.5rem;
-    right: -0.5rem;
-    background: #f3f4f6;
-    border: 1px solid #d1d5db;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.25rem;
-    color: #6b7280;
-    transition: all 0.2s ease;
-}
-
-.modal-close-btn:hover {
-    background: #ef4444;
-    color: white;
-    border-color: #ef4444;
+.reflection-insights-modal-header .task-subtitle {
+    color: #3b9901;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(59, 153, 1, 0.1);
+    border: 1px solid #3b9901;
+    border-radius: 8px;
+    font-style: normal;
 }
 
 .reflection-insights-content {
@@ -1812,13 +1849,21 @@ header h1 {
 
 .reflection-insights-modal-actions {
     display: flex;
+    gap: 1rem;
     justify-content: center;
 }
 
 .reflection-insights-modal .btn-primary {
-    padding: 0.75rem 2rem;
+    background: #0097f2;
+    padding: 0.75rem 1.5rem;
     font-size: 0.875rem;
     width: auto;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+}
+
+.reflection-insights-modal .btn-primary:hover {
+    background: #0075c2;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* Mobile responsive for reflection insights modal */
@@ -1826,11 +1871,15 @@ header h1 {
     .reflection-insights-modal {
         padding: 1.5rem;
         margin: 1rem;
-        max-height: 90vh;
+        max-height: 85vh;
+    }
+    
+    .reflection-insights-modal-actions {
+        flex-direction: column;
     }
     
     .insights-grid {
-        gap: 1rem;
+        gap: 1.5rem;
     }
     
     .insight-metric {
@@ -2004,10 +2053,40 @@ header h1 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-undo:hover {
     background: #e5e7eb;
     color: #374151;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.original-ratings-grid {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.metric-label-box {
+    background: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    text-align: center;
+}
+
+.metric-value-box {
+    background: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    line-height: 1.4;
 } 
