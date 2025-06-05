@@ -749,6 +749,10 @@ class ESIFilter {
                 </div>
             </div>
             
+            <div class="undo-btn" onclick="esiFilter.undoTaskCompletion(${task.id})" title="Undo completion" aria-label="Undo completion">
+                ↩
+            </div>
+            
             <div class="delete-btn" onclick="esiFilter.deleteTask(${task.id})" title="Delete task" aria-label="Delete task">
                 <div class="trash-icon">
                     <div class="trash-lid"></div>

@@ -904,8 +904,9 @@ header h1 {
 
 /* Analytics button for reflection insights */
 .analytics-btn {
-    background: transparent;
-    border: 1px solid #d1d5db;
+    background: #fef2f2 !important;
+    border: 1px solid #fca5a5 !important;
+    color: #dc2626 !important;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.8rem;
@@ -919,19 +920,20 @@ header h1 {
 }
 
 .analytics-btn:hover {
-    background: #f3f4f6;
-    border-color: #9ca3af;
+    background: #fee2e2 !important;
+    border-color: #f87171 !important;
+    color: #b91c1c !important;
 }
 
 .analytics-btn.has-reflection {
-    background: #f0f9ff;
-    border-color: #0097f2;
-    color: #004876;
+    background: #f0f9ff !important;
+    border-color: #0097f2 !important;
+    color: #004876 !important;
 }
 
 .analytics-btn.has-reflection:hover {
-    background: #0095f27a;
-    color: #004876;
+    background: #0095f27a !important;
+    color: #004876 !important;
 }
 
 /* Simplified reflection content */
@@ -1238,6 +1240,42 @@ header h1 {
 .delete-btn:focus,
 .task-item .delete-btn:focus {
     outline: 2px solid #ef4444;
+    outline-offset: 2px;
+    opacity: 1;
+}
+
+/* Undo buttons */
+.undo-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 2rem;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    border-radius: 4px;
+    z-index: 10;
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: bold;
+}
+
+.undo-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.undo-btn:focus {
+    outline: 2px solid #3b82f6;
     outline-offset: 2px;
     opacity: 1;
 }
