@@ -1,66 +1,62 @@
-# ESI Filter - Task Prioritization System
+# ESI Filter
 
-A dynamic web-based task management application that helps you prioritize tasks using the **ESI (Excitement, Simplicity, Impact) scoring system**.
+A dynamic web-based task management application that helps you prioritize tasks using the **ESI (Energy, Simplicity, Impact) scoring system**.
 
 ![ESI Filter Preview](https://img.shields.io/badge/Status-Complete-green)
 
-## 🎯 What is ESI Filter?
+## Features
 
-ESI Filter is a task prioritization tool that helps you make better decisions about what to work on next. Instead of endless to-do lists, it uses a simple scoring system to automatically rank your tasks by priority.
+### 🚀 **Brain Dump**
+- Add multiple tasks at once (one per line)
+- Clean, intuitive text area interface
+- Bulk task creation with automatic parsing
 
-### The ESI Scoring System
+### 📊 **ESI Rating System**
+- **Energy (1-5)**: How much energy does this task give you?
+  - 5: Gives you energy/excitement
+  - 3: Neutral energy impact  
+  - 1: Completely drains you
+- **Simplicity (1-5)**: How easy is this task to complete?
+- **Impact (1-10)**: What's the potential positive impact?
 
-- **E**xcitement (1-5): How excited are you about this task?
-- **S**implicity (1-5): How simple is this task to complete?
-- **I**mpact (1-10): What impact will completing this task have?
+### 🎯 **Smart Prioritization**
+- Automatic scoring based on ESI formula
+- Dynamic task reordering by priority
+- Visual priority indicators
 
-Tasks are automatically sorted by their total ESI score, with higher scores indicating higher priority.
+### ✅ **Task Management**
+- Status tracking (Not Started → In Progress → Complete)
+- Personal notes for each task
+- Task deletion capabilities
 
-## ✨ Features
+### 🔍 **Reflection & Insights**
+- Post-completion reflection prompts
+- Compare predicted vs. actual experience
+- Learning insights for better future predictions
 
-### 🧠 Brain Dump Interface
-- Quick task entry - just type one task per line
-- Clean, distraction-free input area
-- Batch task creation
+## How to Use
 
-### 📊 Dynamic Prioritization
-- Three-column layout that adapts based on your workflow
-- Tasks automatically sorted by ESI score
-- Visual priority indicators (🏆 Highest, 🥈 Second, 🥉 Third)
+1. **Brain Dump**: Enter all your tasks in the left column, one per line
+2. **Rate Tasks**: Set Energy (1-5), Simplicity (1-5), and Impact (1-10) for each task
+3. **Work on Tasks**: Follow the prioritized list, updating status as you progress
+4. **Reflect**: After completing tasks, reflect on how they actually went vs. expectations
 
-### 📝 Notes System
-- Add detailed notes to any task
-- Edit notes in both active and completed tasks
-- Perfect for retrospectives and future planning
+## Core Philosophy
 
-### 📅 Timeline Tracking
-- See when tasks were originally added
-- Track completion dates
-- Full lifecycle visibility
+The ESI Filter helps you identify tasks that are:
+- **High Energy**: Tasks that energize rather than drain you
+- **High Simplicity**: Tasks you can realistically complete
+- **High Impact**: Tasks that actually move the needle
 
-### 🔄 Status Management
-- Ready to Start → In Progress → Complete workflow
-- Visual status indicators
-- Clean task progression
+Perfect for those overwhelming days when you have too many tasks and can't decide where to start!
 
-### 💾 Data Persistence
-- All data saved locally in your browser
-- No account required
-- Instant loading
+## Local Development
 
-## 🚀 Getting Started
+1. Clone this repository
+2. Open `index.html` in your browser
+3. Start organizing your tasks!
 
-### Quick Start
-1. Clone this repository or download the files
-2. Open `index.html` in your web browser
-3. Start brain dumping your tasks!
-
-### Usage
-1. **Add Tasks**: Type your tasks in the "Brain Dump" box, one per line
-2. **Rate Tasks**: Set Excitement (1-5), Simplicity (1-5), and Impact (1-10) for each task
-3. **Work on Tasks**: Tasks are automatically sorted by priority - start with the highest!
-4. **Track Progress**: Move tasks through Ready → In Progress → Complete
-5. **Add Notes**: Click the note icon to add context, learnings, or next steps
+No build process or dependencies required - it's pure HTML, CSS, and JavaScript.
 
 ## 🏗️ Technical Details
 

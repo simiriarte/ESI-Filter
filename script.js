@@ -59,12 +59,12 @@ class ESIFilter {
             status: 'unrated',
             dateCreated: new Date().toISOString(),
             createdAt: new Date(), // keeping for compatibility
-            excitement: null,
+            energy: null,
             simplicity: null,
             impact: null,
             score: null,
             notes: "",
-            actualExcitement: null,
+            actualEnergy: null,
             actualSimplicity: null,
             actualImpact: null
         }));
@@ -199,31 +199,31 @@ class ESIFilter {
 
     getRatingDescription(value, type) {
         const descriptions = {
-            excitement: {
-                1: "Dreading it",
-                2: "Meh", 
-                3: "Neutral",
-                4: "Pretty Interested",
-                5: "Super Excited"
+            energy: {
+                1: "Draining, you dread it",
+                2: "Feels like a chore", 
+                3: "Neutral, just okay",
+                4: "Feels good once you start",
+                5: "Feels exciting, lights you up"
             },
             simplicity: {
-                1: "tonna steps",
-                2: "several steps",
-                3: "handful of steps", 
-                4: "a few steps",
-                5: "just one step"
+                1: "Tonna steps, mentally heavy",
+                2: "Several steps, some friction",
+                3: "A few manageable steps", 
+                4: "One step, quick setup",
+                5: "Could finish now"
             },
             impact: {
-                1: "Little to no impact",
-                2: "Minimal impact",
-                3: "Small impact",
-                4: "Moderate impact", 
-                5: "Noticeable improvement",
-                6: "Significant improvement",
-                7: "Major improvement",
-                8: "Substantial impact",
-                9: "Transformative",
-                10: "Life changing"
+                1: "Barely progress",
+                2: "Minimal progress",
+                3: "Minor progress",
+                4: "Modest progress",
+                5: "Steady progress",
+                6: "Noticeable progress",
+                7: "Meaningful progress",
+                8: "Significant progress",
+                9: "Major progress",
+                10: "Life-changing progress"
             }
         };
         
@@ -249,17 +249,22 @@ class ESIFilter {
                 <div class="scroll-indicator" id="scroll-indicator-${taskId}">↓</div>
                 <div class="reflection-modal-header">
                     <h3>${modalTitle}</h3>
+                    <p class="task-subtitle">Task: ${task.title || task.name}</p>
                 </div>
                 
                 <div class="reflection-content">
                     <div class="original-vs-actual">
-                        <div class="rating-comparison">
-                            <div class="original-ratings">
-                                <h4>Original Ratings:</h4>
-                                <div class="rating-display">
-                                    <span>Excitement: ${task.excitement} - ${this.getRatingDescription(task.excitement, 'excitement')}</span>
-                                    <span>Simplicity: ${task.simplicity} - ${this.getRatingDescription(task.simplicity, 'simplicity')}</span>
-                                    <span>Impact: ${task.impact} - ${this.getRatingDescription(task.impact, 'impact')}</span>
+                        <div class="original-ratings">
+                            <h4>Original Ratings:</h4>
+                            <div class="original-ratings-simple">
+                                <div class="rating-item">
+                                    <strong>Energy:</strong> ${task.energy} - ${this.getRatingDescription(task.energy, 'energy')}
+                                </div>
+                                <div class="rating-item">
+                                    <strong>Simplicity:</strong> ${task.simplicity} - ${this.getRatingDescription(task.simplicity, 'simplicity')}
+                                </div>
+                                <div class="rating-item">
+                                    <strong>Impact:</strong> ${task.impact} - ${this.getRatingDescription(task.impact, 'impact')}
                                 </div>
                             </div>
                         </div>
@@ -270,20 +275,20 @@ class ESIFilter {
                         <p class="section-subtext">How did it <em>really</em> go down?</p>
                         <div class="task-row">
                             <div class="input-group">
-                                <label>Excitement</label>
+                                <label>Energy</label>
                                 <input type="number" 
-                                       id="actual-excitement-${taskId}" 
-                                       list="excitement-options-actual-${taskId}"
+                                       id="actual-energy-${taskId}" 
+                                       list="energy-options-actual-${taskId}"
                                        min="1" 
                                        max="5" 
                                        class="score-input"
-                                       value="${task.actualExcitement || ''}">
-                                <datalist id="excitement-options-actual-${taskId}">
-                                    <option value="1">Dreading it</option>
-                                    <option value="2">Meh</option>
-                                    <option value="3">Neutral</option>
-                                    <option value="4">Pretty Interested</option>
-                                    <option value="5">Super Excited</option>
+                                       value="${task.actualEnergy || ''}">
+                                <datalist id="energy-options-actual-${taskId}">
+                                    <option value="1">Draining, you dread it</option>
+                                    <option value="2">Feels like a chore</option>
+                                    <option value="3">Neutral, just okay</option>
+                                    <option value="4">Feels good once you start</option>
+                                    <option value="5">Feels exciting, lights you up</option>
                                 </datalist>
                             </div>
                             
@@ -297,11 +302,11 @@ class ESIFilter {
                                        class="score-input"
                                        value="${task.actualSimplicity || ''}">
                                 <datalist id="simplicity-options-actual-${taskId}">
-                                    <option value="1">tonna steps</option>
-                                    <option value="2">several steps</option>
-                                    <option value="3">handful of steps</option>
-                                    <option value="4">a few steps</option>
-                                    <option value="5">just one step</option>
+                                    <option value="1">Tonna steps, mentally heavy</option>
+                                    <option value="2">Several steps, some friction</option>
+                                    <option value="3">A few manageable steps</option>
+                                    <option value="4">One step, quick setup</option>
+                                    <option value="5">Could finish now</option>
                                 </datalist>
                             </div>
                             
@@ -315,23 +320,23 @@ class ESIFilter {
                                        class="score-input"
                                        value="${task.actualImpact || ''}">
                                 <datalist id="impact-options-actual-${taskId}">
-                                    <option value="1">Little to no impact</option>
-                                    <option value="2">Minimal impact</option>
-                                    <option value="3">Small impact</option>
-                                    <option value="4">Moderate impact</option>
-                                    <option value="5">Noticeable improvement</option>
-                                    <option value="6">Significant improvement</option>
-                                    <option value="7">Major improvement</option>
-                                    <option value="8">Substantial impact</option>
-                                    <option value="9">Transformative</option>
-                                    <option value="10">Life changing</option>
+                                    <option value="1">Barely progress</option>
+                                    <option value="2">Minimal progress</option>
+                                    <option value="3">Minor progress</option>
+                                    <option value="4">Modest progress</option>
+                                    <option value="5">Steady progress</option>
+                                    <option value="6">Noticeable progress</option>
+                                    <option value="7">Meaningful progress</option>
+                                    <option value="8">Significant progress</option>
+                                    <option value="9">Major progress</option>
+                                    <option value="10">Life-changing progress</option>
                                 </datalist>
                             </div>
                         </div>
                     </div>
                     
                     <div class="quick-reflection-section">
-                        <h4>To remember about this experience</h4>
+                        <h4>What do you wanna remember about this experience?</h4>
                         <textarea 
                             id="quick-reflection-${taskId}" 
                             class="quick-reflection-textarea">${task.quickReflection || ''}</textarea>
@@ -339,8 +344,13 @@ class ESIFilter {
                 </div>
                 
                 <div class="reflection-modal-actions">
+                    ${!isCompleted ? `
+                        <button class="btn-undo" onclick="esiFilter.undoTaskCompletion(${taskId})">
+                            Undo
+                        </button>
+                    ` : ''}
                     <button class="btn-secondary" onclick="esiFilter.closeCompletionReflectionModal(${taskId})">
-                        ${isCompleted ? 'Cancel' : 'Skip Reflection'}
+                        ${isCompleted ? 'Cancel' : 'Skip'}
                     </button>
                     <button class="btn-primary" onclick="esiFilter.saveReflection(${taskId})">
                         ${buttonText}
@@ -384,18 +394,18 @@ class ESIFilter {
         });
         
         // Focus on first dropdown
-        const firstSelect = document.getElementById(`actual-excitement-${taskId}`);
+        const firstSelect = document.getElementById(`actual-energy-${taskId}`);
         if (firstSelect) firstSelect.focus();
     }
 
     saveReflection(taskId) {
-        const actualExcitement = parseInt(document.getElementById(`actual-excitement-${taskId}`).value);
+        const actualEnergy = parseInt(document.getElementById(`actual-energy-${taskId}`).value);
         const actualSimplicity = parseInt(document.getElementById(`actual-simplicity-${taskId}`).value);
         const actualImpact = parseInt(document.getElementById(`actual-impact-${taskId}`).value);
         const quickReflection = document.getElementById(`quick-reflection-${taskId}`).value.trim();
 
         // Validate that all fields are filled
-        if (!actualExcitement || !actualSimplicity || !actualImpact) {
+        if (!actualEnergy || !actualSimplicity || !actualImpact) {
             alert('Please fill out all reflection ratings before saving.');
             return;
         }
@@ -407,7 +417,7 @@ class ESIFilter {
             const wasAlreadyCompleted = task.status === 'complete';
             
             // Save actual ratings (can be updated anytime)
-            task.actualExcitement = actualExcitement;
+            task.actualEnergy = actualEnergy;
             task.actualSimplicity = actualSimplicity;
             task.actualImpact = actualImpact;
             
@@ -513,13 +523,13 @@ class ESIFilter {
                 // Preserve existing dropdown values before re-rendering
                 const preservedValues = {};
                 unratedTasks.forEach((task) => {
-                    const excitementInput = document.getElementById(`unrated-excitement-${task.id}`);
+                    const energyInput = document.getElementById(`unrated-energy-${task.id}`);
                     const simplicityInput = document.getElementById(`unrated-simplicity-${task.id}`);
                     const impactInput = document.getElementById(`unrated-impact-${task.id}`);
                     
-                    if (excitementInput || simplicityInput || impactInput) {
+                    if (energyInput || simplicityInput || impactInput) {
                         preservedValues[task.id] = {
-                            excitement: excitementInput ? excitementInput.value : '',
+                            energy: energyInput ? energyInput.value : '',
                             simplicity: simplicityInput ? simplicityInput.value : '',
                             impact: impactInput ? impactInput.value : ''
                         };
@@ -670,7 +680,7 @@ class ESIFilter {
                 <div class="task-metrics-top-right">
                     <div class="metric-compact">
                         <div class="metric-label">E</div>
-                        <div class="metric-value">${task.excitement}</div>
+                        <div class="metric-value">${task.energy}</div>
                     </div>
                     <div class="metric-compact">
                         <div class="metric-label">S</div>
@@ -700,7 +710,7 @@ class ESIFilter {
                 </div>
                 
                 <div class="notes-panel" id="notes-panel-${task.id}" style="display: none;">
-                    <textarea class="notes-textarea" id="notes-textarea-${task.id}" placeholder="Add your notes here...">${task.notes}</textarea>
+                    <textarea class="notes-textarea" id="notes-textarea-${task.id}" placeholder="break down tasks here or add notes!">${task.notes}</textarea>
                     <div class="notes-actions">
                         <button class="notes-save-btn" onclick="esiFilter.saveNotes(${task.id})">Save</button>
                         <button class="notes-cancel-btn" onclick="esiFilter.cancelNotes(${task.id})">Cancel</button>
@@ -721,7 +731,7 @@ class ESIFilter {
         const taskName = task.title || task.name;
 
         // Check if task has actual ratings for reflection
-        const hasReflection = task.actualExcitement && task.actualSimplicity && task.actualImpact;
+        const hasReflection = task.actualEnergy && task.actualSimplicity && task.actualImpact;
         
         // Generate reflection insights if available
         let reflectionHTML = '';
@@ -756,7 +766,7 @@ class ESIFilter {
             <div class="task-metrics-top-right">
                 <div class="metric-compact">
                     <div class="metric-label">E</div>
-                    <div class="metric-value">${task.excitement}</div>
+                    <div class="metric-value">${task.energy}</div>
                 </div>
                 <div class="metric-compact">
                     <div class="metric-label">S</div>
@@ -788,7 +798,7 @@ class ESIFilter {
             </div>
             
             <div class="notes-panel" id="notes-panel-${task.id}" style="display: none;">
-                <textarea class="notes-textarea" id="notes-textarea-${task.id}" placeholder="Add your notes here...">${task.notes}</textarea>
+                <textarea class="notes-textarea" id="notes-textarea-${task.id}" placeholder="break down tasks here or add notes!">${task.notes}</textarea>
                 <div class="notes-actions">
                     <button class="notes-save-btn" onclick="esiFilter.saveNotes(${task.id})">Save</button>
                     <button class="notes-cancel-btn" onclick="esiFilter.cancelNotes(${task.id})">Cancel</button>
@@ -826,21 +836,21 @@ class ESIFilter {
                 </div>
                 <div class="task-row">
                     <div class="input-group">
-                        <label>Excitement</label>
+                        <label>Energy</label>
                         <input type="number" 
-                               id="unrated-excitement-${task.id}" 
-                               list="excitement-options-${task.id}"
+                               id="unrated-energy-${task.id}" 
+                               list="energy-options-${task.id}"
                                min="1" 
                                max="5" 
-                               value="${preservedValues?.excitement || ''}"
+                               value="${preservedValues?.energy || ''}"
                                class="score-input"
-                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'excitement')">
-                        <datalist id="excitement-options-${task.id}">
-                            <option value="1">Dreading it</option>
-                            <option value="2">Meh</option>
-                            <option value="3">Neutral</option>
-                            <option value="4">Pretty Interested</option>
-                            <option value="5">Super Excited</option>
+                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'energy')">
+                        <datalist id="energy-options-${task.id}">
+                            <option value="1">Draining, you dread it</option>
+                            <option value="2">Feels like a chore</option>
+                            <option value="3">Neutral, just okay</option>
+                            <option value="4">Feels good once you start</option>
+                            <option value="5">Feels exciting, lights you up</option>
                         </datalist>
                     </div>
                     <div class="input-group">
@@ -854,11 +864,11 @@ class ESIFilter {
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
                         <datalist id="simplicity-options-${task.id}">
-                            <option value="1">tonna steps</option>
-                            <option value="2">several steps</option>
-                            <option value="3">handful of steps</option>
-                            <option value="4">a few steps</option>
-                            <option value="5">just one step</option>
+                            <option value="1">Tonna steps, mentally heavy</option>
+                            <option value="2">Several steps, some friction</option>
+                            <option value="3">A few manageable steps</option>
+                            <option value="4">One step, quick setup</option>
+                            <option value="5">Could finish now</option>
                         </datalist>
                     </div>
                     <div class="input-group">
@@ -872,16 +882,16 @@ class ESIFilter {
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'impact')">
                         <datalist id="impact-options-${task.id}">
-                            <option value="1">Little to no impact</option>
-                            <option value="2">Minimal impact</option>
-                            <option value="3">Small impact</option>
-                            <option value="4">Moderate impact</option>
-                            <option value="5">Noticeable improvement</option>
-                            <option value="6">Significant improvement</option>
-                            <option value="7">Major improvement</option>
-                            <option value="8">Substantial impact</option>
-                            <option value="9">Transformative</option>
-                            <option value="10">Life changing</option>
+                            <option value="1">Barely progress</option>
+                            <option value="2">Minimal progress</option>
+                            <option value="3">Minor progress</option>
+                            <option value="4">Modest progress</option>
+                            <option value="5">Steady progress</option>
+                            <option value="6">Noticeable progress</option>
+                            <option value="7">Meaningful progress</option>
+                            <option value="8">Significant progress</option>
+                            <option value="9">Major progress</option>
+                            <option value="10">Life-changing progress</option>
                         </datalist>
                     </div>
                     <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
@@ -899,7 +909,7 @@ class ESIFilter {
             event.preventDefault();
             
             // Move to next field or submit if on last field
-            if (fieldType === 'excitement') {
+            if (fieldType === 'energy') {
                 const simplicityInput = document.getElementById(`unrated-simplicity-${taskId}`);
                 if (simplicityInput) simplicityInput.focus();
             } else if (fieldType === 'simplicity') {
@@ -922,9 +932,9 @@ class ESIFilter {
             const nextTaskElement = currentTaskElement.nextElementSibling;
             if (nextTaskElement) {
                 const nextTaskId = nextTaskElement.getAttribute('data-task-id');
-                const nextExcitementInput = document.getElementById(`unrated-excitement-${nextTaskId}`);
-                if (nextExcitementInput) {
-                    nextExcitementInput.focus();
+                const nextEnergyInput = document.getElementById(`unrated-energy-${nextTaskId}`);
+                if (nextEnergyInput) {
+                    nextEnergyInput.focus();
                     return;
                 }
             }
@@ -936,19 +946,19 @@ class ESIFilter {
     }
 
     rateTask(taskId) {
-        const excitementInput = document.getElementById(`unrated-excitement-${taskId}`);
+        const energyInput = document.getElementById(`unrated-energy-${taskId}`);
         const simplicityInput = document.getElementById(`unrated-simplicity-${taskId}`);
         const impactInput = document.getElementById(`unrated-impact-${taskId}`);
 
         // Extract just the number from the input value (in case full text was selected)
-        const excitement = parseInt(excitementInput.value);
+        const energy = parseInt(energyInput.value);
         const simplicity = parseInt(simplicityInput.value);
         const impact = parseInt(impactInput.value);
 
         // Validate values are numbers and within range
-        if (!excitement || excitement < 1 || excitement > 5) {
-            alert('Please enter a valid Excitement score (1-5)');
-            excitementInput.focus();
+        if (!energy || energy < 1 || energy > 5) {
+            alert('Please enter a valid Energy score (1-5)');
+            energyInput.focus();
             return;
         }
         if (!simplicity || simplicity < 1 || simplicity > 5) {
@@ -966,10 +976,10 @@ class ESIFilter {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
             const task = this.tasks[taskIndex];
-            task.excitement = excitement;
+            task.energy = energy;
             task.simplicity = simplicity;
             task.impact = impact;
-            task.score = excitement + simplicity + impact;
+            task.score = energy + simplicity + impact;
             task.status = 'start'; // Move to regular tasks
 
             // Sort tasks by score
@@ -993,22 +1003,22 @@ class ESIFilter {
         
         // Check which tasks have complete ratings
         unratedTasks.forEach(task => {
-            const excitementInput = document.getElementById(`unrated-excitement-${task.id}`);
+            const energyInput = document.getElementById(`unrated-energy-${task.id}`);
             const simplicityInput = document.getElementById(`unrated-simplicity-${task.id}`);
             const impactInput = document.getElementById(`unrated-impact-${task.id}`);
             
             // Extract just the number from the input value (in case full text was selected)
-            const excitement = parseInt(excitementInput?.value);
+            const energy = parseInt(energyInput?.value);
             const simplicity = parseInt(simplicityInput?.value);
             const impact = parseInt(impactInput?.value);
             
             // Only include tasks with all three valid ratings
-            if (excitement >= 1 && excitement <= 5 && 
+            if (energy >= 1 && energy <= 5 && 
                 simplicity >= 1 && simplicity <= 5 && 
                 impact >= 1 && impact <= 10) {
                 tasksToRate.push({
                     task,
-                    excitement,
+                    energy,
                     simplicity,
                     impact
                 });
@@ -1016,19 +1026,19 @@ class ESIFilter {
         });
         
         if (tasksToRate.length === 0) {
-            alert('No tasks have complete valid ratings to process. Please fill out Excitement (1-5), Simplicity (1-5), and Impact (1-10) for at least one task.');
+            alert('No tasks have complete valid ratings to process. Please fill out Energy (1-5), Simplicity (1-5), and Impact (1-10) for at least one task.');
             return;
         }
         
         // Rate all the complete tasks
         let ratedCount = 0;
-        tasksToRate.forEach(({task, excitement, simplicity, impact}) => {
+        tasksToRate.forEach(({task, energy, simplicity, impact}) => {
             const taskIndex = this.tasks.findIndex(t => t.id === task.id);
             if (taskIndex > -1) {
-                this.tasks[taskIndex].excitement = excitement;
+                this.tasks[taskIndex].energy = energy;
                 this.tasks[taskIndex].simplicity = simplicity;
                 this.tasks[taskIndex].impact = impact;
-                this.tasks[taskIndex].score = excitement + simplicity + impact;
+                this.tasks[taskIndex].score = energy + simplicity + impact;
                 this.tasks[taskIndex].status = 'start'; // Move to regular tasks
                 ratedCount++;
             }
@@ -1092,7 +1102,7 @@ class ESIFilter {
                         task.status = 'start';
                     }
                     // Ensure tasks with null ratings get unrated status
-                    if (task.status !== 'unrated' && (task.excitement === null || task.simplicity === null || task.impact === null)) {
+                    if (task.status !== 'unrated' && (task.energy === null || task.simplicity === null || task.impact === null)) {
                         task.status = 'unrated';
                         task.score = null;
                     }
@@ -1178,14 +1188,14 @@ class ESIFilter {
 
     showReflectionModal(taskId) {
         const task = this.tasks.find(t => t.id === taskId);
-        if (!task || !task.actualExcitement || !task.actualSimplicity || !task.actualImpact) return;
+        if (!task || !task.actualEnergy || !task.actualSimplicity || !task.actualImpact) return;
 
         // Calculate deltas
-        const excitementDelta = task.actualExcitement - task.excitement;
+        const energyDelta = task.actualEnergy - task.energy;
         const simplicityDelta = task.actualSimplicity - task.simplicity;
         const impactDelta = task.actualImpact - task.impact;
-        const originalScore = task.excitement + task.simplicity + task.impact;
-        const actualScore = task.actualExcitement + task.actualSimplicity + task.actualImpact;
+        const originalScore = task.energy + task.simplicity + task.impact;
+        const actualScore = task.actualEnergy + task.actualSimplicity + task.actualImpact;
         const totalDelta = actualScore - originalScore;
 
         // Helper function to get delta indicator
@@ -1195,7 +1205,7 @@ class ESIFilter {
             return { icon: '◾', class: 'delta-neutral', text: '0' };
         };
 
-        const eDelta = getDeltaIndicator(excitementDelta);
+        const eDelta = getDeltaIndicator(energyDelta);
         const sDelta = getDeltaIndicator(simplicityDelta);
         const iDelta = getDeltaIndicator(impactDelta);
 
@@ -1219,25 +1229,25 @@ class ESIFilter {
                         <div class="insight-metric">
                             <div class="metric-header">
                                 <span class="metric-icon">🎯</span>
-                                <span class="metric-name">Excitement</span>
+                                <span class="metric-name">Energy</span>
                             </div>
                             <div class="metric-comparison">
                                 <div class="metric-values">
-                                    <span class="original-value">Expected: ${task.excitement}</span>
-                                    <span class="actual-value">Actual: ${task.actualExcitement}</span>
+                                    <span class="original-value">Expected: ${task.energy}</span>
+                                    <span class="actual-value">Actual: ${task.actualEnergy}</span>
                                 </div>
                                 <div class="delta-indicator ${eDelta.class}">
                                     ${eDelta.icon} ${eDelta.text}
                                 </div>
                             </div>
-                            ${excitementDelta !== 0 ? `
+                            ${energyDelta !== 0 ? `
                                 <div class="reflection-prompt">
                                     <div class="prompt-question">💡 Did this end up being more or less enjoyable than expected? Why?</div>
-                                    <textarea class="reflection-textarea" placeholder="What made this task ${task.actualExcitement > task.excitement ? 'more enjoyable' : 'less enjoyable'} than you thought..."></textarea>
+                                    <textarea class="reflection-textarea" placeholder="What made this task ${task.actualEnergy > task.energy ? 'more enjoyable' : 'less enjoyable'} than you thought..."></textarea>
                                 </div>
                             ` : `
                                 <div class="reflection-prompt">
-                                    <div class="prompt-question">🎯 Your excitement prediction was spot on! What helped you estimate this accurately?</div>
+                                    <div class="prompt-question">🎯 Your energy prediction was spot on! What helped you estimate this accurately?</div>
                                     <textarea class="reflection-textarea" placeholder="What made you able to predict the enjoyment level so well..."></textarea>
                                 </div>
                             `}
@@ -1336,6 +1346,34 @@ class ESIFilter {
             }
         });
     }
+
+    undoTaskCompletion(taskId) {
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            
+            // Revert task back to in-progress
+            task.status = 'in-progress';
+            
+            // Remove completion date if it exists
+            if (task.completedDate) {
+                delete task.completedDate;
+            }
+            
+            this.saveTasksToStorage();
+            this.renderTasks();
+            
+            // Close the modal
+            const modal = document.getElementById(`reflection-modal-${taskId}`);
+            if (modal) {
+                modal.remove();
+            }
+            
+            // Show feedback
+            const taskName = task.title || task.name;
+            this.showSuccessFeedback(`↩️ "${taskName}" moved back to in-progress!`);
+        }
+    }
 }
 
 // Initialize the application
@@ -1384,13 +1422,13 @@ const ESIUtils = {
     getTaskStats(tasks) {
         if (tasks.length === 0) return null;
         
-        const excitement = tasks.map(t => t.excitement);
+        const energy = tasks.map(t => t.energy);
         const simplicity = tasks.map(t => t.simplicity);
         const impact = tasks.map(t => t.impact);
         const scores = tasks.map(t => t.score);
         
         return {
-            avgExcitement: excitement.reduce((a, b) => a + b, 0) / excitement.length,
+            avgEnergy: energy.reduce((a, b) => a + b, 0) / energy.length,
             avgSimplicity: simplicity.reduce((a, b) => a + b, 0) / simplicity.length,
             avgImpact: impact.reduce((a, b) => a + b, 0) / impact.length,
             avgScore: scores.reduce((a, b) => a + b, 0) / scores.length,
