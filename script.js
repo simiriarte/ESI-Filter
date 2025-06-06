@@ -200,30 +200,19 @@ class ESIFilter {
     getRatingDescription(value, type) {
         const descriptions = {
             energy: {
-                1: "Draining, you dread it",
-                2: "Feels like a chore", 
-                3: "Neutral, just okay",
-                4: "Feels good once you start",
-                5: "Feels exciting, lights you up"
+                1: "Draining",
+                3: "Neutral",
+                5: "Energizing"
             },
             simplicity: {
-                1: "Tonna steps, mentally heavy",
-                2: "Several steps, some friction",
-                3: "A few manageable steps", 
-                4: "One step, quick setup",
-                5: "Could finish now"
+                1: "Many complex subtasks",
+                3: "A few subtasks",
+                5: "One clear, single action"
             },
             impact: {
-                1: "Barely progress",
-                2: "Minimal progress",
-                3: "Minor progress",
-                4: "Modest progress",
-                5: "Steady progress",
-                6: "Noticeable progress",
-                7: "Meaningful progress",
-                8: "Significant progress",
-                9: "Major progress",
-                10: "Life-changing progress"
+                1: "Minimal",
+                5: "Moderate",
+                10: "Major"
             }
         };
         
@@ -270,66 +259,36 @@ class ESIFilter {
                     </div>
                     
                     <div class="actual-ratings-section">
-                        <h4 class="centered-section-header">Actual Experience</h4>
-                        <p class="section-subtext">How did it <em>really</em> go down?</p>
-                        <div class="task-row">
-                            <div class="input-group">
-                                <label>Energy</label>
-                                <input type="number" 
-                                       id="actual-energy-${taskId}" 
-                                       list="energy-options-actual-${taskId}"
-                                       min="1" 
-                                       max="5" 
-                                       class="score-input"
-                                       value="${task.actualEnergy || ''}">
-                                <datalist id="energy-options-actual-${taskId}">
-                                    <option value="1">Draining, you dread it</option>
-                                    <option value="2">Feels like a chore</option>
-                                    <option value="3">Neutral, just okay</option>
-                                    <option value="4">Feels good once you start</option>
-                                    <option value="5">Feels exciting, lights you up</option>
-                                </datalist>
+                        <h4>Actual Rating | How did it really go down?</h4>
+                        <div class="actual-ratings-grid">
+                            <div class="metric-label-box">Energy</div>
+                            <div class="actual-input-wrapper">
+                                <select id="actual-energy-${taskId}" class="actual-rating-dropdown">
+                                    <option value="">Select...</option>
+                                    <option value="1" ${task.actualEnergy == 1 ? 'selected' : ''}>1 - Draining</option>
+                                    <option value="3" ${task.actualEnergy == 3 ? 'selected' : ''}>3 - Neutral</option>
+                                    <option value="5" ${task.actualEnergy == 5 ? 'selected' : ''}>5 - Energizing</option>
+                                </select>
                             </div>
                             
-                            <div class="input-group">
-                                <label>Simplicity</label>
-                                <input type="number" 
-                                       id="actual-simplicity-${taskId}" 
-                                       list="simplicity-options-actual-${taskId}"
-                                       min="1" 
-                                       max="5" 
-                                       class="score-input"
-                                       value="${task.actualSimplicity || ''}">
-                                <datalist id="simplicity-options-actual-${taskId}">
-                                    <option value="1">Tonna steps, mentally heavy</option>
-                                    <option value="2">Several steps, some friction</option>
-                                    <option value="3">A few manageable steps</option>
-                                    <option value="4">One step, quick setup</option>
-                                    <option value="5">Could finish now</option>
-                                </datalist>
+                            <div class="metric-label-box">Simplicity</div>
+                            <div class="actual-input-wrapper">
+                                <select id="actual-simplicity-${taskId}" class="actual-rating-dropdown">
+                                    <option value="">Select...</option>
+                                    <option value="1" ${task.actualSimplicity == 1 ? 'selected' : ''}>1 - Many complex subtasks</option>
+                                    <option value="3" ${task.actualSimplicity == 3 ? 'selected' : ''}>3 - A few subtasks</option>
+                                    <option value="5" ${task.actualSimplicity == 5 ? 'selected' : ''}>5 - One clear, single action</option>
+                                </select>
                             </div>
                             
-                            <div class="input-group">
-                                <label>Impact</label>
-                                <input type="number" 
-                                       id="actual-impact-${taskId}" 
-                                       list="impact-options-actual-${taskId}"
-                                       min="1" 
-                                       max="10" 
-                                       class="score-input"
-                                       value="${task.actualImpact || ''}">
-                                <datalist id="impact-options-actual-${taskId}">
-                                    <option value="1">Barely progress</option>
-                                    <option value="2">Minimal progress</option>
-                                    <option value="3">Minor progress</option>
-                                    <option value="4">Modest progress</option>
-                                    <option value="5">Steady progress</option>
-                                    <option value="6">Noticeable progress</option>
-                                    <option value="7">Meaningful progress</option>
-                                    <option value="8">Significant progress</option>
-                                    <option value="9">Major progress</option>
-                                    <option value="10">Life-changing progress</option>
-                                </datalist>
+                            <div class="metric-label-box">Impact</div>
+                            <div class="actual-input-wrapper">
+                                <select id="actual-impact-${taskId}" class="actual-rating-dropdown">
+                                    <option value="">Select...</option>
+                                    <option value="1" ${task.actualImpact == 1 ? 'selected' : ''}>1 - Minimal</option>
+                                    <option value="5" ${task.actualImpact == 5 ? 'selected' : ''}>5 - Moderate</option>
+                                    <option value="10" ${task.actualImpact == 10 ? 'selected' : ''}>10 - Major</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -338,7 +297,8 @@ class ESIFilter {
                         <h4>What do you wanna remember about this experience?</h4>
                         <textarea 
                             id="quick-reflection-${taskId}" 
-                            class="quick-reflection-textarea">${task.quickReflection || ''}</textarea>
+                            class="quick-reflection-textarea"
+                            placeholder="Type your thoughts here...">${task.quickReflection || ''}</textarea>
                     </div>
                 </div>
                 
@@ -405,7 +365,7 @@ class ESIFilter {
 
         // Validate that all fields are filled
         if (!actualEnergy || !actualSimplicity || !actualImpact) {
-            alert('Please fill out all reflection ratings before saving.');
+            alert('Please select all reflection ratings before saving.');
             return;
         }
 
@@ -739,6 +699,66 @@ class ESIFilter {
             reflectionHTML = '';
         }
 
+        // Create the metrics display based on whether we have reflection data
+        let metricsHTML = '';
+        if (hasReflection) {
+            // Display both original and actual scores side by side
+            const actualScore = task.actualEnergy + task.actualSimplicity + task.actualImpact;
+            metricsHTML = `
+                <div class="task-metrics-dual">
+                    <div class="metrics-side original-side">
+                        <div class="metric-compact">
+                            <div class="metric-label">E</div>
+                            <div class="metric-value">${task.energy}</div>
+                        </div>
+                        <div class="metric-compact">
+                            <div class="metric-label">S</div>
+                            <div class="metric-value">${task.simplicity}</div>
+                        </div>
+                        <div class="metric-compact">
+                            <div class="metric-label">I</div>
+                            <div class="metric-value">${task.impact}</div>
+                        </div>
+                        <div class="task-score-left">${task.score}</div>
+                    </div>
+                    <div class="metrics-side actual-side">
+                        <div class="metric-compact">
+                            <div class="metric-label">E</div>
+                            <div class="metric-value">${task.actualEnergy}</div>
+                        </div>
+                        <div class="metric-compact">
+                            <div class="metric-label">S</div>
+                            <div class="metric-value">${task.actualSimplicity}</div>
+                        </div>
+                        <div class="metric-compact">
+                            <div class="metric-label">I</div>
+                            <div class="metric-value">${task.actualImpact}</div>
+                        </div>
+                        <div class="task-score-right-actual">${actualScore}</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Display only original scores
+            metricsHTML = `
+                <div class="task-metrics-top-right">
+                    <div class="metric-compact">
+                        <div class="metric-label">E</div>
+                        <div class="metric-value">${task.energy}</div>
+                    </div>
+                    <div class="metric-compact">
+                        <div class="metric-label">S</div>
+                        <div class="metric-value">${task.simplicity}</div>
+                    </div>
+                    <div class="metric-compact">
+                        <div class="metric-label">I</div>
+                        <div class="metric-value">${task.impact}</div>
+                    </div>
+                    <div class="task-score-right">${task.score}</div>
+                </div>
+            `;
+        }
+
         taskDiv.innerHTML = `
             <div class="task-header-compact">
                 <div class="task-name">
@@ -766,21 +786,7 @@ class ESIFilter {
                 </div>
             </div>
             
-            <div class="task-metrics-top-right">
-                <div class="metric-compact">
-                    <div class="metric-label">E</div>
-                    <div class="metric-value">${task.energy}</div>
-                </div>
-                <div class="metric-compact">
-                    <div class="metric-label">S</div>
-                    <div class="metric-value">${task.simplicity}</div>
-                </div>
-                <div class="metric-compact">
-                    <div class="metric-label">I</div>
-                    <div class="metric-value">${task.impact}</div>
-                </div>
-                <div class="task-score-right">${task.score}</div>
-            </div>
+            ${metricsHTML}
             
             <div class="completed-task-bottom-row">
                 <div></div>
@@ -849,11 +855,9 @@ class ESIFilter {
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'energy')">
                         <datalist id="energy-options-${task.id}">
-                            <option value="1">Draining, you dread it</option>
-                            <option value="2">Feels like a chore</option>
-                            <option value="3">Neutral, just okay</option>
-                            <option value="4">Feels good once you start</option>
-                            <option value="5">Feels exciting, lights you up</option>
+                            <option value="1">Draining</option>
+                            <option value="3">Neutral</option>
+                            <option value="5">Energizing</option>
                         </datalist>
                     </div>
                     <div class="input-group">
@@ -867,11 +871,9 @@ class ESIFilter {
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
                         <datalist id="simplicity-options-${task.id}">
-                            <option value="1">Tonna steps, mentally heavy</option>
-                            <option value="2">Several steps, some friction</option>
-                            <option value="3">A few manageable steps</option>
-                            <option value="4">One step, quick setup</option>
-                            <option value="5">Could finish now</option>
+                            <option value="1">Many complex subtasks</option>
+                            <option value="3">A few subtasks</option>
+                            <option value="5">One clear, single action</option>
                         </datalist>
                     </div>
                     <div class="input-group">
@@ -885,16 +887,9 @@ class ESIFilter {
                                class="score-input"
                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'impact')">
                         <datalist id="impact-options-${task.id}">
-                            <option value="1">Barely progress</option>
-                            <option value="2">Minimal progress</option>
-                            <option value="3">Minor progress</option>
-                            <option value="4">Modest progress</option>
-                            <option value="5">Steady progress</option>
-                            <option value="6">Noticeable progress</option>
-                            <option value="7">Meaningful progress</option>
-                            <option value="8">Significant progress</option>
-                            <option value="9">Major progress</option>
-                            <option value="10">Life-changing progress</option>
+                            <option value="1">Minimal</option>
+                            <option value="5">Moderate</option>
+                            <option value="10">Major</option>
                         </datalist>
                     </div>
                     <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
