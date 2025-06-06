@@ -1511,6 +1511,51 @@ header h1 {
     margin-top: auto;
 }
 
+/* Pain Cave Button */
+.pain-cave-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.btn-pain-cave {
+    background: #1abc9c;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-pain-cave:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #16a085;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-pain-cave:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments for Pain Cave button */
+@media (max-width: 768px) {
+    .btn-pain-cave {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        width: 100%;
+    }
+}
+
 /* 
  * UNIFIED MODAL SYSTEM
  * 
@@ -1568,7 +1613,7 @@ header h1 {
 .reflection-modal {
     background: white;
     border-radius: 20px;
-    padding: 2rem;
+    padding: 1.5rem;
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
@@ -1680,31 +1725,31 @@ header h1 {
 /* Original Ratings Section */
 .original-ratings {
     background: #f8fafc;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
     border: 1px solid #e2e8f0;
 }
 
 .original-ratings h4 {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #374151;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .original-ratings-grid {
     display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 0.75rem;
+    grid-template-columns: 90px 1fr;
+    gap: 0.5rem;
     align-items: center;
 }
 
 .metric-label-box {
     background: #e5e7eb;
-    padding: 0.75rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 600;
     color: #374151;
     text-align: left;
@@ -1713,36 +1758,48 @@ header h1 {
 
 .metric-value-box {
     background: #f3f4f6;
-    padding: 0.75rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
     color: #374151;
     border: 1px solid #d1d5db;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 /* Actual Ratings Section */
 .actual-ratings-section {
-    background: #bfdbfe;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
+    background: #0095f27a;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid #0097f2;
 }
 
 .actual-ratings-section h4 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: #1e40af;
-    margin-bottom: 1.5rem;
+    color: #004876;
+    margin-bottom: 1rem;
     text-align: center;
 }
 
 /* Actual ratings grid - same as original ratings */
 .actual-ratings-grid {
     display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 0.75rem;
+    grid-template-columns: 90px 1fr;
+    gap: 0.5rem;
     align-items: center;
+}
+
+.actual-ratings-grid .metric-label-box {
+    background: #3a7ba5;
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    border: none;
 }
 
 .actual-input-wrapper {
@@ -1752,71 +1809,54 @@ header h1 {
 
 .actual-rating-dropdown {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #1e40af;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #0097f2;
+    border-radius: 6px;
+    font-size: 0.85rem;
     background: white;
     color: #374151;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 .actual-rating-dropdown:focus {
     outline: none;
-    border-color: #1e40af;
-    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    border-color: #0097f2;
+    box-shadow: 0 0 0 2px rgba(0, 151, 242, 0.1);
 }
 
 .actual-rating-dropdown option {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-}
-
-/* Remove the old styles that are no longer needed */
-.section-subtext {
-    display: none;
-}
-
-.actual-ratings-section .task-row {
-    display: none;
-}
-
-.actual-ratings-section .input-group {
-    display: none;
-}
-
-.actual-ratings-section .input-group label {
-    display: none;
-}
-
-.actual-ratings-section .score-input {
-    display: none;
+    padding: 0.4rem;
+    font-size: 0.85rem;
 }
 
 /* Quick reflection section */
 .quick-reflection-section {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    margin-top: 2rem;
 }
 
 .quick-reflection-section h4 {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #374151;
-    margin-bottom: 1rem;
-    text-align: left;
+    margin-bottom: 0.75rem;
+    text-align: center;
 }
 
 .quick-reflection-textarea {
     width: 100%;
-    min-height: 120px;
-    padding: 1rem;
+    min-height: 80px;
+    padding: 0.75rem;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-family: inherit;
-    line-height: 1.5;
+    line-height: 1.4;
     resize: vertical;
     transition: all 0.2s ease;
     background: white;
@@ -1825,30 +1865,30 @@ header h1 {
 .quick-reflection-textarea:focus {
     outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
 .quick-reflection-textarea::placeholder {
     color: #9ca3af;
     font-style: italic;
-    line-height: 1.4;
+    line-height: 1.3;
 }
 
 /* Modal actions */
 .reflection-modal-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: center;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
 .btn-secondary {
     background: #f3f4f6;
     color: #6b7280;
     border: 1px solid #d1d5db;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1864,9 +1904,9 @@ header h1 {
     background: #3b82f6;
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;

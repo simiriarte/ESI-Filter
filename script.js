@@ -225,8 +225,8 @@ class ESIFilter {
 
         // Check if task is already completed
         const isCompleted = task.status === 'complete';
-        const modalTitle = isCompleted ? 'Update Reflection' : 'Wahoo! it\'s DONE!';
-        const buttonText = isCompleted ? 'Update Reflection' : 'Save Reflection';
+        const modalTitle = isCompleted ? 'Reflection' : 'Wahoo! it\'s DONE!';
+        const buttonText = isCompleted ? 'Reflection' : 'Save Reflection';
 
         // Create modal overlay
         const modalOverlay = document.createElement('div');
@@ -242,24 +242,8 @@ class ESIFilter {
                 </div>
                 
                 <div class="reflection-content">
-                    <div class="original-vs-actual">
-                        <div class="original-ratings">
-                            <h4>Original Ratings:</h4>
-                            <div class="original-ratings-grid">
-                                <div class="metric-label-box">Energy</div>
-                                <div class="metric-value-box">${task.energy} - ${this.getRatingDescription(task.energy, 'energy')}</div>
-                                
-                                <div class="metric-label-box">Simplicity</div>
-                                <div class="metric-value-box">${task.simplicity} - ${this.getRatingDescription(task.simplicity, 'simplicity')}</div>
-                                
-                                <div class="metric-label-box">Impact</div>
-                                <div class="metric-value-box">${task.impact} - ${this.getRatingDescription(task.impact, 'impact')}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="actual-ratings-section">
-                        <h4>Actual Rating | How did it really go down?</h4>
+                        <h4>How did it really go down?</h4>
                         <div class="actual-ratings-grid">
                             <div class="metric-label-box">Energy</div>
                             <div class="actual-input-wrapper">
@@ -298,7 +282,7 @@ class ESIFilter {
                         <textarea 
                             id="quick-reflection-${taskId}" 
                             class="quick-reflection-textarea"
-                            placeholder="Type your thoughts here...">${task.quickReflection || ''}</textarea>
+                            placeholder="look at you! building those intuition muscles">${task.quickReflection || ''}</textarea>
                     </div>
                 </div>
                 
