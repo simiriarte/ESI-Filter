@@ -63,6 +63,7 @@ class ESIFilter {
             simplicity: null,
             impact: null,
             score: null,
+            leverage: null, // Initialize leverage property
             notes: "",
             actualEnergy: null,
             actualSimplicity: null,
@@ -484,12 +485,22 @@ class ESIFilter {
                     const energyInput = document.getElementById(`unrated-energy-${task.id}`);
                     const simplicityInput = document.getElementById(`unrated-simplicity-${task.id}`);
                     const impactInput = document.getElementById(`unrated-impact-${task.id}`);
+                    const leverage10xBtn = document.getElementById(`leverage-10x-${task.id}`);
+                    const leverage2xBtn = document.getElementById(`leverage-2x-${task.id}`);
                     
-                    if (energyInput || simplicityInput || impactInput) {
+                    if (energyInput || simplicityInput || impactInput || leverage10xBtn || leverage2xBtn) {
+                        let currentLeverage = '';
+                        if (leverage10xBtn && leverage10xBtn.classList.contains('active')) {
+                            currentLeverage = '10x';
+                        } else if (leverage2xBtn && leverage2xBtn.classList.contains('active')) {
+                            currentLeverage = '2x';
+                        }
+                        
                         preservedValues[task.id] = {
                             energy: energyInput ? energyInput.value : '',
                             simplicity: simplicityInput ? simplicityInput.value : '',
-                            impact: impactInput ? impactInput.value : ''
+                            impact: impactInput ? impactInput.value : '',
+                            leverage: currentLeverage
                         };
                     }
                 });
@@ -595,35 +606,26 @@ class ESIFilter {
         // Use title if available, fall back to name for compatibility
         const taskName = task.title || task.name;
 
-        // Add priority indicator based on position
+        // Determine priority text and color
         let priorityText = '';
-        let priorityColor = '#6b7280';
-        if (index === 0) {
-            priorityText = '🏆 Highest Priority';
-            priorityColor = '#f59e0b';
-        } else if (index === 1) {
-            priorityText = '🥈 Second Priority';
-            priorityColor = '#8b5cf6';
-        } else if (index === 2) {
-            priorityText = '🥉 Third Priority';
-            priorityColor = '#06b6d4';
+        let priorityColor = '';
+        if (task.priority === 'high') {
+            priorityText = 'High Priority';
+            priorityColor = '#dc2626';
+        } else if (task.priority === 'medium') {
+            priorityText = 'Medium Priority';
+            priorityColor = '#ea580c';
+        } else if (task.priority === 'low') {
+            priorityText = 'Low Priority';
+            priorityColor = '#16a34a';
         }
 
-        // Get status button info
-        let statusButton;
-        
-        switch(task.status) {
-            case 'start':
-                statusButton = 'Start';
-                break;
-            case 'in-progress':
-                statusButton = 'Done!';
-                break;
-            case 'complete':
-                statusButton = null; // No button for completed tasks
-                break;
-            default:
-                statusButton = 'Start';
+        // Determine status button text
+        let statusButton = '';
+        if (task.status === 'start') {
+            statusButton = 'Start';
+        } else if (task.status === 'in-progress') {
+            statusButton = 'Done!';
         }
 
         taskDiv.innerHTML = `
@@ -672,7 +674,9 @@ class ESIFilter {
                 </div>
                 
                 <div class="task-status-row-compact">
-                    <div></div>
+                    <div class="task-leverage-area">
+                        ${task.leverage ? `<div class="leverage-badge leverage-${task.leverage}">${task.leverage}</div>` : ''}
+                    </div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
                             ${task.notes ? '✏️' : '📝'}
@@ -751,7 +755,9 @@ class ESIFilter {
                 </div>
                 
                 <div class="task-status-row-compact">
-                    <div></div>
+                    <div class="task-leverage-area">
+                        ${task.leverage ? `<div class="leverage-badge leverage-${task.leverage}">${task.leverage}</div>` : ''}
+                    </div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
                             ${task.notes ? '✏️' : '📝'}
@@ -883,7 +889,9 @@ class ESIFilter {
             ${metricsHTML}
             
             <div class="completed-task-bottom-row">
-                <div></div>
+                <div class="task-leverage-area">
+                    ${task.leverage ? `<div class="leverage-badge leverage-${task.leverage}">${task.leverage}</div>` : ''}
+                </div>
                 <div class="task-actions">
                     <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
                         ${task.notes ? '✏️' : '📝'}
@@ -939,11 +947,10 @@ class ESIFilter {
                 </div>
                 <div class="task-row">
                     <div class="input-group">
-                        <label>Energy</label>
                         <select id="unrated-energy-${task.id}" 
                                 class="score-input"
                                 onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'energy')">
-                            <option value="" ${!preservedValues?.energy ? 'selected' : ''}></option>
+                            <option value="" ${!preservedValues?.energy ? 'selected' : ''}>Energy</option>
                             <option value="1" ${preservedValues?.energy == 1 ? 'selected' : ''}>1 - Draining</option>
                             <option value="2" ${preservedValues?.energy == 2 ? 'selected' : ''}>2</option>
                             <option value="3" ${preservedValues?.energy == 3 ? 'selected' : ''}>3 - Neutral</option>
@@ -952,11 +959,10 @@ class ESIFilter {
                         </select>
                     </div>
                     <div class="input-group">
-                        <label>Simplicity</label>
                         <select id="unrated-simplicity-${task.id}" 
                                 class="score-input"
                                 onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
-                            <option value="" ${!preservedValues?.simplicity ? 'selected' : ''}></option>
+                            <option value="" ${!preservedValues?.simplicity ? 'selected' : ''}>Simplicity</option>
                             <option value="1" ${preservedValues?.simplicity == 1 ? 'selected' : ''}>1 - Many complex subtasks</option>
                             <option value="2" ${preservedValues?.simplicity == 2 ? 'selected' : ''}>2</option>
                             <option value="3" ${preservedValues?.simplicity == 3 ? 'selected' : ''}>3 - A few subtasks</option>
@@ -965,11 +971,10 @@ class ESIFilter {
                         </select>
                     </div>
                     <div class="input-group">
-                        <label>Impact</label>
                         <select id="unrated-impact-${task.id}" 
                                 class="score-input"
                                 onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'impact')">
-                            <option value="" ${!preservedValues?.impact ? 'selected' : ''}></option>
+                            <option value="" ${!preservedValues?.impact ? 'selected' : ''}>Impact</option>
                             <option value="1" ${preservedValues?.impact == 1 ? 'selected' : ''}>1 - Minimal</option>
                             <option value="2" ${preservedValues?.impact == 2 ? 'selected' : ''}>2</option>
                             <option value="3" ${preservedValues?.impact == 3 ? 'selected' : ''}>3</option>
@@ -982,14 +987,61 @@ class ESIFilter {
                             <option value="10" ${preservedValues?.impact == 10 ? 'selected' : ''}>10 - Major</option>
                         </select>
                     </div>
-                    <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
-                        Rate
-                    </button>
+                </div>
+                
+                <div class="task-status-row-compact">
+                    <div class="task-leverage-area">
+                        <div class="leverage-buttons">
+                            <button type="button" 
+                                    id="leverage-10x-${task.id}" 
+                                    class="leverage-btn ${preservedValues?.leverage === '10x' ? 'active' : ''}" 
+                                    onclick="esiFilter.setLeverage(${task.id}, '10x')">
+                                10x
+                            </button>
+                            <button type="button" 
+                                    id="leverage-2x-${task.id}" 
+                                    class="leverage-btn ${preservedValues?.leverage === '2x' ? 'active' : ''}" 
+                                    onclick="esiFilter.setLeverage(${task.id}, '2x')">
+                                2x
+                            </button>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
+                            Rate
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
 
         return taskDiv;
+    }
+
+    setLeverage(taskId, leverageValue) {
+        // Toggle the selected leverage button
+        const leverage10xBtn = document.getElementById(`leverage-10x-${taskId}`);
+        const leverage2xBtn = document.getElementById(`leverage-2x-${taskId}`);
+        
+        if (leverageValue === '10x') {
+            if (leverage10xBtn.classList.contains('active')) {
+                // If already active, deactivate
+                leverage10xBtn.classList.remove('active');
+            } else {
+                // Activate 10x and deactivate 2x
+                leverage10xBtn.classList.add('active');
+                leverage2xBtn.classList.remove('active');
+            }
+        } else if (leverageValue === '2x') {
+            if (leverage2xBtn.classList.contains('active')) {
+                // If already active, deactivate
+                leverage2xBtn.classList.remove('active');
+            } else {
+                // Activate 2x and deactivate 10x
+                leverage2xBtn.classList.add('active');
+                leverage10xBtn.classList.remove('active');
+            }
+        }
     }
 
     handleScoreInputKeydown(event, taskId, fieldType) {
@@ -1037,11 +1089,21 @@ class ESIFilter {
         const energyInput = document.getElementById(`unrated-energy-${taskId}`);
         const simplicityInput = document.getElementById(`unrated-simplicity-${taskId}`);
         const impactInput = document.getElementById(`unrated-impact-${taskId}`);
+        const leverage10xBtn = document.getElementById(`leverage-10x-${taskId}`);
+        const leverage2xBtn = document.getElementById(`leverage-2x-${taskId}`);
 
         // Extract just the number from the input value (in case full text was selected)
         const energy = parseInt(energyInput.value);
         const simplicity = parseInt(simplicityInput.value);
         const impact = parseInt(impactInput.value);
+        
+        // Get leverage value
+        let leverage = null;
+        if (leverage10xBtn && leverage10xBtn.classList.contains('active')) {
+            leverage = '10x';
+        } else if (leverage2xBtn && leverage2xBtn.classList.contains('active')) {
+            leverage = '2x';
+        }
 
         // Validate values are numbers and within range
         if (!energy || energy < 1 || energy > 5) {
@@ -1068,6 +1130,7 @@ class ESIFilter {
             task.simplicity = simplicity;
             task.impact = impact;
             task.score = energy + simplicity + impact;
+            task.leverage = leverage; // Save leverage value
             task.status = 'start'; // Move to regular tasks
 
             // Sort tasks by score
@@ -1094,11 +1157,21 @@ class ESIFilter {
             const energyInput = document.getElementById(`unrated-energy-${task.id}`);
             const simplicityInput = document.getElementById(`unrated-simplicity-${task.id}`);
             const impactInput = document.getElementById(`unrated-impact-${task.id}`);
+            const leverage10xBtn = document.getElementById(`leverage-10x-${task.id}`);
+            const leverage2xBtn = document.getElementById(`leverage-2x-${task.id}`);
             
             // Extract just the number from the input value (in case full text was selected)
             const energy = parseInt(energyInput?.value);
             const simplicity = parseInt(simplicityInput?.value);
             const impact = parseInt(impactInput?.value);
+            
+            // Get leverage value
+            let leverage = null;
+            if (leverage10xBtn && leverage10xBtn.classList.contains('active')) {
+                leverage = '10x';
+            } else if (leverage2xBtn && leverage2xBtn.classList.contains('active')) {
+                leverage = '2x';
+            }
             
             // Only include tasks with all three valid ratings
             if (energy >= 1 && energy <= 5 && 
@@ -1108,7 +1181,8 @@ class ESIFilter {
                     task,
                     energy,
                     simplicity,
-                    impact
+                    impact,
+                    leverage
                 });
             }
         });
@@ -1120,13 +1194,14 @@ class ESIFilter {
         
         // Rate all the complete tasks
         let ratedCount = 0;
-        tasksToRate.forEach(({task, energy, simplicity, impact}) => {
+        tasksToRate.forEach(({task, energy, simplicity, impact, leverage}) => {
             const taskIndex = this.tasks.findIndex(t => t.id === task.id);
             if (taskIndex > -1) {
                 this.tasks[taskIndex].energy = energy;
                 this.tasks[taskIndex].simplicity = simplicity;
                 this.tasks[taskIndex].impact = impact;
                 this.tasks[taskIndex].score = energy + simplicity + impact;
+                this.tasks[taskIndex].leverage = leverage; // Save leverage value
                 this.tasks[taskIndex].status = 'start'; // Move to regular tasks
                 ratedCount++;
             }
@@ -1547,4 +1622,4 @@ function handleAddBrainDumpTasks(event) {
     } else {
         console.error('esiFilter not available');
     }
-} 
+}

@@ -272,31 +272,101 @@ header h1 {
     overflow: visible;
 }
 
-.task-item .task-card {
-    position: relative;
-    padding: 0.75rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    overflow: visible;
-}
-
+/* Unrated Tasks - Purple-grey accent */
 .unrated-task-item .task-card {
     position: relative;
     padding: 1rem;
-    background: #0095f27a;
-    border: 1px solid #0097f2;
+    background: #fefefe;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #5b5167;
     border-radius: 12px;
     overflow: visible;
 }
 
+/* Prioritized Tasks - Teal accent */
+.task-item .task-card {
+    position: relative;
+    padding: 0.75rem;
+    background: #fefefe;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #1abc9c;
+    border-radius: 12px;
+    overflow: visible;
+}
+
+/* In Progress Tasks - Amber accent (already implemented) */
 .in-progress-task-item .task-card {
     position: relative;
     padding: 1rem;
-    background: #fef3c7;
-    border: 1px solid #f59e0b;
+    background: #fefefe;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #f59e0b;
     border-radius: 12px;
     overflow: visible;
+}
+
+/* Completed Tasks - Teal accent */
+.completed-task-item {
+    background: #fefefe;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #059669;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.task-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.input-group .score-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    font-weight: 400;
+    color: #9ca3af;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+.input-group .score-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    color: #374151;
+}
+
+.input-group .score-input option {
+    color: #374151;
+    font-weight: 400;
+    padding: 0.5rem;
+}
+
+/* When a value is selected, make text darker */
+.input-group .score-input:not(:invalid) {
+    color: #374151;
 }
 
 /* Add extra margin to first task to prevent clipping */
@@ -381,10 +451,11 @@ header h1 {
     font-weight: 600;
     color: #1f2937;
     line-height: 1.3;
-    max-width: calc(100% - 40px);
+    max-width: calc(100% - 180px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    padding-right: 1rem;
 }
 
 .task-metrics-row {
@@ -572,9 +643,9 @@ header h1 {
 }
 
 .status-btn-compact {
-    background: #ff8900;
-    color: white;
-    border: none;
+    background: none;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
     padding: 0.375rem 0.75rem;
     border-radius: 6px;
     font-size: 0.8rem;
@@ -586,6 +657,8 @@ header h1 {
 
 .status-btn-compact:hover {
     background: #ff8900;
+    color: white;
+    border: none;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
 }
@@ -618,18 +691,19 @@ header h1 {
 }
 
 .unrated-task-header {
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .unrated-task-name {
     font-size: 1rem;
     font-weight: 600;
-    color: #004876;
+    color: #1f2937;
     line-height: 1.3;
-    max-width: calc(100% - 40px);
+    max-width: calc(100% - 180px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    padding-right: 1rem;
 }
 
 .task-row {
@@ -638,29 +712,49 @@ header h1 {
     justify-content: space-between;
     flex-wrap: nowrap;
     gap: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
-    width: 85px;
-    min-width: 70px;
+    flex: 1;
+    min-width: 0;
 }
 
-.input-group label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #004876;
-    margin-bottom: 0.375rem;
-    line-height: 1.2;
-    text-align: center;
-    white-space: nowrap;
+.input-group .score-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    font-weight: 400;
+    color: #9ca3af;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
 }
 
-.input-group select:focus {
+.input-group .score-input:focus {
     outline: none;
-    border-color: #0097f2;
-    box-shadow: 0 0 0 2px rgba(11, 171, 245, 0.2);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    color: #374151;
+}
+
+.input-group .score-input option {
+    color: #374151;
+    font-weight: 400;
+    padding: 0.5rem;
+}
+
+/* When a value is selected, make text darker */
+.input-group .score-input:not(:invalid) {
+    color: #374151;
 }
 
 /* Custom Dropdown Styles */
@@ -760,60 +854,116 @@ header h1 {
     background-color: #fbbf24;
 }
 
-.input-group .score-input {
-    width: 100%;
-    padding: 0.3rem 0.5rem;
-    border: 1px solid #0097f2;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    font-weight: 600;
-    appearance: none; /* Remove default styling for selects */
-    -moz-appearance: none; /* Firefox */
-    -webkit-appearance: none; /* Safari/Chrome */
-}
-
-/* Hide spinner arrows on Chrome, Safari, Edge for input elements */
-.input-group input.score-input::-webkit-outer-spin-button,
-.input-group input.score-input::-webkit-inner-spin-button {
-    appearance: none; /* Standard */
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.input-group .score-input:focus {
-    outline: none;
-    border-color: #0097f2;
-    box-shadow: 0 0 0 2px rgba(11, 171, 245, 0.2);
-}
-
-.input-group .score-input::placeholder {
-    color: #9ca3af;
-    font-weight: 400;
-    font-style: italic;
-}
-
 .rate-button {
-    background: #0097f2;
-    color: white;
-    border: none;
-    padding: 0.5rem 0.75rem;
+    background: none;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    padding: 0.375rem 0.75rem;
     border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    height: fit-content;
+    height: 30px;
 }
 
 .rate-button:hover {
-    background: #0097f2;
+    background: #ff8900;
+    color: white;
+    border: none;
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(11, 171, 245, 0.3);
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+/* Leverage Selector */
+.leverage-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.leverage-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.leverage-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-align: center;
+}
+
+.leverage-label-left {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.leverage-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.leverage-btn {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 50px;
+}
+
+.leverage-btn:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+    color: #374151;
+}
+
+.leverage-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #2563eb;
+}
+
+.leverage-btn.active:hover {
+    background: #2563eb;
+}
+
+/* Leverage Badges */
+.leverage-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    margin-top: 0.25rem;
+    margin-left: 0.5rem;
+}
+
+.leverage-10x {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+}
+
+.leverage-2x {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fbbf24;
 }
 
 /* Completed Tasks */
@@ -833,27 +983,6 @@ header h1 {
     padding-right: 0.5rem;
     position: relative;
 }
-
-.completed-task-item {
-    background: #f8fdf8;
-    border: 1px solid #d1fae5;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-/* .completed-task-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
-} */
 
 .completed-task-item:hover {
     transform: translateY(-2px);
@@ -1191,7 +1320,7 @@ header h1 {
 
 .task-metrics-top-right {
     position: absolute;
-    top: 2.5rem;
+    top: 1.5rem;
     right: 0.75rem;
     display: flex;
     align-items: center;
@@ -1339,6 +1468,20 @@ header h1 {
     .task-score-left,
     .task-score-right-actual {
         margin-top: 0.25rem;
+    }
+    
+    /* Mobile responsive text */
+    .task-name,
+    .unrated-task-name {
+        max-width: calc(100% - 40px);
+        padding-right: 0.5rem;
+    }
+    
+    .task-metrics-top-right {
+        position: static;
+        justify-content: center;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
     }
 }
 
