@@ -863,7 +863,7 @@ header h1 {
     padding: 0.375rem 0.75rem;
     border-radius: 6px;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -1768,6 +1768,24 @@ header h1 {
 .add-task-section .btn-primary,
 .to-be-rated-section .btn-primary {
     margin-top: auto;
+}
+
+/* Make Rate All button more subtle by default */
+.to-be-rated-section .btn-primary {
+    background: #f3f4f6;
+    color: #6b7280;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    font-weight: 500;
+}
+
+.to-be-rated-section .btn-primary:hover {
+    background: #ff8900;
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 137, 0, 0.3);
+    border: 1px solid #ff8900;
+    font-weight: 600;
+    transform: translateY(-2px);
 }
 
 /* Pain Cave Button */
