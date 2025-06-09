@@ -20,11 +20,16 @@ class ESIFilter {
         const taskForm = document.getElementById('task-form');
         console.log('Task form found:', taskForm); // Debug log
         
-        taskForm.addEventListener('submit', (e) => {
-            console.log('Form submitted'); // Debug log
-            e.preventDefault();
-            this.addBrainDumpTasks();
-        });
+        // Only add event listener if the form exists
+        if (taskForm) {
+            taskForm.addEventListener('submit', (e) => {
+                console.log('Form submitted'); // Debug log
+                e.preventDefault();
+                this.addBrainDumpTasks();
+            });
+        } else {
+            console.log('Task form not found - brain dump is now modal-based'); // Debug log
+        }
     }
 
     addBrainDumpTasks() {
@@ -674,7 +679,7 @@ class ESIFilter {
                 </div>
                 
                 <div class="task-header-compact">
-                    <div class="task-name">
+                    <div class="task-name" title="${taskName}">
                         ${taskName}
                         ${priorityText ? `<div style="font-size: 0.8rem; color: ${priorityColor}; font-weight: 500; margin-top: 0.25rem;">${priorityText}</div>` : ''}
                         ${task.dateCreated ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
@@ -756,7 +761,7 @@ class ESIFilter {
                 </div>
                 
                 <div class="task-header-compact">
-                    <div class="task-name">
+                    <div class="task-name" title="${taskName}">
                         ${taskName}
                         ${task.dateCreated ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
                             added ${new Date(task.dateCreated).toLocaleDateString('en-US', {
@@ -891,7 +896,7 @@ class ESIFilter {
 
         taskDiv.innerHTML = `
             <div class="task-header-compact">
-                <div class="task-name">
+                <div class="task-name" title="${taskName}">
                     ${taskName}
                     ${task.completedDate ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
                         completed ${task.completedDate}
@@ -973,7 +978,7 @@ class ESIFilter {
                     </div>
                 </div>
                 <div class="unrated-task-header">
-                    <div class="unrated-task-name">${taskName}</div>
+                    <div class="unrated-task-name" title="${taskName}">${taskName}</div>
                 </div>
                 <div class="task-row">
                     <div class="input-group">
@@ -1151,6 +1156,11 @@ class ESIFilter {
             impactInput.focus();
             return;
         }
+        if (!leverage) {
+            alert('Please select a leverage category (10x or 2x) before rating this task');
+            if (leverage10xBtn) leverage10xBtn.focus();
+            return;
+        }
 
         // Find and update the task
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
@@ -1203,10 +1213,11 @@ class ESIFilter {
                 leverage = '2x';
             }
             
-            // Only include tasks with all three valid ratings
+            // Only include tasks with all three valid ratings AND leverage selection
             if (energy >= 1 && energy <= 5 && 
                 simplicity >= 1 && simplicity <= 5 && 
-                impact >= 1 && impact <= 10) {
+                impact >= 1 && impact <= 10 &&
+                leverage) {
                 tasksToRate.push({
                     task,
                     energy,
@@ -1218,7 +1229,7 @@ class ESIFilter {
         });
         
         if (tasksToRate.length === 0) {
-            alert('No tasks have complete valid ratings to process. Please fill out Energy (1-5), Simplicity (1-5), and Impact (1-10) for at least one task.');
+            alert('No tasks have complete valid ratings to process. Please fill out Energy (1-5), Simplicity (1-5), Impact (1-10), AND select leverage (10x or 2x) for at least one task.');
             return;
         }
         
@@ -1294,8 +1305,8 @@ class ESIFilter {
                     if (!task.status) {
                         task.status = 'start';
                     }
-                    // Ensure tasks with null ratings get unrated status
-                    if (task.status !== 'unrated' && (task.energy === null || task.simplicity === null || task.impact === null)) {
+                    // Ensure tasks with null ratings or missing leverage get unrated status
+                    if (task.status !== 'unrated' && (task.energy === null || task.simplicity === null || task.impact === null || !task.leverage)) {
                         task.status = 'unrated';
                         task.score = null;
                     }
@@ -1651,5 +1662,150 @@ function handleAddBrainDumpTasks(event) {
         esiFilter.addBrainDumpTasks();
     } else {
         console.error('esiFilter not available');
+    }
+}
+
+// Global function for brain dump modal
+function openBrainDumpModal() {
+    // Create modal overlay
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'brain-dump-modal-overlay';
+    modalOverlay.id = 'brain-dump-modal';
+
+    modalOverlay.innerHTML = `
+        <div class="brain-dump-modal">
+            <div class="brain-dump-modal-header">
+                <h3>🧠 Brain Dump</h3>
+            </div>
+            
+            <form id="brain-dump-modal-form">
+                <div class="brain-dump-form-group">
+                    <textarea id="brain-dump-modal-text" class="brain-dump-textarea" placeholder="Dump all your to-dos in here, one line at a time
+
+Doodle sticker concepts for astrology
+Email Mr. Zuck about FB algorithm
+Sell old camera gear 
+
+Fun fact: The ESI filter was birthed through Simie's inability to prioritize 103 tasks that felt equally important (but actually weren't)." rows="6"></textarea>
+                </div>
+                
+                <div class="brain-dump-modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeBrainDumpModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        Add Tasks
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    // Add click outside to close
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            closeBrainDumpModal();
+        }
+    });
+
+    // Handle form submission
+    const form = modalOverlay.querySelector('#brain-dump-modal-form');
+    form.addEventListener('submit', handleModalBrainDumpTasks);
+
+    document.body.appendChild(modalOverlay);
+    
+    // Focus the textarea
+    setTimeout(() => {
+        const textarea = document.getElementById('brain-dump-modal-text');
+        if (textarea) {
+            textarea.focus();
+        }
+    }, 100);
+}
+
+// Function to close the modal
+function closeBrainDumpModal() {
+    const modal = document.getElementById('brain-dump-modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Function to handle modal form submission
+function handleModalBrainDumpTasks(event) {
+    event.preventDefault();
+    
+    const brainDumpText = document.getElementById('brain-dump-modal-text');
+    if (!brainDumpText) {
+        alert('Error: Could not find textarea element');
+        return;
+    }
+
+    const text = brainDumpText.value.trim();
+    if (!text) {
+        alert('Please enter some tasks before adding them.');
+        return;
+    }
+
+    // Split by newlines and filter out empty lines
+    const lines = text.split('\n').filter(line => line.trim() !== '');
+    
+    if (lines.length === 0) {
+        alert('Please enter some tasks before adding them.');
+        return;
+    }
+
+    // Simple direct approach - add tasks to localStorage and trigger re-render
+    try {
+        // Get existing tasks from localStorage
+        let tasks = [];
+        try {
+            const storedTasks = localStorage.getItem('esi-filter-tasks');
+            if (storedTasks) {
+                tasks = JSON.parse(storedTasks);
+            }
+        } catch (e) {
+            console.warn('Could not load existing tasks from localStorage:', e);
+        }
+
+        // Add new tasks
+        lines.forEach(line => {
+            const taskName = line.trim();
+            if (taskName) {
+                const newTask = {
+                    id: Date.now() + Math.random(),
+                    title: taskName,
+                    status: 'unrated',
+                    dateCreated: new Date().toISOString()
+                };
+                tasks.push(newTask);
+            }
+        });
+
+        // Save back to localStorage
+        localStorage.setItem('esi-filter-tasks', JSON.stringify(tasks));
+
+        // If esiFilter exists, update it and re-render
+        if (esiFilter && typeof esiFilter.loadTasksFromStorage === 'function') {
+            esiFilter.loadTasksFromStorage();
+            if (typeof esiFilter.renderTasks === 'function') {
+                esiFilter.renderTasks();
+            }
+            if (typeof esiFilter.showSuccessFeedback === 'function') {
+                esiFilter.showSuccessFeedback(`✅ ${lines.length} task${lines.length === 1 ? '' : 's'} added for rating!`);
+            }
+        }
+
+        // Close modal
+        closeBrainDumpModal();
+
+        // If esiFilter isn't available, just show a simple success message
+        if (!esiFilter) {
+            alert(`✅ ${lines.length} task${lines.length === 1 ? '' : 's'} added! Please refresh the page to see them.`);
+        }
+
+    } catch (error) {
+        console.error('Error adding tasks:', error);
+        alert('There was an error adding tasks. Please try again.');
     }
 }

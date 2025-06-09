@@ -451,11 +451,12 @@ header h1 {
     font-weight: 600;
     color: #1f2937;
     line-height: 1.3;
-    max-width: calc(100% - 180px);
+    max-width: calc(100% - 120px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-right: 1rem;
+    cursor: help;
 }
 
 .task-metrics-row {
@@ -699,11 +700,12 @@ header h1 {
     font-weight: 600;
     color: #1f2937;
     line-height: 1.3;
-    max-width: calc(100% - 180px);
+    max-width: calc(100% - 120px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-right: 1rem;
+    cursor: help;
 }
 
 .task-row {
@@ -986,6 +988,16 @@ header h1 {
     background: rgba(91, 81, 103, 0.1);
     color: #5b5167;
     border: 1px solid rgba(91, 81, 103, 0.3);
+}
+
+.leverage-label-required {
+    color: #6b7280;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+    text-align: center;
 }
 
 /* Completed Tasks */
@@ -2192,4 +2204,115 @@ header h1 {
     color: #374151;
     border-color: #9ca3af;
     transform: translateY(-1px);
+}
+
+/* Header actions styling */
+.header-actions {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-brain-dump {
+    background: #ff8900;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(255, 137, 0, 0.2);
+}
+
+.btn-brain-dump:hover {
+    background: #e67500;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 137, 0, 0.3);
+}
+
+/* Brain dump modal styles */
+.brain-dump-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.brain-dump-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    animation: scaleIn 0.2s ease-out;
+}
+
+.brain-dump-modal-header {
+    margin-bottom: 20px;
+}
+
+.brain-dump-modal-header h3 {
+    margin: 0 0 8px 0;
+    color: #1f2937;
+    font-size: 20px;
+}
+
+.brain-dump-modal-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.brain-dump-form-group {
+    margin-bottom: 20px;
+}
+
+.brain-dump-textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.brain-dump-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.brain-dump-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+@keyframes scaleIn {
+    from { 
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1);
+    }
 }
