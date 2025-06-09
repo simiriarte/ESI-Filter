@@ -86,24 +86,39 @@ header h1 {
     gap: 1.5rem;
     align-items: start;
     min-height: 70vh;
-    transition: grid-template-columns 0.3s ease;
+    transition: all 0.3s ease;
     overflow-x: hidden;
     width: 100%;
 }
 
-/* Two-column layout - Brain Dump + Expanded Prioritized Tasks */
+/* Dynamic layout - Brain Dump on top, then variable columns below */
+.main-grid.one-column {
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+}
+
 .main-grid.two-columns {
+    grid-template-rows: auto 1fr;
     grid-template-columns: 1fr 1fr;
 }
 
-/* Three-column layout - Brain Dump + To Be Rated + Prioritized Tasks */
 .main-grid.three-columns {
+    grid-template-rows: auto 1fr;
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-/* Column sections - Clean and flexible */
-.add-task-section,
+/* Brain Dump section - spans full width at top */
+.add-task-section {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+/* Column sections - all task columns in same row */
 .to-be-rated-section,
+.in-progress-section,
 .tasks-section {
     height: 100%;
     display: flex;
@@ -237,7 +252,8 @@ header h1 {
 
 /* Scrollable containers */
 .tasks-container,
-.unrated-tasks-container {
+.unrated-tasks-container,
+.in-progress-tasks-container {
     flex: 1;
     overflow-y: auto;
     overflow-x: visible;
@@ -248,7 +264,8 @@ header h1 {
 
 /* Task items should not create stacking contexts that interfere with dropdowns */
 .task-item,
-.unrated-task-item {
+.unrated-task-item,
+.in-progress-task-item {
     margin-bottom: 0.5rem;
     transition: all 0.2s ease;
     position: static;
@@ -273,32 +290,46 @@ header h1 {
     overflow: visible;
 }
 
+.in-progress-task-item .task-card {
+    position: relative;
+    padding: 1rem;
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 12px;
+    overflow: visible;
+}
+
 /* Add extra margin to first task to prevent clipping */
 .task-item:first-child,
-.unrated-task-item:first-child {
+.unrated-task-item:first-child,
+.in-progress-task-item:first-child {
     margin-top: 0.25rem;
 }
 
 /* Custom scrollbar */
 .tasks-container::-webkit-scrollbar,
-.unrated-tasks-container::-webkit-scrollbar {
+.unrated-tasks-container::-webkit-scrollbar,
+.in-progress-tasks-container::-webkit-scrollbar {
     width: 6px;
 }
 
 .tasks-container::-webkit-scrollbar-track,
-.unrated-tasks-container::-webkit-scrollbar-track {
+.unrated-tasks-container::-webkit-scrollbar-track,
+.in-progress-tasks-container::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
 }
 
 .tasks-container::-webkit-scrollbar-thumb,
-.unrated-tasks-container::-webkit-scrollbar-thumb {
+.unrated-tasks-container::-webkit-scrollbar-thumb,
+.in-progress-tasks-container::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
 }
 
 .tasks-container::-webkit-scrollbar-thumb:hover,
-.unrated-tasks-container::-webkit-scrollbar-thumb:hover {
+.unrated-tasks-container::-webkit-scrollbar-thumb:hover,
+.in-progress-tasks-container::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
 
@@ -1064,18 +1095,18 @@ header h1 {
 
 /* Responsive design */
 @media (max-width: 1024px) {
-    .main-grid.two-columns {
-        grid-template-columns: 1fr 1fr;
-    }
-    
+    .main-grid.one-column,
+    .main-grid.two-columns,
     .main-grid.three-columns {
-        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+        grid-template-columns: 1fr;
         gap: 1rem;
     }
     
-    .main-grid.three-columns .to-be-rated-section {
-        grid-column: 1 / -1;
-        margin-top: 1rem;
+    .main-grid .to-be-rated-section,
+    .main-grid .in-progress-section,
+    .main-grid .tasks-section {
+        grid-column: 1;
     }
     
     .main-grid .card {
@@ -1101,14 +1132,17 @@ header h1 {
         font-size: 2rem;
     }
     
+    .main-grid.one-column,
     .main-grid.two-columns,
     .main-grid.three-columns {
+        grid-template-rows: auto auto auto auto;
         grid-template-columns: 1fr;
         gap: 1rem;
     }
     
     .add-task-section,
     .to-be-rated-section,
+    .in-progress-section,
     .tasks-section {
         grid-column: 1;
         margin-top: 0;
@@ -1125,7 +1159,8 @@ header h1 {
     }
     
     .tasks-container,
-    .unrated-tasks-container {
+    .unrated-tasks-container,
+    .in-progress-tasks-container {
         max-height: 40vh;
     }
     
@@ -1933,4 +1968,4 @@ header h1 {
     background: #e5e7eb;
     color: #374151;
     border-color: #9ca3af;
-} 
+}

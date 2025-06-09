@@ -438,33 +438,37 @@ class ESIFilter {
     renderTasks() {
         const tasksContainer = document.getElementById('tasks-container');
         const taskCount = document.getElementById('task-count');
+        const inProgressTasksContainer = document.getElementById('in-progress-tasks-container');
+        const inProgressTaskCount = document.getElementById('in-progress-task-count');
         const completedTasksSection = document.getElementById('completed-tasks-section');
         const completedTasksContainer = document.getElementById('completed-tasks-container');
         const completedTaskCount = document.getElementById('completed-task-count');
         const mainGrid = document.querySelector('.main-grid');
 
         // Separate tasks by status
-        const activeTasks = this.tasks.filter(task => task.status !== 'complete' && task.status !== 'unrated');
+        const prioritizedTasks = this.tasks.filter(task => task.status === 'start');
+        const inProgressTasks = this.tasks.filter(task => task.status === 'in-progress');
         const completedTasks = this.tasks.filter(task => task.status === 'complete');
         const unratedTasks = this.tasks.filter(task => task.status === 'unrated');
 
-        // Handle middle column - completely remove/add from DOM
+        // Dynamic layout: determine how many columns we need
         let toBeRatedSection = document.getElementById('to-be-rated-section');
+        let columnsNeeded = 0;
         
+        // Count columns needed
+        if (unratedTasks.length > 0) columnsNeeded++;
+        if (inProgressTasks.length > 0) columnsNeeded++;
+        if (prioritizedTasks.length > 0) columnsNeeded++;
+        
+        // Handle To Be Rated section
         if (unratedTasks.length > 0) {
-            // Create middle column if it doesn't exist
+            // Create To Be Rated section if it doesn't exist
             if (!toBeRatedSection) {
                 toBeRatedSection = this.createToBeRatedSection();
-                // Insert between input section and tasks section
+                // Insert before prioritized tasks section
                 const tasksSection = document.querySelector('.tasks-section');
                 mainGrid.insertBefore(toBeRatedSection, tasksSection);
             }
-            
-            // Set three-column layout - equal widths
-            mainGrid.classList.remove('two-columns');
-            mainGrid.classList.add('three-columns');
-            // Force grid template explicitly - 33% each
-            mainGrid.style.gridTemplateColumns = '1fr 1fr 1fr';
             
             // Update unrated tasks content
             const unratedTasksContainer = document.getElementById('unrated-tasks-container');
@@ -497,40 +501,68 @@ class ESIFilter {
                 });
             }
         } else {
-            // Remove middle column completely from DOM
+            // Remove To Be Rated section completely from DOM
             if (toBeRatedSection) {
                 toBeRatedSection.remove();
             }
-            
-            // Set two-column layout - equal widths
-            mainGrid.classList.remove('three-columns');
+        }
+        
+        // Set grid layout based on number of columns needed
+        mainGrid.classList.remove('one-column', 'two-columns', 'three-columns');
+        
+        if (columnsNeeded === 1) {
+            mainGrid.classList.add('one-column');
+        } else if (columnsNeeded === 2) {
             mainGrid.classList.add('two-columns');
-            // Force grid template explicitly - 50% each
-            mainGrid.style.gridTemplateColumns = '1fr 1fr';
+        } else if (columnsNeeded === 3) {
+            mainGrid.classList.add('three-columns');
         }
 
-        // Update active task count
-        const activeCount = activeTasks.length;
-        taskCount.textContent = activeCount === 1 ? '1 task' : `${activeCount} tasks`;
+        // Update prioritized task count
+        const prioritizedCount = prioritizedTasks.length;
+        taskCount.textContent = prioritizedCount === 1 ? '1 task' : `${prioritizedCount} tasks`;
 
-        // Clear active tasks container
+        // Clear prioritized tasks container
         tasksContainer.innerHTML = '';
 
-        if (activeTasks.length === 0) {
-            // Show empty state for active tasks
+        if (prioritizedTasks.length === 0) {
+            // Show empty state for prioritized tasks
             tasksContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">😴</div>
                     <h3>No tasks yet</h3>
-                    <p>Filtered tasks will be prioritized here!</p>
-                    <p>(and free up brain space)</p>
+                    <p>Rated tasks will appear here prioritized by ESI score!</p>
                 </div>
             `;
         } else {
-            // Render each active task
-            activeTasks.forEach((task, index) => {
+            // Render each prioritized task
+            prioritizedTasks.forEach((task, index) => {
                 const taskElement = this.createTaskElement(task, index);
                 tasksContainer.appendChild(taskElement);
+            });
+        }
+
+        // Update in-progress task count and container
+        const inProgressCount = inProgressTasks.length;
+        inProgressTaskCount.textContent = inProgressCount === 1 ? '1 task' : `${inProgressCount} tasks`;
+
+        // Clear in-progress tasks container
+        inProgressTasksContainer.innerHTML = '';
+
+        if (inProgressTasks.length === 0) {
+            // Show empty state for in-progress tasks
+            inProgressTasksContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">⏳</div>
+                    <h3>No tasks in progress</h3>
+                    <p>Click "Start" on a task to begin working on it!</p>
+                </div>
+            `;
+        } else {
+            // Render each in-progress task
+            inProgressTasks.forEach((task, index) => {
+                const taskElement = this.createInProgressTaskElement(task, index);
+                inProgressTasksContainer.appendChild(taskElement);
             });
         }
 
@@ -577,29 +609,21 @@ class ESIFilter {
             priorityColor = '#06b6d4';
         }
 
-        // Get status display info
-        let statusDisplay, statusButton, statusClass;
+        // Get status button info
+        let statusButton;
         
         switch(task.status) {
             case 'start':
-                statusDisplay = 'Ready to Start';
                 statusButton = 'Start';
-                statusClass = 'status-start';
                 break;
             case 'in-progress':
-                statusDisplay = 'In Progress';
                 statusButton = 'Done!';
-                statusClass = 'status-progress';
                 break;
             case 'complete':
-                statusDisplay = 'Completed';
                 statusButton = null; // No button for completed tasks
-                statusClass = 'status-complete';
                 break;
             default:
-                statusDisplay = 'Ready to Start';
                 statusButton = 'Start';
-                statusClass = 'status-start';
         }
 
         taskDiv.innerHTML = `
@@ -648,9 +672,7 @@ class ESIFilter {
                 </div>
                 
                 <div class="task-status-row-compact">
-                    <div class="task-status ${statusClass}">
-                        ${statusDisplay}
-                    </div>
+                    <div></div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
                             ${task.notes ? '✏️' : '📝'}
@@ -660,6 +682,83 @@ class ESIFilter {
                                 ${statusButton}
                             </button>
                         ` : ''}
+                    </div>
+                </div>
+                
+                <div class="notes-panel" id="notes-panel-${task.id}" style="display: none;">
+                    <textarea class="notes-textarea" id="notes-textarea-${task.id}" placeholder="break down tasks here or add notes!">${task.notes}</textarea>
+                    <div class="notes-actions">
+                        <button class="notes-save-btn" onclick="esiFilter.saveNotes(${task.id})">Save</button>
+                        <button class="notes-cancel-btn" onclick="esiFilter.cancelNotes(${task.id})">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return taskDiv;
+    }
+
+    createInProgressTaskElement(task, index) {
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'in-progress-task-item';
+        taskDiv.setAttribute('data-task-id', task.id);
+
+        // Use title if available, fall back to name for compatibility
+        const taskName = task.title || task.name;
+
+        taskDiv.innerHTML = `
+            <div class="task-card">
+                <div class="delete-btn" onclick="esiFilter.deleteTask(${task.id})" title="Delete task" aria-label="Delete task">
+                    <div class="trash-icon">
+                        <div class="trash-lid"></div>
+                        <div class="trash-body">
+                            <div class="trash-lines">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="task-header-compact">
+                    <div class="task-name">
+                        ${taskName}
+                        ${task.dateCreated ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
+                            added ${new Date(task.dateCreated).toLocaleDateString('en-US', {
+                                month: '2-digit',
+                                day: '2-digit',
+                                year: '2-digit'
+                            })}
+                        </div>` : ''}
+                    </div>
+                </div>
+                
+                <div class="task-metrics-top-right">
+                    <div class="metric-compact">
+                        <div class="metric-label">E</div>
+                        <div class="metric-value">${task.energy}</div>
+                    </div>
+                    <div class="metric-compact">
+                        <div class="metric-label">S</div>
+                        <div class="metric-value">${task.simplicity}</div>
+                    </div>
+                    <div class="metric-compact">
+                        <div class="metric-label">I</div>
+                        <div class="metric-value">${task.impact}</div>
+                    </div>
+                    <div class="task-score-right">${task.score}</div>
+                </div>
+                
+                <div class="task-status-row-compact">
+                    <div></div>
+                    <div class="task-actions">
+                        <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
+                            ${task.notes ? '✏️' : '📝'}
+                        </button>
+                        <button class="status-btn-compact" onclick="esiFilter.updateTaskStatus(${task.id})">
+                            Done!
+                        </button>
                     </div>
                 </div>
                 
