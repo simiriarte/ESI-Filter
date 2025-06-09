@@ -25,8 +25,15 @@
                 <div class="card">
                     <div class="section-header">
                         <h2>Prioritized Tasks</h2>
-                        <div class="task-count">
-                            <span id="task-count">0 tasks</span>
+                        <div class="header-controls">
+                            <div class="task-count">
+                                <span id="task-count">0 tasks</span>
+                            </div>
+                            <select id="prioritized-filter" class="task-filter-dropdown" onchange="esiFilter.applyFilter('prioritized', this.value)">
+                                <option value="all">All Tasks</option>
+                                <option value="10x">10x Tasks</option>
+                                <option value="2x">2x Tasks</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -45,8 +52,15 @@
                 <div class="card">
                     <div class="section-header">
                         <h2>In Progress</h2>
-                        <div class="task-count">
-                            <span id="in-progress-task-count">0 tasks</span>
+                        <div class="header-controls">
+                            <div class="task-count">
+                                <span id="in-progress-task-count">0 tasks</span>
+                            </div>
+                            <select id="in-progress-filter" class="task-filter-dropdown" onchange="esiFilter.applyFilter('in-progress', this.value)">
+                                <option value="all">All Tasks</option>
+                                <option value="10x">10x Tasks</option>
+                                <option value="2x">2x Tasks</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -73,8 +87,15 @@
             <div class="card">
                 <div class="section-header">
                     <h2>Completed Tasks</h2>
-                    <div class="task-count">
-                        <span id="completed-task-count">0 completed</span>
+                    <div class="header-controls">
+                        <div class="task-count">
+                            <span id="completed-task-count">0 completed</span>
+                        </div>
+                        <select id="completed-filter" class="task-filter-dropdown" onchange="esiFilter.applyFilter('completed', this.value)">
+                            <option value="all">All Tasks</option>
+                            <option value="10x">10x Tasks</option>
+                            <option value="2x">2x Tasks</option>
+                        </select>
                     </div>
                 </div>
                 

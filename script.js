@@ -3,6 +3,12 @@ class ESIFilter {
     constructor() {
         console.log('ESIFilter constructor called'); // Debug log
         this.tasks = [];
+        // Initialize filter state for each column
+        this.filters = {
+            prioritized: 'all',
+            'in-progress': 'all',
+            completed: 'all'
+        };
         this.loadTasksFromStorage();
         this.initializeEventListeners();
         this.renderTasks();
@@ -96,6 +102,39 @@ class ESIFilter {
 
     sortTasks() {
         this.tasks.sort((a, b) => b.score - a.score);
+    }
+
+    applyFilter(column, filterValue) {
+        // Update filter state
+        this.filters[column] = filterValue;
+        
+        // Re-render tasks to apply the filter
+        this.renderTasks();
+    }
+
+    filterTasks(tasks, filterValue) {
+        if (filterValue === 'all') {
+            return tasks;
+        }
+        // Filter tasks by leverage value, only including tasks that have the specified leverage
+        return tasks.filter(task => task.leverage === filterValue);
+    }
+
+    updateFilterDropdowns() {
+        // Update dropdown values to reflect current filter state
+        const prioritizedDropdown = document.getElementById('prioritized-filter');
+        const inProgressDropdown = document.getElementById('in-progress-filter');
+        const completedDropdown = document.getElementById('completed-filter');
+
+        if (prioritizedDropdown) {
+            prioritizedDropdown.value = this.filters.prioritized;
+        }
+        if (inProgressDropdown) {
+            inProgressDropdown.value = this.filters['in-progress'];
+        }
+        if (completedDropdown) {
+            completedDropdown.value = this.filters.completed;
+        }
     }
 
     updateTaskStatus(taskId) {
@@ -452,10 +491,15 @@ class ESIFilter {
         const mainGrid = document.querySelector('.main-grid');
 
         // Separate tasks by status
-        const prioritizedTasks = this.tasks.filter(task => task.status === 'start');
-        const inProgressTasks = this.tasks.filter(task => task.status === 'in-progress');
-        const completedTasks = this.tasks.filter(task => task.status === 'complete');
+        const allPrioritizedTasks = this.tasks.filter(task => task.status === 'start');
+        const allInProgressTasks = this.tasks.filter(task => task.status === 'in-progress');
+        const allCompletedTasks = this.tasks.filter(task => task.status === 'complete');
         const unratedTasks = this.tasks.filter(task => task.status === 'unrated');
+
+        // Apply filters to each column
+        const prioritizedTasks = this.filterTasks(allPrioritizedTasks, this.filters.prioritized);
+        const inProgressTasks = this.filterTasks(allInProgressTasks, this.filters['in-progress']);
+        const completedTasks = this.filterTasks(allCompletedTasks, this.filters.completed);
 
         // Dynamic layout: determine how many columns we need
         let toBeRatedSection = document.getElementById('to-be-rated-section');
@@ -535,18 +579,25 @@ class ESIFilter {
 
         // Update prioritized task count
         const prioritizedCount = prioritizedTasks.length;
-        taskCount.textContent = prioritizedCount === 1 ? '1 task' : `${prioritizedCount} tasks`;
+        const totalPrioritizedCount = allPrioritizedTasks.length;
+        const prioritizedCountText = this.filters.prioritized === 'all' 
+            ? (prioritizedCount === 1 ? '1 task' : `${prioritizedCount} tasks`)
+            : `${prioritizedCount} of ${totalPrioritizedCount} tasks`;
+        taskCount.textContent = prioritizedCountText;
 
         // Clear prioritized tasks container
         tasksContainer.innerHTML = '';
 
         if (prioritizedTasks.length === 0) {
             // Show empty state for prioritized tasks
+            const emptyMessage = this.filters.prioritized === 'all' 
+                ? 'Rated tasks will appear here prioritized by ESI score!'
+                : `No ${this.filters.prioritized} tasks found in prioritized tasks.`;
             tasksContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">😴</div>
                     <h3>No tasks yet</h3>
-                    <p>Rated tasks will appear here prioritized by ESI score!</p>
+                    <p>${emptyMessage}</p>
                 </div>
             `;
         } else {
@@ -564,18 +615,25 @@ class ESIFilter {
 
         // Update in-progress task count and container
         const inProgressCount = inProgressTasks.length;
-        inProgressTaskCount.textContent = inProgressCount === 1 ? '1 task' : `${inProgressCount} tasks`;
+        const totalInProgressCount = allInProgressTasks.length;
+        const inProgressCountText = this.filters['in-progress'] === 'all'
+            ? (inProgressCount === 1 ? '1 task' : `${inProgressCount} tasks`)
+            : `${inProgressCount} of ${totalInProgressCount} tasks`;
+        inProgressTaskCount.textContent = inProgressCountText;
 
         // Clear in-progress tasks container
         inProgressTasksContainer.innerHTML = '';
 
         if (inProgressTasks.length === 0) {
             // Show empty state for in-progress tasks
+            const emptyMessage = this.filters['in-progress'] === 'all'
+                ? 'Click "Start" on a task to begin working on it!'
+                : `No ${this.filters['in-progress']} tasks found in progress.`;
             inProgressTasksContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">⏳</div>
                     <h3>No tasks in progress</h3>
-                    <p>Click "Start" on a task to begin working on it!</p>
+                    <p>${emptyMessage}</p>
                 </div>
             `;
         } else {
@@ -591,13 +649,14 @@ class ESIFilter {
         }
 
         // Check if there are any 10x tasks in progress and show warning if none (for all in-progress scenarios)
-        const tenXInProgressTasks = inProgressTasks.filter(task => task.leverage === '10x');
+        // Use all in-progress tasks (not filtered) for this warning since it's about the actual workflow
+        const tenXInProgressTasks = allInProgressTasks.filter(task => task.leverage === '10x');
         const existingWarning = document.querySelector('.no-10x-warning');
         if (existingWarning) {
             existingWarning.remove();
         }
         
-        if (inProgressTasks.length > 0 && tenXInProgressTasks.length === 0) {
+        if (allInProgressTasks.length > 0 && tenXInProgressTasks.length === 0) {
             const warningElement = document.createElement('div');
             warningElement.className = 'no-10x-warning';
             warningElement.innerHTML = `
@@ -613,24 +672,42 @@ class ESIFilter {
         }
 
         // Handle completed tasks section
-        if (completedTasks.length > 0) {
+        if (allCompletedTasks.length > 0) {
             // Show completed tasks section
             completedTasksSection.classList.remove('hidden');
             
             // Update completed task count
             const completedCount = completedTasks.length;
-            completedTaskCount.textContent = completedCount === 1 ? '1 completed' : `${completedCount} completed`;
+            const totalCompletedCount = allCompletedTasks.length;
+            const completedCountText = this.filters.completed === 'all'
+                ? (completedCount === 1 ? '1 completed' : `${completedCount} completed`)
+                : `${completedCount} of ${totalCompletedCount} completed`;
+            completedTaskCount.textContent = completedCountText;
             
             // Clear and render completed tasks
             completedTasksContainer.innerHTML = '';
-            completedTasks.forEach((task) => {
-                const taskElement = this.createCompletedTaskElement(task);
-                completedTasksContainer.appendChild(taskElement);
-            });
+            if (completedTasks.length === 0 && this.filters.completed !== 'all') {
+                // Show empty state when filter returns no results
+                completedTasksContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h3>No ${this.filters.completed} tasks found</h3>
+                        <p>Try changing the filter to see more completed tasks.</p>
+                    </div>
+                `;
+            } else {
+                completedTasks.forEach((task) => {
+                    const taskElement = this.createCompletedTaskElement(task);
+                    completedTasksContainer.appendChild(taskElement);
+                });
+            }
         } else {
             // Hide completed tasks section if no completed tasks
             completedTasksSection.classList.add('hidden');
         }
+
+        // Update dropdown values to reflect current filter state
+        this.updateFilterDropdowns();
     }
 
     createTaskElement(task, index, isTop20Percent = true) {
