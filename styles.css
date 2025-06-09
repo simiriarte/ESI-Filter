@@ -931,6 +931,7 @@ header h1 {
     color: #374151;
 }
 
+/* Default active state (fallback) */
 .leverage-btn.active {
     background: #3b82f6;
     color: white;
@@ -939,6 +940,27 @@ header h1 {
 
 .leverage-btn.active:hover {
     background: #2563eb;
+}
+
+/* Specific active states for leverage types */
+.leverage-btn[id*="leverage-10x"].active {
+    background: #1abc9c;
+    color: white;
+    border-color: #16a085;
+}
+
+.leverage-btn[id*="leverage-10x"].active:hover {
+    background: #16a085;
+}
+
+.leverage-btn[id*="leverage-2x"].active {
+    background: #5b5167;
+    color: white;
+    border-color: #4a4058;
+}
+
+.leverage-btn[id*="leverage-2x"].active:hover {
+    background: #4a4058;
 }
 
 /* Leverage Badges */
@@ -955,15 +977,15 @@ header h1 {
 }
 
 .leverage-10x {
-    background: #fee2e2;
-    color: #dc2626;
-    border: 1px solid #fca5a5;
+    background: rgba(26, 188, 156, 0.1);
+    color: #1abc9c;
+    border: 1px solid rgba(26, 188, 156, 0.3);
 }
 
 .leverage-2x {
-    background: #fef3c7;
-    color: #d97706;
-    border: 1px solid #fbbf24;
+    background: rgba(91, 81, 103, 0.1);
+    color: #5b5167;
+    border: 1px solid rgba(91, 81, 103, 0.3);
 }
 
 /* Completed Tasks */
@@ -1332,6 +1354,7 @@ header h1 {
     top: 1.75rem;
 }
 
+/* Top 20% tasks keep the green color (existing) */
 .task-score-right {
     position: relative;
     background: #3b9901;
@@ -1343,6 +1366,23 @@ header h1 {
     min-width: 32px;
     height: 32px;
     text-align: center;
+}
+
+/* Non-top-20% tasks get a lighter blue-gray color */
+.task-score-right.score-standard {
+    background: #9ca3af;
+    color: white;
+}
+
+.task-score-right.score-standard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(156, 163, 175, 0.3);
+}
+
+/* Keep green hover for top 20% */
+.task-score-right:not(.score-standard):hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(59, 153, 1, 0.3);
 }
 
 /* Dual Score Display for Post-Reflection Tasks */

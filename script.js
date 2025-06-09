@@ -546,9 +546,14 @@ class ESIFilter {
                 </div>
             `;
         } else {
+            // Calculate top 20% threshold for prioritized tasks (Pareto principle)
+            const top20PercentCount = Math.max(1, Math.ceil(prioritizedTasks.length * 0.2));
+            const top20Threshold = prioritizedTasks[top20PercentCount - 1]?.score || 0;
+            
             // Render each prioritized task
             prioritizedTasks.forEach((task, index) => {
-                const taskElement = this.createTaskElement(task, index);
+                const isTop20Percent = index < top20PercentCount;
+                const taskElement = this.createTaskElement(task, index, isTop20Percent);
                 tasksContainer.appendChild(taskElement);
             });
         }
@@ -570,9 +575,13 @@ class ESIFilter {
                 </div>
             `;
         } else {
+            // Calculate top 20% threshold for in-progress tasks (Pareto principle)
+            const top20PercentCount = Math.max(1, Math.ceil(inProgressTasks.length * 0.2));
+            
             // Render each in-progress task
             inProgressTasks.forEach((task, index) => {
-                const taskElement = this.createInProgressTaskElement(task, index);
+                const isTop20Percent = index < top20PercentCount;
+                const taskElement = this.createInProgressTaskElement(task, index, isTop20Percent);
                 inProgressTasksContainer.appendChild(taskElement);
             });
         }
@@ -598,7 +607,7 @@ class ESIFilter {
         }
     }
 
-    createTaskElement(task, index) {
+    createTaskElement(task, index, isTop20Percent = true) {
         const taskDiv = document.createElement('div');
         taskDiv.className = 'task-item';
         taskDiv.setAttribute('data-task-id', task.id);
@@ -670,7 +679,7 @@ class ESIFilter {
                         <div class="metric-label">I</div>
                         <div class="metric-value">${task.impact}</div>
                     </div>
-                    <div class="task-score-right">${task.score}</div>
+                    <div class="task-score-right${isTop20Percent ? '' : ' score-standard'}">${task.score}</div>
                 </div>
                 
                 <div class="task-status-row-compact">
@@ -702,7 +711,7 @@ class ESIFilter {
         return taskDiv;
     }
 
-    createInProgressTaskElement(task, index) {
+    createInProgressTaskElement(task, index, isTop20Percent = true) {
         const taskDiv = document.createElement('div');
         taskDiv.className = 'in-progress-task-item';
         taskDiv.setAttribute('data-task-id', task.id);
@@ -751,7 +760,7 @@ class ESIFilter {
                         <div class="metric-label">I</div>
                         <div class="metric-value">${task.impact}</div>
                     </div>
-                    <div class="task-score-right">${task.score}</div>
+                    <div class="task-score-right${isTop20Percent ? '' : ' score-standard'}">${task.score}</div>
                 </div>
                 
                 <div class="task-status-row-compact">
