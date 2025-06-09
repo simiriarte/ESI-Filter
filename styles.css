@@ -1336,6 +1336,35 @@ header h1 {
     animation: slideIn 0.3s ease-out;
 }
 
+/* Warning for no 10x tasks in progress */
+.no-10x-warning {
+    margin: 0.75rem 0;
+    padding: 0.5rem 0.75rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-left: 3px solid #dc2626;
+    border-radius: 6px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.warning-content {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: #dc2626;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.warning-icon {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.warning-text {
+    flex: 1;
+}
+
 .hidden {
     display: none;
 }
@@ -1830,15 +1859,16 @@ header h1 {
 /* Apply base styles to both modals */
 .reflection-modal {
     background: white;
-    border-radius: 20px;
-    padding: 1.5rem;
+    border-radius: 16px;
+    padding: 2rem;
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
     animation: slideInUp 0.3s ease;
     position: relative;
+    border: 1px solid #e5e7eb;
     /* Hide scrollbar */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* Internet Explorer 10+ */
@@ -1913,10 +1943,11 @@ header h1 {
 }
 
 .reflection-modal-header h3 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #3c3c3c;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .reflection-modal-header p {
@@ -1925,15 +1956,17 @@ header h1 {
 }
 
 .reflection-modal-header .task-subtitle {
-    color: #3b9901;
-    font-size: 1rem;
+    color: #1f2937;
+    font-size: 1.125rem;
     font-weight: 600;
     margin-top: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: rgba(59, 153, 1, 0.1);
-    border: 1px solid #3b9901;
-    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #3b9901;
+    border-radius: 12px;
     font-style: normal;
+    text-align: center;
 }
 
 .reflection-content {
@@ -1942,11 +1975,12 @@ header h1 {
 
 /* Original Ratings Section */
 .original-ratings {
-    background: #f8fafc;
+    background: white;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-bottom: 1rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #1abc9c;
 }
 
 .original-ratings h4 {
@@ -1964,39 +1998,41 @@ header h1 {
 }
 
 .metric-label-box {
-    background: #e5e7eb;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    background: rgba(26, 188, 156, 0.1);
+    color: #1abc9c;
+    border: 1px solid rgba(26, 188, 156, 0.3);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: #374151;
-    text-align: left;
-    border: none;
+    text-align: center;
 }
 
 .metric-value-box {
-    background: #f3f4f6;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
     color: #374151;
-    border: 1px solid #d1d5db;
+    border: 1px solid #1abc9c;
     line-height: 1.3;
+    font-weight: 500;
 }
 
 /* Actual Ratings Section */
 .actual-ratings-section {
-    background: #0095f27a;
-    padding: 1rem;
-    border-radius: 8px;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
     margin-bottom: 1rem;
-    border: 1px solid #0097f2;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #5b5167;
 }
 
 .actual-ratings-section h4 {
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
-    color: #004876;
+    color: #1f2937;
     margin-bottom: 1rem;
     text-align: center;
 }
@@ -2010,14 +2046,14 @@ header h1 {
 }
 
 .actual-ratings-grid .metric-label-box {
-    background: #3a7ba5;
-    color: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    background: rgba(91, 81, 103, 0.1);
+    color: #5b5167;
+    border: 1px solid rgba(91, 81, 103, 0.3);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
     font-weight: 600;
     text-align: center;
-    border: none;
 }
 
 .actual-input-wrapper {
@@ -2027,21 +2063,24 @@ header h1 {
 
 .actual-rating-dropdown {
     width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #0097f2;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #5b5167;
+    border-radius: 8px;
+    font-size: 0.875rem;
     background: white;
     color: #374151;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
 }
 
 .actual-rating-dropdown:focus {
     outline: none;
-    border-color: #0097f2;
-    box-shadow: 0 0 0 2px rgba(0, 151, 242, 0.1);
+    border-color: #5b5167;
+    box-shadow: 0 0 0 3px rgba(91, 81, 103, 0.1);
 }
 
 .actual-rating-dropdown option {
@@ -2065,13 +2104,13 @@ header h1 {
 
 .quick-reflection-textarea {
     width: 100%;
-    min-height: 80px;
-    padding: 0.75rem;
+    min-height: 100px;
+    padding: 1rem;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
     font-family: inherit;
-    line-height: 1.4;
+    line-height: 1.5;
     resize: vertical;
     transition: all 0.2s ease;
     background: white;
@@ -2079,8 +2118,8 @@ header h1 {
 
 .quick-reflection-textarea:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    border-color: #ff8900;
+    box-shadow: 0 0 0 3px rgba(255, 137, 0, 0.1);
 }
 
 .quick-reflection-textarea::placeholder {
@@ -2101,9 +2140,9 @@ header h1 {
     background: #f3f4f6;
     color: #6b7280;
     border: 1px solid #d1d5db;
-    padding: 0.6rem 1.25rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2113,35 +2152,36 @@ header h1 {
     background: #e5e7eb;
     color: #374151;
     border-color: #9ca3af;
+    transform: translateY(-1px);
 }
 
 .reflection-modal .btn-primary {
-    background: #3b82f6;
+    background: #ff8900;
     color: white;
     border: none;
-    padding: 0.6rem 1.25rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: none;
+    box-shadow: 0 4px 15px rgba(255, 137, 0, 0.3);
     width: auto;
 }
 
 .reflection-modal .btn-primary:hover {
-    background: #2563eb;
-    transform: none;
-    box-shadow: none;
+    background: #e67500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-undo {
     background: #f3f4f6;
     color: #6b7280;
     border: 1px solid #d1d5db;
-    padding: 0.6rem 1.25rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2151,4 +2191,5 @@ header h1 {
     background: #e5e7eb;
     color: #374151;
     border-color: #9ca3af;
+    transform: translateY(-1px);
 }

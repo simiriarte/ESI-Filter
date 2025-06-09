@@ -456,10 +456,9 @@ class ESIFilter {
         let toBeRatedSection = document.getElementById('to-be-rated-section');
         let columnsNeeded = 0;
         
-        // Count columns needed
+        // Count columns needed - always show prioritized and in-progress columns
         if (unratedTasks.length > 0) columnsNeeded++;
-        if (inProgressTasks.length > 0) columnsNeeded++;
-        if (prioritizedTasks.length > 0) columnsNeeded++;
+        columnsNeeded += 2; // Always include prioritized tasks and in-progress columns
         
         // Handle To Be Rated section
         if (unratedTasks.length > 0) {
@@ -584,6 +583,28 @@ class ESIFilter {
                 const taskElement = this.createInProgressTaskElement(task, index, isTop20Percent);
                 inProgressTasksContainer.appendChild(taskElement);
             });
+        }
+
+        // Check if there are any 10x tasks in progress and show warning if none (for all in-progress scenarios)
+        const tenXInProgressTasks = inProgressTasks.filter(task => task.leverage === '10x');
+        const existingWarning = document.querySelector('.no-10x-warning');
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+        
+        if (inProgressTasks.length > 0 && tenXInProgressTasks.length === 0) {
+            const warningElement = document.createElement('div');
+            warningElement.className = 'no-10x-warning';
+            warningElement.innerHTML = `
+                <div class="warning-content">
+                    <span class="warning-icon">⚠️</span>
+                    <span class="warning-text">No 10x tasks in progress</span>
+                </div>
+            `;
+            // Insert warning after the section header but before the tasks container
+            const inProgressSection = inProgressTasksContainer.parentElement;
+            const sectionHeader = inProgressSection.querySelector('.section-header');
+            sectionHeader.insertAdjacentElement('afterend', warningElement);
         }
 
         // Handle completed tasks section
