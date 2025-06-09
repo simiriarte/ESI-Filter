@@ -1,4 +1,4 @@
-// Task management system
+// ESI Filter - Updated dropdowns with full scale - v2.1
 class ESIFilter {
     constructor() {
         console.log('ESIFilter constructor called'); // Debug log
@@ -226,7 +226,7 @@ class ESIFilter {
         // Check if task is already completed
         const isCompleted = task.status === 'complete';
         const modalTitle = isCompleted ? 'Reflection' : 'Wahoo! it\'s DONE!';
-        const buttonText = isCompleted ? 'Reflection' : 'Save Reflection';
+        const buttonText = isCompleted ? 'Update' : 'Save Reflection';
 
         // Create modal overlay
         const modalOverlay = document.createElement('div');
@@ -250,7 +250,9 @@ class ESIFilter {
                                 <select id="actual-energy-${taskId}" class="actual-rating-dropdown">
                                     <option value="">Select...</option>
                                     <option value="1" ${task.actualEnergy == 1 ? 'selected' : ''}>1 - Draining</option>
+                                    <option value="2" ${task.actualEnergy == 2 ? 'selected' : ''}>2</option>
                                     <option value="3" ${task.actualEnergy == 3 ? 'selected' : ''}>3 - Neutral</option>
+                                    <option value="4" ${task.actualEnergy == 4 ? 'selected' : ''}>4</option>
                                     <option value="5" ${task.actualEnergy == 5 ? 'selected' : ''}>5 - Energizing</option>
                                 </select>
                             </div>
@@ -260,7 +262,9 @@ class ESIFilter {
                                 <select id="actual-simplicity-${taskId}" class="actual-rating-dropdown">
                                     <option value="">Select...</option>
                                     <option value="1" ${task.actualSimplicity == 1 ? 'selected' : ''}>1 - Many complex subtasks</option>
+                                    <option value="2" ${task.actualSimplicity == 2 ? 'selected' : ''}>2</option>
                                     <option value="3" ${task.actualSimplicity == 3 ? 'selected' : ''}>3 - A few subtasks</option>
+                                    <option value="4" ${task.actualSimplicity == 4 ? 'selected' : ''}>4</option>
                                     <option value="5" ${task.actualSimplicity == 5 ? 'selected' : ''}>5 - One clear, single action</option>
                                 </select>
                             </div>
@@ -270,7 +274,14 @@ class ESIFilter {
                                 <select id="actual-impact-${taskId}" class="actual-rating-dropdown">
                                     <option value="">Select...</option>
                                     <option value="1" ${task.actualImpact == 1 ? 'selected' : ''}>1 - Minimal</option>
+                                    <option value="2" ${task.actualImpact == 2 ? 'selected' : ''}>2</option>
+                                    <option value="3" ${task.actualImpact == 3 ? 'selected' : ''}>3</option>
+                                    <option value="4" ${task.actualImpact == 4 ? 'selected' : ''}>4</option>
                                     <option value="5" ${task.actualImpact == 5 ? 'selected' : ''}>5 - Moderate</option>
+                                    <option value="6" ${task.actualImpact == 6 ? 'selected' : ''}>6</option>
+                                    <option value="7" ${task.actualImpact == 7 ? 'selected' : ''}>7</option>
+                                    <option value="8" ${task.actualImpact == 8 ? 'selected' : ''}>8</option>
+                                    <option value="9" ${task.actualImpact == 9 ? 'selected' : ''}>9</option>
                                     <option value="10" ${task.actualImpact == 10 ? 'selected' : ''}>10 - Major</option>
                                 </select>
                             </div>
@@ -830,51 +841,47 @@ class ESIFilter {
                 <div class="task-row">
                     <div class="input-group">
                         <label>Energy</label>
-                        <input type="number" 
-                               id="unrated-energy-${task.id}" 
-                               list="energy-options-${task.id}"
-                               min="1" 
-                               max="5" 
-                               value="${preservedValues?.energy || ''}"
-                               class="score-input"
-                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'energy')">
-                        <datalist id="energy-options-${task.id}">
-                            <option value="1">Draining</option>
-                            <option value="3">Neutral</option>
-                            <option value="5">Energizing</option>
-                        </datalist>
+                        <select id="unrated-energy-${task.id}" 
+                                class="score-input"
+                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'energy')">
+                            <option value="" ${!preservedValues?.energy ? 'selected' : ''}></option>
+                            <option value="1" ${preservedValues?.energy == 1 ? 'selected' : ''}>1 - Draining</option>
+                            <option value="2" ${preservedValues?.energy == 2 ? 'selected' : ''}>2</option>
+                            <option value="3" ${preservedValues?.energy == 3 ? 'selected' : ''}>3 - Neutral</option>
+                            <option value="4" ${preservedValues?.energy == 4 ? 'selected' : ''}>4</option>
+                            <option value="5" ${preservedValues?.energy == 5 ? 'selected' : ''}>5 - Energizing</option>
+                        </select>
                     </div>
                     <div class="input-group">
                         <label>Simplicity</label>
-                        <input type="number" 
-                               id="unrated-simplicity-${task.id}" 
-                               list="simplicity-options-${task.id}"
-                               min="1" 
-                               max="5" 
-                               value="${preservedValues?.simplicity || ''}"
-                               class="score-input"
-                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
-                        <datalist id="simplicity-options-${task.id}">
-                            <option value="1">Many complex subtasks</option>
-                            <option value="3">A few subtasks</option>
-                            <option value="5">One clear, single action</option>
-                        </datalist>
+                        <select id="unrated-simplicity-${task.id}" 
+                                class="score-input"
+                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'simplicity')">
+                            <option value="" ${!preservedValues?.simplicity ? 'selected' : ''}></option>
+                            <option value="1" ${preservedValues?.simplicity == 1 ? 'selected' : ''}>1 - Many complex subtasks</option>
+                            <option value="2" ${preservedValues?.simplicity == 2 ? 'selected' : ''}>2</option>
+                            <option value="3" ${preservedValues?.simplicity == 3 ? 'selected' : ''}>3 - A few subtasks</option>
+                            <option value="4" ${preservedValues?.simplicity == 4 ? 'selected' : ''}>4</option>
+                            <option value="5" ${preservedValues?.simplicity == 5 ? 'selected' : ''}>5 - One clear, single action</option>
+                        </select>
                     </div>
                     <div class="input-group">
                         <label>Impact</label>
-                        <input type="number" 
-                               id="unrated-impact-${task.id}" 
-                               list="impact-options-${task.id}"
-                               min="1" 
-                               max="10" 
-                               value="${preservedValues?.impact || ''}"
-                               class="score-input"
-                               onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'impact')">
-                        <datalist id="impact-options-${task.id}">
-                            <option value="1">Minimal</option>
-                            <option value="5">Moderate</option>
-                            <option value="10">Major</option>
-                        </datalist>
+                        <select id="unrated-impact-${task.id}" 
+                                class="score-input"
+                                onkeydown="esiFilter.handleScoreInputKeydown(event, ${task.id}, 'impact')">
+                            <option value="" ${!preservedValues?.impact ? 'selected' : ''}></option>
+                            <option value="1" ${preservedValues?.impact == 1 ? 'selected' : ''}>1 - Minimal</option>
+                            <option value="2" ${preservedValues?.impact == 2 ? 'selected' : ''}>2</option>
+                            <option value="3" ${preservedValues?.impact == 3 ? 'selected' : ''}>3</option>
+                            <option value="4" ${preservedValues?.impact == 4 ? 'selected' : ''}>4</option>
+                            <option value="5" ${preservedValues?.impact == 5 ? 'selected' : ''}>5 - Moderate</option>
+                            <option value="6" ${preservedValues?.impact == 6 ? 'selected' : ''}>6</option>
+                            <option value="7" ${preservedValues?.impact == 7 ? 'selected' : ''}>7</option>
+                            <option value="8" ${preservedValues?.impact == 8 ? 'selected' : ''}>8</option>
+                            <option value="9" ${preservedValues?.impact == 9 ? 'selected' : ''}>9</option>
+                            <option value="10" ${preservedValues?.impact == 10 ? 'selected' : ''}>10 - Major</option>
+                        </select>
                     </div>
                     <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
                         Rate
@@ -939,17 +946,17 @@ class ESIFilter {
 
         // Validate values are numbers and within range
         if (!energy || energy < 1 || energy > 5) {
-            alert('Please enter a valid Energy score (1-5)');
+            alert('Please select an Energy score (1-5)');
             energyInput.focus();
             return;
         }
         if (!simplicity || simplicity < 1 || simplicity > 5) {
-            alert('Please enter a valid Simplicity score (1-5)');
+            alert('Please select a Simplicity score (1-5)');
             simplicityInput.focus();
             return;
         }
         if (!impact || impact < 1 || impact > 10) {
-            alert('Please enter a valid Impact score (1-10)');
+            alert('Please select an Impact score (1-10)');
             impactInput.focus();
             return;
         }
