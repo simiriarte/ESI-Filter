@@ -116,6 +116,10 @@ class ESIFilter {
         if (filterValue === 'all') {
             return tasks;
         }
+        if (filterValue === 'time-sensitive') {
+            // Filter tasks by time-sensitive status
+            return tasks.filter(task => task.isTimeSensitive === true);
+        }
         // Filter tasks by leverage value, only including tasks that have the specified leverage
         return tasks.filter(task => task.leverage === filterValue);
     }
@@ -535,8 +539,9 @@ class ESIFilter {
                     const impactInput = document.getElementById(`unrated-impact-${task.id}`);
                     const leverage10xBtn = document.getElementById(`leverage-10x-${task.id}`);
                     const leverage2xBtn = document.getElementById(`leverage-2x-${task.id}`);
+                    const timeSensitiveToggle = document.getElementById(`time-sensitive-toggle-${task.id}`);
                     
-                    if (energyInput || simplicityInput || impactInput || leverage10xBtn || leverage2xBtn) {
+                    if (energyInput || simplicityInput || impactInput || leverage10xBtn || leverage2xBtn || timeSensitiveToggle) {
                         let currentLeverage = '';
                         if (leverage10xBtn && leverage10xBtn.classList.contains('active')) {
                             currentLeverage = '10x';
@@ -548,7 +553,8 @@ class ESIFilter {
                             energy: energyInput ? energyInput.value : '',
                             simplicity: simplicityInput ? simplicityInput.value : '',
                             impact: impactInput ? impactInput.value : '',
-                            leverage: currentLeverage
+                            leverage: currentLeverage,
+                            isTimeSensitive: task.isTimeSensitive || false
                         };
                     }
                 });
@@ -590,9 +596,14 @@ class ESIFilter {
 
         if (prioritizedTasks.length === 0) {
             // Show empty state for prioritized tasks
-            const emptyMessage = this.filters.prioritized === 'all' 
-                ? 'Rated tasks will appear here prioritized by ESI score!'
-                : `No ${this.filters.prioritized} tasks found in prioritized tasks.`;
+            let emptyMessage;
+            if (this.filters.prioritized === 'all') {
+                emptyMessage = 'Rated tasks will appear here prioritized by ESI score!';
+            } else if (this.filters.prioritized === 'time-sensitive') {
+                emptyMessage = 'No time-sensitive tasks found in prioritized tasks.';
+            } else {
+                emptyMessage = `No ${this.filters.prioritized} tasks found in prioritized tasks.`;
+            }
             tasksContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">😴</div>
@@ -626,9 +637,14 @@ class ESIFilter {
 
         if (inProgressTasks.length === 0) {
             // Show empty state for in-progress tasks
-            const emptyMessage = this.filters['in-progress'] === 'all'
-                ? 'Click "Start" on a task to begin working on it!'
-                : `No ${this.filters['in-progress']} tasks found in progress.`;
+            let emptyMessage;
+            if (this.filters['in-progress'] === 'all') {
+                emptyMessage = 'Click "Start" on a task to begin working on it!';
+            } else if (this.filters['in-progress'] === 'time-sensitive') {
+                emptyMessage = 'No time-sensitive tasks found in progress.';
+            } else {
+                emptyMessage = `No ${this.filters['in-progress']} tasks found in progress.`;
+            }
             inProgressTasksContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-icon">⏳</div>
@@ -688,10 +704,13 @@ class ESIFilter {
             completedTasksContainer.innerHTML = '';
             if (completedTasks.length === 0 && this.filters.completed !== 'all') {
                 // Show empty state when filter returns no results
+                const filterDisplayName = this.filters.completed === 'time-sensitive' 
+                    ? 'time-sensitive' 
+                    : this.filters.completed;
                 completedTasksContainer.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">🔍</div>
-                        <h3>No ${this.filters.completed} tasks found</h3>
+                        <h3>No ${filterDisplayName} tasks found</h3>
                         <p>Try changing the filter to see more completed tasks.</p>
                     </div>
                 `;
@@ -788,6 +807,7 @@ class ESIFilter {
                 <div class="task-status-row-compact">
                     <div class="task-leverage-area">
                         ${task.leverage ? `<div class="leverage-badge leverage-${task.leverage}">${task.leverage}</div>` : ''}
+                        ${task.isTimeSensitive ? `<div class="time-sensitive-indicator" title="Time-Sensitive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>` : ''}
                     </div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
@@ -869,6 +889,7 @@ class ESIFilter {
                 <div class="task-status-row-compact">
                     <div class="task-leverage-area">
                         ${task.leverage ? `<div class="leverage-badge leverage-${task.leverage}">${task.leverage}</div>` : ''}
+                        ${task.isTimeSensitive ? `<div class="time-sensitive-indicator" title="Time-Sensitive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>` : ''}
                     </div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
@@ -1003,6 +1024,7 @@ class ESIFilter {
             <div class="completed-task-bottom-row">
                 <div class="task-leverage-area">
                     ${task.leverage ? `<div class="leverage-badge leverage-${task.leverage}">${task.leverage}</div>` : ''}
+                    ${task.isTimeSensitive ? `<div class="time-sensitive-indicator" title="Time-Sensitive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>` : ''}
                 </div>
                 <div class="task-actions">
                     <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
@@ -1054,6 +1076,17 @@ class ESIFilter {
                         </div>
                     </div>
                 </div>
+                <button type="button" 
+                        id="time-sensitive-toggle-${task.id}" 
+                        class="time-sensitive-toggle ${preservedValues?.isTimeSensitive || task.isTimeSensitive ? 'active' : ''}" 
+                        onclick="esiFilter.toggleTimeSensitive(${task.id})"
+                        title="Mark as time-sensitive"
+                        aria-label="Mark as time-sensitive">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                </button>
                 <div class="unrated-task-header">
                     <div class="unrated-task-name" title="${taskName}">${taskName}</div>
                 </div>
@@ -1249,6 +1282,7 @@ class ESIFilter {
             task.score = energy + simplicity + impact;
             task.leverage = leverage; // Save leverage value
             task.status = 'start'; // Move to regular tasks
+            // Note: isTimeSensitive is already preserved on the task object
 
             // Sort tasks by score
             this.sortTasks();
@@ -1321,6 +1355,7 @@ class ESIFilter {
                 this.tasks[taskIndex].score = energy + simplicity + impact;
                 this.tasks[taskIndex].leverage = leverage; // Save leverage value
                 this.tasks[taskIndex].status = 'start'; // Move to regular tasks
+                // Note: isTimeSensitive is already preserved on the task object
                 ratedCount++;
             }
         });
@@ -1390,6 +1425,10 @@ class ESIFilter {
                     // Add notes property if it doesn't exist (backward compatibility)
                     if (!task.hasOwnProperty('notes')) {
                         task.notes = "";
+                    }
+                    // Add isTimeSensitive property if it doesn't exist (backward compatibility)
+                    if (!task.hasOwnProperty('isTimeSensitive')) {
+                        task.isTimeSensitive = false;
                     }
                 });
                 
@@ -1653,6 +1692,27 @@ class ESIFilter {
             // Show feedback
             const taskName = task.title || task.name;
             this.showSuccessFeedback(`↩️ "${taskName}" moved back to in-progress!`);
+        }
+    }
+
+    toggleTimeSensitive(taskId) {
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            task.isTimeSensitive = !task.isTimeSensitive;
+            
+            // Update toggle visual state
+            const timeSensitiveToggle = document.getElementById(`time-sensitive-toggle-${taskId}`);
+            if (timeSensitiveToggle) {
+                if (task.isTimeSensitive) {
+                    timeSensitiveToggle.classList.add('active');
+                } else {
+                    timeSensitiveToggle.classList.remove('active');
+                }
+            }
+            
+            // Save changes
+            this.saveTasksToStorage();
         }
     }
 }

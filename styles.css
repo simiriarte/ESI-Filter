@@ -1031,6 +1031,91 @@ header h1 {
     text-align: center;
 }
 
+/* Time-Sensitive Toggle */
+.time-sensitive-toggle {
+    position: absolute;
+    top: 0.5rem;
+    right: 2.5rem;
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.4;
+    color: #9ca3af;
+}
+
+.time-sensitive-toggle:hover {
+    opacity: 0.7;
+    background: rgba(156, 163, 175, 0.1);
+    color: #6b7280;
+}
+
+.time-sensitive-toggle.active {
+    opacity: 1;
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.time-sensitive-toggle.active:hover {
+    background: rgba(99, 102, 241, 0.15);
+    color: #5856eb;
+}
+
+/* Time-Sensitive Indicator */
+.time-sensitive-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border-radius: 4px;
+    background: rgba(99, 102, 241, 0.08);
+    color: #6366f1;
+    margin-left: 0.5rem;
+    margin-top: 0.25rem;
+    opacity: 0.8;
+}
+
+/* Adjust task-leverage-area to handle multiple elements */
+.task-leverage-area {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Responsive adjustments for time-sensitive toggle */
+@media (max-width: 768px) {
+    .time-sensitive-toggle {
+        width: 20px;
+        height: 20px;
+        top: 0.375rem;
+        right: 2.25rem;
+    }
+    
+    .time-sensitive-toggle svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .task-leverage-area {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .leverage-buttons {
+        display: flex;
+        gap: 0.25rem;
+    }
+}
+
 /* Completed Tasks */
 .completed-tasks-section {
     margin-top: 2rem;
