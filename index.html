@@ -29,12 +29,20 @@
                             <div class="task-count">
                                 <span id="task-count">0 tasks</span>
                             </div>
-                            <select id="prioritized-filter" class="task-filter-dropdown" onchange="esiFilter.applyFilter('prioritized', this.value)">
-                                <option value="all">All Tasks</option>
-                                <option value="10x">10x Tasks</option>
-                                <option value="2x">2x Tasks</option>
-                                <option value="time-sensitive">Time-Sensitive</option>
-                            </select>
+                            <div class="filter-container">
+                                <button id="prioritized-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('prioritized')" title="Filter tasks">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+                                    </svg>
+                                    <span id="prioritized-filter-badge" class="filter-badge hidden">All</span>
+                                </button>
+                                <div id="prioritized-filter-menu" class="filter-menu hidden">
+                                    <div class="filter-option" data-value="all">All Tasks</div>
+                                    <div class="filter-option" data-value="10x">10x Tasks</div>
+                                    <div class="filter-option" data-value="2x">2x Tasks</div>
+                                    <div class="filter-option" data-value="time-sensitive">Time-Sensitive</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -57,12 +65,20 @@
                             <div class="task-count">
                                 <span id="in-progress-task-count">0 tasks</span>
                             </div>
-                            <select id="in-progress-filter" class="task-filter-dropdown" onchange="esiFilter.applyFilter('in-progress', this.value)">
-                                <option value="all">All Tasks</option>
-                                <option value="10x">10x Tasks</option>
-                                <option value="2x">2x Tasks</option>
-                                <option value="time-sensitive">Time-Sensitive</option>
-                            </select>
+                            <div class="filter-container">
+                                <button id="in-progress-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('in-progress')" title="Filter tasks">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+                                    </svg>
+                                    <span id="in-progress-filter-badge" class="filter-badge hidden">All</span>
+                                </button>
+                                <div id="in-progress-filter-menu" class="filter-menu hidden">
+                                    <div class="filter-option" data-value="all">All Tasks</div>
+                                    <div class="filter-option" data-value="10x">10x Tasks</div>
+                                    <div class="filter-option" data-value="2x">2x Tasks</div>
+                                    <div class="filter-option" data-value="time-sensitive">Time-Sensitive</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -93,12 +109,20 @@
                         <div class="task-count">
                             <span id="completed-task-count">0 completed</span>
                         </div>
-                        <select id="completed-filter" class="task-filter-dropdown" onchange="esiFilter.applyFilter('completed', this.value)">
-                            <option value="all">All Tasks</option>
-                            <option value="10x">10x Tasks</option>
-                            <option value="2x">2x Tasks</option>
-                            <option value="time-sensitive">Time-Sensitive</option>
-                        </select>
+                        <div class="filter-container">
+                            <button id="completed-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('completed')" title="Filter tasks">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+                                </svg>
+                                <span id="completed-filter-badge" class="filter-badge hidden">All</span>
+                            </button>
+                            <div id="completed-filter-menu" class="filter-menu hidden">
+                                <div class="filter-option" data-value="all">All Tasks</div>
+                                <div class="filter-option" data-value="10x">10x Tasks</div>
+                                <div class="filter-option" data-value="2x">2x Tasks</div>
+                                <div class="filter-option" data-value="time-sensitive">Time-Sensitive</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 

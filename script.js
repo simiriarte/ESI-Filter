@@ -36,6 +36,15 @@ class ESIFilter {
         } else {
             console.log('Task form not found - brain dump is now modal-based'); // Debug log
         }
+
+        // Close filter menus when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.filter-container')) {
+                document.querySelectorAll('.filter-menu').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
     }
 
     addBrainDumpTasks() {
@@ -125,21 +134,84 @@ class ESIFilter {
     }
 
     updateFilterDropdowns() {
-        // Update dropdown values to reflect current filter state
-        const prioritizedDropdown = document.getElementById('prioritized-filter');
-        const inProgressDropdown = document.getElementById('in-progress-filter');
-        const completedDropdown = document.getElementById('completed-filter');
+        // Update the dropdown values to match the current filter state
+        const prioritizedFilterBtn = document.getElementById('prioritized-filter-btn');
+        const inProgressFilterBtn = document.getElementById('in-progress-filter-btn'); 
+        const completedFilterBtn = document.getElementById('completed-filter-btn');
+        
+        // Update filter badges and button states
+        this.updateFilterBadge('prioritized', this.filters.prioritized);
+        this.updateFilterBadge('in-progress', this.filters['in-progress']);
+        this.updateFilterBadge('completed', this.filters.completed);
+    }
 
-        if (prioritizedDropdown) {
-            prioritizedDropdown.value = this.filters.prioritized;
-        }
-        if (inProgressDropdown) {
-            inProgressDropdown.value = this.filters['in-progress'];
-        }
-        if (completedDropdown) {
-            completedDropdown.value = this.filters.completed;
+    toggleFilterMenu(column) {
+        const menu = document.getElementById(`${column}-filter-menu`);
+        const isHidden = menu.classList.contains('hidden');
+        
+        // Close all other filter menus first
+        document.querySelectorAll('.filter-menu').forEach(otherMenu => {
+            if (otherMenu !== menu) {
+                otherMenu.classList.add('hidden');
+            }
+        });
+        
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            // Set up click handlers for filter options
+            menu.querySelectorAll('.filter-option').forEach(option => {
+                option.onclick = () => this.selectFilter(column, option.dataset.value);
+            });
+        } else {
+            menu.classList.add('hidden');
         }
     }
+
+    selectFilter(column, filterValue) {
+        // Apply the filter
+        this.applyFilter(column, filterValue);
+        
+        // Update the badge
+        this.updateFilterBadge(column, filterValue);
+        
+        // Close the menu
+        document.getElementById(`${column}-filter-menu`).classList.add('hidden');
+    }
+
+    updateFilterBadge(column, filterValue) {
+        const badge = document.getElementById(`${column}-filter-badge`);
+        const btn = document.getElementById(`${column}-filter-btn`);
+        
+        if (filterValue === 'all') {
+            badge.classList.add('hidden');
+            btn.classList.remove('active');
+            badge.classList.remove('time-sensitive');
+        } else {
+            badge.classList.remove('hidden');
+            btn.classList.add('active');
+            
+            // Set badge text and class based on filter
+            switch(filterValue) {
+                case '10x':
+                    badge.textContent = '10x';
+                    badge.classList.remove('time-sensitive');
+                    break;
+                case '2x':
+                    badge.textContent = '2x';
+                    badge.classList.remove('time-sensitive');
+                    break;
+                case 'time-sensitive':
+                    badge.textContent = '⏰';
+                    badge.classList.add('time-sensitive');
+                    break;
+                default:
+                    badge.textContent = filterValue;
+                    badge.classList.remove('time-sensitive');
+            }
+        }
+    }
+
+
 
     updateTaskStatus(taskId) {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
