@@ -231,6 +231,23 @@ class ESIFilter {
         }
     }
 
+    enterPainCave(taskId) {
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            
+            // Only allow entering Pain Cave for in-progress tasks
+            if (task.status === 'in-progress') {
+                // Save the task name to localStorage
+                const taskName = task.title || task.name;
+                localStorage.setItem('painCaveTask', taskName);
+                
+                // Open Pain Cave in new window
+                window.open('https://simiriarte.github.io/stuffthatsticks-Pain-Cave/', '_blank');
+            }
+        }
+    }
+
     deleteTask(taskId) {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
@@ -966,6 +983,9 @@ class ESIFilter {
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
                             ${task.notes ? '✏️' : '📝'}
+                        </button>
+                        <button class="btn-pain-cave-task" onclick="esiFilter.enterPainCave(${task.id})" title="Enter Pain Cave with this task">
+                            🔥
                         </button>
                         <button class="status-btn-compact" onclick="esiFilter.updateTaskStatus(${task.id})">
                             Done!

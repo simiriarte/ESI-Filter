@@ -802,6 +802,34 @@ header h1 {
     transform: translateY(0);
 }
 
+/* Individual Pain Cave Button for tasks */
+.btn-pain-cave-task {
+    background: #2d3748;
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 30px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-pain-cave-task:hover {
+    background: #1a202c;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(45, 55, 72, 0.3);
+}
+
+.btn-pain-cave-task:active {
+    transform: translateY(0);
+}
+
 /* Unrated Tasks */
 .unrated-task-item {
     margin-bottom: 0.5rem;
