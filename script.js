@@ -242,8 +242,8 @@ class ESIFilter {
                 const taskName = task.title || task.name;
                 localStorage.setItem('painCaveTask', taskName);
                 
-                // Open Pain Cave in new window (local for testing)
-                window.open('http://localhost:8003', '_blank');
+                // Open Pain Cave in new window
+                window.open('https://simiriarte.github.io/stuffthatsticks-Pain-Cave/', '_blank');
             }
         }
     }
