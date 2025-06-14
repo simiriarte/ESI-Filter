@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pain Cave</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.cdnfonts.com/css/bobby-jones" rel="stylesheet">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="container">
+            <button id="reset" class="reset-btn">reset</button>
+            <div class="timer">
+                <img src="images/PAIN CAVE.png" alt="Pain Cave" class="cave-image">
+                <div class="intention-container">
+                    <input type="text" id="intention-input" placeholder="whatcha doin' in the pain cave?" maxlength="50">
+                    <p id="intention-display" class="intention-display"></p>
+                </div>
+                <p class="magic-text">magical transformations begin in the pain cave</p>
+                <p class="rest-text">move, hydrate, take deep breaths</p>
+                <div class="time-display">25:00</div>
+                <div class="break-countdown">time until rest break: <span id="break-countdown" class="countdown-time">--:--</span></div>
+                <div class="controls">
+                    <div class="break-timer">break ends in --:--</div>
+                    <div id="main-buttons" class="main-buttons">
+                        <button id="toggle">Enter Pain Cave</button>
+                        <button id="rest-mode" class="rest-mode-btn">Rest Mode</button>
+                    </div>
+                    <div class="break-button">
+                        <button id="collapse-toggle" class="break-header-btn">Take a break after...</button>
+                    </div>
+                </div>
+                <div class="break-settings collapsed">
+                    <div class="break-content">
+                        <div class="time-selections">
+                            <div class="break-grid">
+                                <div class="break-column">
+                                    <div class="break-toggle">
+                                        <input type="radio" name="break-time" id="break-5min" value="5">
+                                        <label for="break-5min">5 min</label>
+                                    </div>
+                                    <div class="break-toggle">
+                                        <input type="radio" name="break-time" id="break-15min" value="15">
+                                        <label for="break-15min">15 min</label>
+                                    </div>
+                                </div>
+                                <div class="break-column">
+                                    <div class="break-toggle">
+                                        <input type="radio" name="break-time" id="break-30min" value="30">
+                                        <label for="break-30min">30 min</label>
+                                    </div>
+                                    <div class="break-toggle">
+                                        <input type="radio" name="break-time" id="break-1hour" value="60">
+                                        <label for="break-1hour">1 hour</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="break-toggle custom">
+                                <input type="radio" name="break-time" id="break-custom" value="custom">
+                                <input type="number" id="custom-time" min="1" max="120" value="10" disabled>
+                                <span>min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sound-controls">
+                    <label class="sound-toggle">
+                        <input type="checkbox" id="sound-toggle" checked>
+                        <span>Sound</span>
+                    </label>
+                    <div class="volume-control">
+                        <input type="range" id="volume-slider" min="0" max="100" value="50">
+                        <span>Volume</span>
+                    </div>
+                </div>
+                <a href="https://stuffthatsticks.co/" target="_blank" class="website-link">stuffthatsticks.co</a>
+            </div>
+            <!-- Break Reminder Modal -->
+            <div id="break-modal" class="modal">
+                <div class="modal-content">
+                    <h2>Wahoo!</h2>
+                    <p id="break-message"></p>
+                    <div class="modal-buttons">
+                        <button id="take-break">Take a Break</button>
+                        <button id="keep-going">Keep Going</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rest End Modal -->
+            <div id="rest-end-modal" class="modal">
+                <div class="modal-content">
+                    <h2>Feeling Refreshed?</h2>
+                    <p>Your break time has ended.</p>
+                    <div class="modal-buttons">
+                        <button id="enter-pain-cave">Enter Pain Cave</button>
+                        <button id="keep-chillin">Keep Chillin</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pain Cave Info Modal -->
+            <div id="info-modal" class="modal">
+                <div class="modal-content info-modal-content">
+                    <h2>Welcome to the Pain Cave</h2>
+                    <div class="info-content">
+                        <p>This is your space to do the sh*t you've been avoiding—like:</p>
+                        <ul>
+                            <li>Starting that creative project you keep "planning"</li>
+                            <li>Replying to that one email that might as well be tagged "inbox elephant"</li>
+                            <li>Scheduling the doctor's appointment you've been avoiding for month</li>
+                            <li>Studying for that wildly expensive, life-changing exam</li>
+                            <li>Finishing an application you swore you'd submit two weeks ago</li>
+                    
+                        </ul>
+                        <p>Basically: all the adulting admin and personal projects where procrastination breeds imaginary fear gremlins—and where your future self is asking you to be NOW.</p>
+                        <p><strong class="figtree-font">The Pain Cave isn't punishment.</strong></p>
+                        <p>It's a transformation portal where trading even just 5 minutes of discomfort buys you hours of peace, clarity, and guilt free binge watching sessions on Sundays.</p>
+                        <p>Even if it's just a teensy tiny burst:</p>
+                        <ul>
+                            <li>Set an intention.</li>
+                            <li>Do your thing.</li>
+                            <li>Step out with momentum.</li>
+                        </ul>
+                        <p>Now go kick ass (joyfully).</p>
+                    </div>
+                    <div class="modal-buttons">
+                        <button id="close-info">Let's Go</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <a href="https://tg49kmkxs3x.typeform.com/paincavesurvey" target="_blank" class="feedback-button">share feedback</a>
+</body>
+</html> 
