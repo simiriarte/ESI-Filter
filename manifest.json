@@ -1,17 +1,19 @@
 {
-  "name": "ESI Filter - Task Prioritization Tool",
-  "short_name": "ESI Filter",
+  "name": "ESI Filter & Pain Cave - Productivity Suite",
+  "short_name": "ESI + Pain Cave",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007acc",
-  "description": "Prioritize tasks by Energy, Simplicity, and Impact",
+  "description": "Task prioritization with ESI Filter and focused work sessions with Pain Cave timer",
+  "categories": ["productivity", "utilities"],
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "./icons/green17.png",
       "sizes": "1024x1024",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 } 

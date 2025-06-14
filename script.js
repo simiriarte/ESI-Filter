@@ -2047,3 +2047,38 @@ if ("serviceWorker" in navigator) {
             .catch(err => console.error("Service worker registration failed:", err));
     });
 }
+
+// Tab Navigation Functions
+function switchTab(tabName) {
+    // Remove active class from all tabs and content
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    // Add active class to clicked tab and corresponding content
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    document.getElementById(`${tabName}-content`).classList.add('active');
+    
+    // Handle Pain Cave iframe loading
+    if (tabName === 'pain-cave') {
+        loadPainCaveIframe();
+    }
+}
+
+function loadPainCaveIframe() {
+    const painCaveContent = document.getElementById('pain-cave-content');
+    
+    // Check if iframe already exists
+    if (!painCaveContent.querySelector('iframe')) {
+        // Create iframe with Pain Cave
+        const iframe = document.createElement('iframe');
+        iframe.src = './Pain Cave/index.html';
+        iframe.style.width = '100%';
+        iframe.style.height = 'calc(100vh - 60px)';
+        iframe.style.border = 'none';
+        iframe.style.display = 'block';
+        
+        // Clear existing content and add iframe
+        painCaveContent.innerHTML = '';
+        painCaveContent.appendChild(iframe);
+    }
+}

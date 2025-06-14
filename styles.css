@@ -28,18 +28,20 @@ body {
     font-family: var(--font-body);
     background-color: var(--background-color);
     color: var(--text-color);
-  }
+    margin: 0;
+    padding: 0;
+}
 
-  h1, h2, h3 {
+h1, h2, h3 {
     font-family: var(--font-heading);
-  }
+}
   
-  button {
+button {
     background-color: var(--primary-color);
     color: white;
     border-radius: 8px;
     padding: 10px 16px;
-  }
+}
 
 .container {
     max-width: 1400px;
@@ -2596,4 +2598,81 @@ header h1 {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+/* Tab Navigation Styles */
+.app-tabs {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tab-container {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s ease;
+    position: relative;
+    margin-right: 4px;
+}
+
+.tab-btn:hover {
+    background: rgba(0, 122, 204, 0.1);
+    color: #007acc;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #007acc;
+    border-bottom: 2px solid #007acc;
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #007acc;
+}
+
+.tab-icon {
+    font-size: 16px;
+}
+
+/* Tab Content Styles */
+.tab-content {
+    display: none;
+    min-height: calc(100vh - 60px);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Basic Pain Cave Container Styles */
+#pain-cave-content {
+    min-height: calc(100vh - 60px);
+    position: relative;
 }

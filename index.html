@@ -7,38 +7,130 @@
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#007acc" />
     <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.cdnfonts.com/css/bobby-jones" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>ESI Filter</h1>
-            <p class="subtitle">Prioritize tasks by Energy, Simplicity, and Impact</p>
-            <p class="subheader">Not an everyday tool, just a clarity spotter for the days you just can't compute.</p>
-            <div class="header-actions">
-                <button class="btn-brain-dump" onclick="openBrainDumpModal()">
-                    🧠 Brain Dump
-                </button>
-            </div>
-        </header>
+    <!-- Tab Navigation -->
+    <nav class="app-tabs">
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('esi-filter')" data-tab="esi-filter">
+                <span class="tab-icon">📊</span>
+                ESI Filter
+            </button>
+            <button class="tab-btn" onclick="switchTab('pain-cave')" data-tab="pain-cave">
+                <span class="tab-icon">🔥</span>
+                Pain Cave
+            </button>
+        </div>
+    </nav>
 
-        <main class="main-grid">
-            <!-- Left Column: Prioritized Tasks -->
-            <section class="tasks-section">
+    <!-- ESI Filter Content -->
+    <div id="esi-filter-content" class="tab-content active">
+        <div class="container">
+            <header>
+                <h1>ESI Filter</h1>
+                <p class="subtitle">Prioritize tasks by Energy, Simplicity, and Impact</p>
+                <p class="subheader">Not an everyday tool, just a clarity spotter for the days you just can't compute.</p>
+                <div class="header-actions">
+                    <button class="btn-brain-dump" onclick="openBrainDumpModal()">
+                        🧠 Brain Dump
+                    </button>
+                </div>
+            </header>
+
+            <main class="main-grid">
+                <!-- Left Column: Prioritized Tasks -->
+                <section class="tasks-section">
+                    <div class="card">
+                        <div class="section-header">
+                            <h2>Prioritized Tasks</h2>
+                            <div class="header-controls">
+                                <div class="task-count">
+                                    <span id="task-count">0 tasks</span>
+                                </div>
+                                <div class="filter-container">
+                                    <button id="prioritized-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('prioritized')" title="Filter tasks">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+                                        </svg>
+                                        <span id="prioritized-filter-badge" class="filter-badge hidden">All</span>
+                                    </button>
+                                    <div id="prioritized-filter-menu" class="filter-menu hidden">
+                                        <div class="filter-option" data-value="all">All Tasks</div>
+                                        <div class="filter-option" data-value="10x">10x Tasks</div>
+                                        <div class="filter-option" data-value="2x">2x Tasks</div>
+                                        <div class="filter-option" data-value="time-sensitive">Time-Sensitive</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="tasks-container" class="tasks-container">
+                            <div class="empty-state">
+                                <div class="empty-icon">😴</div>
+                                <h3>No tasks yet</h3>
+                                <p>Rated tasks will appear here prioritized by ESI score!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Column: In Progress -->
+                <section class="in-progress-section">
+                    <div class="card">
+                        <div class="section-header">
+                            <h2>In Progress</h2>
+                            <div class="header-controls">
+                                <div class="task-count">
+                                    <span id="in-progress-task-count">0 tasks</span>
+                                </div>
+                                <div class="filter-container">
+                                    <button id="in-progress-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('in-progress')" title="Filter tasks">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+                                        </svg>
+                                        <span id="in-progress-filter-badge" class="filter-badge hidden">All</span>
+                                    </button>
+                                    <div id="in-progress-filter-menu" class="filter-menu hidden">
+                                        <div class="filter-option" data-value="all">All Tasks</div>
+                                        <div class="filter-option" data-value="10x">10x Tasks</div>
+                                        <div class="filter-option" data-value="2x">2x Tasks</div>
+                                        <div class="filter-option" data-value="time-sensitive">Time-Sensitive</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="in-progress-tasks-container" class="in-progress-tasks-container">
+                            <div class="empty-state">
+                                <div class="empty-icon">⏳</div>
+                                <h3>No tasks in progress</h3>
+                                <p>Click "Start" on a task to begin working on it!</p>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Completed Tasks Section (Full Width Below) -->
+            <section id="completed-tasks-section" class="completed-tasks-section hidden">
                 <div class="card">
                     <div class="section-header">
-                        <h2>Prioritized Tasks</h2>
+                        <h2>Completed Tasks</h2>
                         <div class="header-controls">
                             <div class="task-count">
-                                <span id="task-count">0 tasks</span>
+                                <span id="completed-task-count">0 completed</span>
                             </div>
                             <div class="filter-container">
-                                <button id="prioritized-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('prioritized')" title="Filter tasks">
+                                <button id="completed-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('completed')" title="Filter tasks">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
                                     </svg>
-                                    <span id="prioritized-filter-badge" class="filter-badge hidden">All</span>
+                                    <span id="completed-filter-badge" class="filter-badge hidden">All</span>
                                 </button>
-                                <div id="prioritized-filter-menu" class="filter-menu hidden">
+                                <div id="completed-filter-menu" class="filter-menu hidden">
                                     <div class="filter-option" data-value="all">All Tasks</div>
                                     <div class="filter-option" data-value="10x">10x Tasks</div>
                                     <div class="filter-option" data-value="2x">2x Tasks</div>
@@ -48,88 +140,20 @@
                         </div>
                     </div>
                     
-                    <div id="tasks-container" class="tasks-container">
-                        <div class="empty-state">
-                            <div class="empty-icon">😴</div>
-                            <h3>No tasks yet</h3>
-                            <p>Rated tasks will appear here prioritized by ESI score!</p>
-                        </div>
+                    <div id="completed-tasks-container" class="completed-tasks-container">
+                        <!-- Completed tasks will be rendered here -->
                     </div>
                 </div>
             </section>
+        </div>
+    </div>
 
-            <!-- Right Column: In Progress -->
-            <section class="in-progress-section">
-                <div class="card">
-                    <div class="section-header">
-                        <h2>In Progress</h2>
-                        <div class="header-controls">
-                            <div class="task-count">
-                                <span id="in-progress-task-count">0 tasks</span>
-                            </div>
-                            <div class="filter-container">
-                                <button id="in-progress-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('in-progress')" title="Filter tasks">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
-                                    </svg>
-                                    <span id="in-progress-filter-badge" class="filter-badge hidden">All</span>
-                                </button>
-                                <div id="in-progress-filter-menu" class="filter-menu hidden">
-                                    <div class="filter-option" data-value="all">All Tasks</div>
-                                    <div class="filter-option" data-value="10x">10x Tasks</div>
-                                    <div class="filter-option" data-value="2x">2x Tasks</div>
-                                    <div class="filter-option" data-value="time-sensitive">Time-Sensitive</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="in-progress-tasks-container" class="in-progress-tasks-container">
-                        <div class="empty-state">
-                            <div class="empty-icon">⏳</div>
-                            <h3>No tasks in progress</h3>
-                            <p>Click "Start" on a task to begin working on it!</p>
-                        </div>
-                    </div>
-                    
-
-                </div>
-            </section>
-        </main>
-        
-        <!-- Completed Tasks Section (Full Width Below) -->
-        <section id="completed-tasks-section" class="completed-tasks-section hidden">
-            <div class="card">
-                <div class="section-header">
-                    <h2>Completed Tasks</h2>
-                    <div class="header-controls">
-                        <div class="task-count">
-                            <span id="completed-task-count">0 completed</span>
-                        </div>
-                        <div class="filter-container">
-                            <button id="completed-filter-btn" class="filter-btn" onclick="esiFilter.toggleFilterMenu('completed')" title="Filter tasks">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
-                                </svg>
-                                <span id="completed-filter-badge" class="filter-badge hidden">All</span>
-                            </button>
-                            <div id="completed-filter-menu" class="filter-menu hidden">
-                                <div class="filter-option" data-value="all">All Tasks</div>
-                                <div class="filter-option" data-value="10x">10x Tasks</div>
-                                <div class="filter-option" data-value="2x">2x Tasks</div>
-                                <div class="filter-option" data-value="time-sensitive">Time-Sensitive</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="completed-tasks-container" class="completed-tasks-container">
-                    <!-- Completed tasks will be rendered here -->
-                </div>
-            </div>
-        </section>
+    <!-- Pain Cave Content -->
+    <div id="pain-cave-content" class="tab-content">
+        <p style="text-align: center; margin-top: 50px; color: #666;">Loading Pain Cave...</p>
     </div>
 
     <script src="./script.js"></script>
+    <script src="./Pain Cave/script.js"></script>
 </body>
 </html> 
