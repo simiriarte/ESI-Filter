@@ -2039,13 +2039,37 @@ function handleModalBrainDumpTasks(event) {
     }
 }
 
-// PWA Service Worker Registration
-if ("serviceWorker" in navigator) {
+// PWA Service Worker Registration - Only register if ?dev is not in URL
+const isDev = window.location.search.includes('dev');
+
+if ('serviceWorker' in navigator && !isDev) {
     window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js")
-            .then(reg => console.log("Service worker registered:", reg))
-            .catch(err => console.error("Service worker registration failed:", err));
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => console.log('✅ Service worker registered:', reg.scope))
+            .catch(err => console.error('❌ Service worker registration failed:', err));
     });
+} else if ('serviceWorker' in navigator && isDev) {
+    console.log('🛠️ Service worker registration skipped - DEV MODE ACTIVE');
+}
+
+// Show dev mode banner if ?dev is in URL
+if (window.location.search.includes('dev')) {
+    const devBanner = document.createElement('div');
+    devBanner.textContent = '🛠️ DEV MODE ACTIVE';
+    devBanner.style.position = 'fixed';
+    devBanner.style.top = '0';
+    devBanner.style.width = '100%';
+    devBanner.style.backgroundColor = '#fff3cd';
+    devBanner.style.color = '#856404';
+    devBanner.style.padding = '6px';
+    devBanner.style.textAlign = 'center';
+    devBanner.style.fontWeight = 'bold';
+    devBanner.style.zIndex = '1000';
+    devBanner.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+    devBanner.style.fontSize = '12px';
+    devBanner.style.borderBottom = '1px solid #ffeaa7';
+    document.body.appendChild(devBanner);
+    document.body.style.paddingTop = '30px'; // prevent overlap with app content
 }
 
 // Tab Navigation Functions

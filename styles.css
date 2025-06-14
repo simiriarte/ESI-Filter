@@ -43,11 +43,107 @@ button {
     padding: 10px 16px;
 }
 
+/* Global app container - only active in PWA mode */
+.app-container {
+    /* Default: no restrictions for web browsers */
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* PWA DISABLED - Uncomment the entire block below to re-enable PWA functionality */
+/*
+@media (display-mode: standalone) {
+    .app-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0.5rem;
+        box-sizing: border-box;
+        min-height: 100vh;
+        width: 100%;
+    }
+    
+    .container {
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    .main-grid {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto auto auto !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .tasks-section,
+    .in-progress-section,
+    .to-be-rated-section {
+        width: 100% !important;
+        grid-column: 1;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .main-grid .card {
+        max-height: 50vh;
+        min-height: 200px;
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 12px;
+        box-sizing: border-box !important;
+    }
+    
+    .card {
+        padding: 1.2rem !important;
+    }
+    
+    .tasks-container,
+    .in-progress-tasks-container,
+    .completed-tasks-container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .section-header {
+        width: 100% !important;
+        margin: 0 0 1rem 0 !important;
+        padding: 0 !important;
+    }
+    
+    header {
+        margin-bottom: 1rem;
+    }
+}
+*/
+
+/* Default container styles for web browsers */
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
 }
+
+/* PWA DISABLED - Uncomment to re-enable PWA mobile responsiveness */
+/*
+@media (display-mode: standalone) and (max-width: 768px) {
+    .app-container {
+        padding: 0.5rem !important;
+        max-width: 600px !important;
+    }
+    
+    .container {
+        padding: 0 !important;
+    }
+}
+*/
 
 /* Header */
 header {
@@ -89,7 +185,7 @@ header h1 {
     align-items: start;
     min-height: 70vh;
     transition: all 0.3s ease;
-    overflow-x: hidden;
+    overflow-x: visible;
     width: 100%;
 }
 
@@ -115,7 +211,7 @@ header h1 {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    overflow-x: hidden;
+    overflow-x: visible;
 }
 
 /* Column sections - all task columns in same row */
@@ -126,7 +222,7 @@ header h1 {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    overflow-x: hidden;
+    overflow-x: visible;
 }
 
 /* Cards */
@@ -134,16 +230,28 @@ header h1 {
     background: white;
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.05),
+        0 1px 1px rgba(0, 0, 0, 0.03);
     backdrop-filter: blur(10px);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.15),
+        0 6px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Main grid cards */
 .main-grid .card {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 20px;
-    overflow: hidden; /* Ensures shadow and children stay inside */
-    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
+    overflow: visible; /* Allow shadow to extend beyond boundaries */
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
   
     height: 100%;
     max-height: 70vh;
@@ -152,6 +260,12 @@ header h1 {
     flex: 1;
     width: 100%;
     min-width: 0;
+}
+
+.main-grid .card:hover {
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Sticky card for brain dump */
@@ -393,7 +507,7 @@ header h1 {
     flex: 1;
     overflow-y: auto;
     overflow-x: visible;
-    padding: 0.25rem 0.5rem 0 0;
+    padding: 0.25rem 1rem 1rem 0.25rem;
     min-height: 200px;
     position: relative;
 }
@@ -439,6 +553,13 @@ header h1 {
     border-left: 4px solid #f59e0b;
     border-radius: 12px;
     overflow: visible;
+}
+
+.in-progress-task-item .task-card:hover {
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        0 6px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
 }
 
 /* Completed Tasks - Teal accent */
@@ -573,8 +694,9 @@ header h1 {
 } */
 
 .task-item .task-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        0 6px 10px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
 }
 
@@ -850,8 +972,9 @@ header h1 {
 } */
 
 .unrated-task-item .task-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        0 6px 10px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
 }
 
@@ -1273,8 +1396,9 @@ header h1 {
 }
 
 .completed-task-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        0 6px 10px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
 }
 
@@ -2675,4 +2799,15 @@ header h1 {
 #pain-cave-content {
     min-height: calc(100vh - 60px);
     position: relative;
+}
+
+/* Mobile responsiveness for app-container */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 0.5rem;
+    }
+    
+    .container {
+        padding: 1rem 0;
+    }
 }

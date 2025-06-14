@@ -8,6 +8,8 @@
   "description": "Task prioritization with ESI Filter and focused work sessions with Pain Cave timer",
   "categories": ["productivity", "utilities"],
   "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone"],
   "icons": [
     {
       "src": "./icons/icon-192.png",
