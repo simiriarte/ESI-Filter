@@ -157,14 +157,8 @@ class ESIFilter {
 
     updateFilterDropdowns() {
         // Update the dropdown values to match the current filter state
-        const prioritizedFilterBtn = document.getElementById('prioritized-filter-btn');
-        const inProgressFilterBtn = document.getElementById('in-progress-filter-btn'); 
-        const completedFilterBtn = document.getElementById('completed-filter-btn');
-        
-        // Update filter badges and button states
-        this.updateFilterBadge('prioritized', this.filters.prioritized);
-        this.updateFilterBadge('in-progress', this.filters['in-progress']);
-        this.updateFilterBadge('completed', this.filters.completed);
+        // Since we're only showing filter icons now, no need to update badges
+        // The checkmarks will be updated when the dropdown is opened
     }
 
     toggleFilterMenu(column) {
@@ -180,6 +174,8 @@ class ESIFilter {
         
         if (isHidden) {
             menu.classList.remove('hidden');
+            // Update checkmarks to show current selection
+            this.updateFilterMenuCheckmarks(column);
             // Set up click handlers for filter options
             menu.querySelectorAll('.filter-option').forEach(option => {
                 option.onclick = () => this.selectFilter(column, option.dataset.value);
@@ -200,45 +196,26 @@ class ESIFilter {
         document.getElementById(`${column}-filter-menu`).classList.add('hidden');
     }
 
-    updateFilterBadge(column, filterValue) {
-        const badge = document.getElementById(`${column}-filter-badge`);
-        const btn = document.getElementById(`${column}-filter-btn`);
+    updateFilterMenuCheckmarks(column) {
+        const menu = document.getElementById(`${column}-filter-menu`);
+        const currentFilter = this.filters[column];
         
-        if (filterValue === 'all') {
-            badge.classList.add('hidden');
-            btn.classList.remove('active');
-            badge.classList.remove('time-sensitive');
-        } else {
-            badge.classList.remove('hidden');
-            btn.classList.add('active');
-            
-            // Set badge text and class based on filter
-            switch(filterValue) {
-                case 'newest':
-                    badge.textContent = 'New';
-                    badge.classList.remove('time-sensitive');
-                    break;
-                case 'oldest':
-                    badge.textContent = 'Old';
-                    badge.classList.remove('time-sensitive');
-                    break;
-                case '10x':
-                    badge.textContent = '10x';
-                    badge.classList.remove('time-sensitive');
-                    break;
-                case '2x':
-                    badge.textContent = '2x';
-                    badge.classList.remove('time-sensitive');
-                    break;
-                case 'time-sensitive':
-                    badge.textContent = '⏰';
-                    badge.classList.add('time-sensitive');
-                    break;
-                default:
-                    badge.textContent = filterValue;
-                    badge.classList.remove('time-sensitive');
-            }
+        // Remove 'selected' class from all options
+        menu.querySelectorAll('.filter-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Add 'selected' class to current filter option
+        const selectedOption = menu.querySelector(`[data-value="${currentFilter}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
         }
+    }
+
+    updateFilterBadge(column, filterValue) {
+        // Since we're showing only the filter icon, we just need to update the internal state
+        // The checkmarks in the dropdown will show what's selected
+        this.filters[column] = filterValue;
     }
 
 
