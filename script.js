@@ -2038,3 +2038,12 @@ function handleModalBrainDumpTasks(event) {
         alert('There was an error adding tasks. Please try again.');
     }
 }
+
+// PWA Service Worker Registration
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+            .then(reg => console.log("Service worker registered:", reg))
+            .catch(err => console.error("Service worker registration failed:", err));
+    });
+}
