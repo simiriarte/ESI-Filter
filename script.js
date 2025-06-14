@@ -892,6 +892,10 @@ class ESIFilter {
 
         taskDiv.innerHTML = `
             <div class="task-card">
+                <div class="undo-btn" onclick="esiFilter.undoPrioritizedTask(${task.id})" title="Send back to unrated" aria-label="Send back to unrated">
+                    ↩
+                </div>
+                
                 <div class="delete-btn" onclick="esiFilter.deleteTask(${task.id})" title="Delete task" aria-label="Delete task">
                     <div class="trash-icon">
                         <div class="trash-lid"></div>
@@ -975,6 +979,10 @@ class ESIFilter {
 
         taskDiv.innerHTML = `
             <div class="task-card">
+                <div class="undo-btn" onclick="esiFilter.undoInProgressTask(${task.id})" title="Send back to prioritized" aria-label="Send back to prioritized">
+                    ↩
+                </div>
+                
                 <div class="delete-btn" onclick="esiFilter.deleteTask(${task.id})" title="Delete task" aria-label="Delete task">
                     <div class="trash-icon">
                         <div class="trash-lid"></div>
@@ -1210,17 +1218,7 @@ class ESIFilter {
                         </div>
                     </div>
                 </div>
-                <button type="button" 
-                        id="time-sensitive-toggle-${task.id}" 
-                        class="time-sensitive-toggle ${preservedValues?.isTimeSensitive || task.isTimeSensitive ? 'active' : ''}" 
-                        onclick="esiFilter.toggleTimeSensitive(${task.id})"
-                        title="Mark as time-sensitive"
-                        aria-label="Mark as time-sensitive">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12,6 12,12 16,14"/>
-                    </svg>
-                </button>
+
                 <div class="unrated-task-header">
                     <div class="unrated-task-name" title="${taskName}">${taskName}</div>
                 </div>
@@ -1282,6 +1280,17 @@ class ESIFilter {
                                     class="leverage-btn ${preservedValues?.leverage === '2x' ? 'active' : ''}" 
                                     onclick="esiFilter.setLeverage(${task.id}, '2x')">
                                 2x
+                            </button>
+                            <button type="button" 
+                                    id="time-sensitive-toggle-${task.id}" 
+                                    class="leverage-btn time-sensitive-btn ${preservedValues?.isTimeSensitive || task.isTimeSensitive ? 'active' : ''}" 
+                                    onclick="esiFilter.toggleTimeSensitive(${task.id})"
+                                    title="Mark as time-sensitive"
+                                    aria-label="Mark as time-sensitive">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12,6 12,12 16,14"/>
+                                </svg>
                             </button>
                         </div>
                     </div>
@@ -1826,6 +1835,47 @@ class ESIFilter {
             // Show feedback
             const taskName = task.title || task.name;
             this.showSuccessFeedback(`↩️ "${taskName}" moved back to in-progress!`);
+        }
+    }
+
+    undoPrioritizedTask(taskId) {
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            
+            // Revert task back to unrated
+            task.status = 'unrated';
+            
+            // Clear the ratings but keep the task data
+            task.energy = null;
+            task.simplicity = null;
+            task.impact = null;
+            task.score = null;
+            task.leverage = null;
+            
+            this.saveTasksToStorage();
+            this.renderTasks();
+            
+            // Show feedback
+            const taskName = task.title || task.name;
+            this.showSuccessFeedback(`↩️ "${taskName}" moved back to unrated tasks!`);
+        }
+    }
+
+    undoInProgressTask(taskId) {
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            
+            // Revert task back to prioritized
+            task.status = 'start';
+            
+            this.saveTasksToStorage();
+            this.renderTasks();
+            
+            // Show feedback
+            const taskName = task.title || task.name;
+            this.showSuccessFeedback(`↩️ "${taskName}" moved back to prioritized tasks!`);
         }
     }
 

@@ -1252,6 +1252,24 @@ header h1 {
     background: #4a4058;
 }
 
+/* Time-sensitive button styles */
+.time-sensitive-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+}
+
+.time-sensitive-btn.active {
+    background: #0097f2;
+    color: white;
+    border-color: #0085d4;
+}
+
+.time-sensitive-btn.active:hover {
+    background: #0085d4;
+}
+
 /* Leverage Badges */
 .leverage-badge {
     display: inline-block;
@@ -1334,13 +1352,17 @@ header h1 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.25rem;
-    border-radius: 4px;
-    background: rgba(0, 151, 242, 0.08);
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    background: rgba(0, 151, 242, 0.1);
     color: #0097f2;
-    margin-left: 0.5rem;
+    border: 1px solid rgba(0, 151, 242, 0.3);
+    margin-left: 0.25rem;
     margin-top: 0.25rem;
-    opacity: 0.8;
+    opacity: 1;
+    height: 30px;
+    box-sizing: border-box;
+    min-width: 40px;
 }
 
 /* Adjust task-leverage-area to handle multiple elements */
@@ -2044,7 +2066,6 @@ header h1 {
 .undo-btn:hover {
     opacity: 1;
     transform: scale(1.1);
-    background: rgba(59, 130, 246, 0.1);
     color: #3b82f6;
 }
 
