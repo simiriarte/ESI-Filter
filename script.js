@@ -5,9 +5,9 @@ class ESIFilter {
         this.tasks = [];
         // Initialize filter state for each column - newest is now the default
         this.filters = {
-            prioritized: 'newest',
-            'in-progress': 'newest',
-            completed: 'newest'
+            prioritized: ['newest'],
+            'in-progress': ['newest'],
+            completed: ['newest']
         };
         this.loadTasksFromStorage();
         this.initializeEventListeners();
@@ -114,37 +114,63 @@ class ESIFilter {
     }
 
     applyFilter(column, filterValue) {
-        // Update filter state
-        this.filters[column] = filterValue;
+        // Update filter state - toggle filter in array
+        const currentFilters = this.filters[column];
+        const filterIndex = currentFilters.indexOf(filterValue);
+        
+        if (filterIndex > -1) {
+            // Remove filter if it exists
+            currentFilters.splice(filterIndex, 1);
+        } else {
+            // Add filter if it doesn't exist
+            currentFilters.push(filterValue);
+            
+            // Special handling for newest/oldest - they are mutually exclusive
+            if (filterValue === 'newest' && currentFilters.includes('oldest')) {
+                const oldestIndex = currentFilters.indexOf('oldest');
+                currentFilters.splice(oldestIndex, 1);
+            } else if (filterValue === 'oldest' && currentFilters.includes('newest')) {
+                const newestIndex = currentFilters.indexOf('newest');
+                currentFilters.splice(newestIndex, 1);
+            }
+        }
+        
+        // Ensure at least one filter is always active (default to 'newest' if empty)
+        if (currentFilters.length === 0) {
+            currentFilters.push('newest');
+        }
         
         // Re-render tasks to apply the filter
         this.renderTasks();
     }
 
-    filterTasks(tasks, filterValue) {
-        let filteredTasks = tasks;
+    filterTasks(tasks, filterValues) {
+        let filteredTasks = [...tasks];
         
-        if (filterValue === 'all') {
-            filteredTasks = tasks;
-        } else if (filterValue === 'time-sensitive') {
-            // Filter tasks by time-sensitive status
-            filteredTasks = tasks.filter(task => task.isTimeSensitive === true);
-        } else if (filterValue === 'newest' || filterValue === 'oldest') {
-            // For newest/oldest, we return all tasks but they will be sorted by creation date
-            filteredTasks = tasks;
-        } else {
-            // Filter tasks by leverage value, only including tasks that have the specified leverage
-            filteredTasks = tasks.filter(task => task.leverage === filterValue);
+        // Apply each active filter
+        const activeFilters = Array.isArray(filterValues) ? filterValues : [filterValues];
+        
+        // Apply leverage filters (10x, 2x)
+        const leverageFilters = activeFilters.filter(f => ['10x', '2x'].includes(f));
+        if (leverageFilters.length > 0) {
+            filteredTasks = filteredTasks.filter(task => 
+                leverageFilters.includes(task.leverage)
+            );
+        }
+        
+        // Apply time-sensitive filter
+        if (activeFilters.includes('time-sensitive')) {
+            filteredTasks = filteredTasks.filter(task => task.isTimeSensitive === true);
         }
         
         // Sort by creation date if newest or oldest filter is active
-        if (filterValue === 'newest') {
+        if (activeFilters.includes('newest') && !activeFilters.includes('oldest')) {
             filteredTasks = [...filteredTasks].sort((a, b) => {
                 const dateA = new Date(a.dateCreated || a.createdAt || 0);
                 const dateB = new Date(b.dateCreated || b.createdAt || 0);
                 return dateB - dateA; // Most recent first
             });
-        } else if (filterValue === 'oldest') {
+        } else if (activeFilters.includes('oldest') && !activeFilters.includes('newest')) {
             filteredTasks = [...filteredTasks].sort((a, b) => {
                 const dateA = new Date(a.dateCreated || a.createdAt || 0);
                 const dateB = new Date(b.dateCreated || b.createdAt || 0);
@@ -189,33 +215,35 @@ class ESIFilter {
         // Apply the filter
         this.applyFilter(column, filterValue);
         
-        // Update the badge
-        this.updateFilterBadge(column, filterValue);
+        // Update the checkmarks to reflect new state
+        this.updateFilterMenuCheckmarks(column);
         
-        // Close the menu
-        document.getElementById(`${column}-filter-menu`).classList.add('hidden');
+        // Don't close the menu for multiple selection
+        // The menu will stay open so users can select multiple filters
     }
 
     updateFilterMenuCheckmarks(column) {
         const menu = document.getElementById(`${column}-filter-menu`);
-        const currentFilter = this.filters[column];
+        const currentFilters = this.filters[column];
         
         // Remove 'selected' class from all options
         menu.querySelectorAll('.filter-option').forEach(option => {
             option.classList.remove('selected');
         });
         
-        // Add 'selected' class to current filter option
-        const selectedOption = menu.querySelector(`[data-value="${currentFilter}"]`);
-        if (selectedOption) {
-            selectedOption.classList.add('selected');
-        }
+        // Add 'selected' class to active filter options
+        currentFilters.forEach(filterValue => {
+            const selectedOption = menu.querySelector(`[data-value="${filterValue}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+        });
     }
 
-    updateFilterBadge(column, filterValue) {
+    updateFilterBadge(column, filterValues) {
         // Since we're showing only the filter icon, we just need to update the internal state
         // The checkmarks in the dropdown will show what's selected
-        this.filters[column] = filterValue;
+        // This function is now mostly handled by applyFilter
     }
 
 
@@ -682,7 +710,8 @@ class ESIFilter {
         // Update prioritized task count
         const prioritizedCount = prioritizedTasks.length;
         const totalPrioritizedCount = allPrioritizedTasks.length;
-        const prioritizedCountText = this.filters.prioritized === 'all' || this.filters.prioritized === 'newest' || this.filters.prioritized === 'oldest'
+        const prioritizedCountText = (this.filters.prioritized.includes('newest') && this.filters.prioritized.length === 1) ||
+            (this.filters.prioritized.includes('oldest') && this.filters.prioritized.length === 1)
             ? (prioritizedCount === 1 ? '1 task' : `${prioritizedCount} tasks`)
             : `${prioritizedCount} of ${totalPrioritizedCount} tasks`;
         taskCount.textContent = prioritizedCountText;
@@ -693,16 +722,15 @@ class ESIFilter {
         if (prioritizedTasks.length === 0) {
             // Show empty state for prioritized tasks
             let emptyMessage;
-            if (this.filters.prioritized === 'all') {
-                emptyMessage = 'Rated tasks will appear here prioritized by ESI score!';
-            } else if (this.filters.prioritized === 'time-sensitive') {
+            if (this.filters.prioritized.includes('time-sensitive')) {
                 emptyMessage = 'No time-sensitive tasks found in prioritized tasks.';
-            } else if (this.filters.prioritized === 'newest') {
+            } else if (this.filters.prioritized.includes('newest') && !this.filters.prioritized.includes('oldest')) {
                 emptyMessage = 'Rated tasks will appear here sorted by newest first!';
-            } else if (this.filters.prioritized === 'oldest') {
+            } else if (this.filters.prioritized.includes('oldest') && !this.filters.prioritized.includes('newest')) {
                 emptyMessage = 'Rated tasks will appear here sorted by oldest first!';
             } else {
-                emptyMessage = `No ${this.filters.prioritized} tasks found in prioritized tasks.`;
+                const filterNames = this.filters.prioritized.join(', ');
+                emptyMessage = `No ${filterNames} tasks found in prioritized tasks.`;
             }
             tasksContainer.innerHTML = `
                 <div class="empty-state">
@@ -727,7 +755,8 @@ class ESIFilter {
         // Update in-progress task count and container
         const inProgressCount = inProgressTasks.length;
         const totalInProgressCount = allInProgressTasks.length;
-        const inProgressCountText = this.filters['in-progress'] === 'all' || this.filters['in-progress'] === 'newest' || this.filters['in-progress'] === 'oldest'
+        const inProgressCountText = (this.filters['in-progress'].includes('newest') && this.filters['in-progress'].length === 1) ||
+            (this.filters['in-progress'].includes('oldest') && this.filters['in-progress'].length === 1)
             ? (inProgressCount === 1 ? '1 task' : `${inProgressCount} tasks`)
             : `${inProgressCount} of ${totalInProgressCount} tasks`;
         inProgressTaskCount.textContent = inProgressCountText;
@@ -738,16 +767,15 @@ class ESIFilter {
         if (inProgressTasks.length === 0) {
             // Show empty state for in-progress tasks
             let emptyMessage;
-            if (this.filters['in-progress'] === 'all') {
-                emptyMessage = 'Click "Start" on a task to begin working on it!';
-            } else if (this.filters['in-progress'] === 'time-sensitive') {
+            if (this.filters['in-progress'].includes('time-sensitive')) {
                 emptyMessage = 'No time-sensitive tasks found in progress.';
-            } else if (this.filters['in-progress'] === 'newest') {
+            } else if (this.filters['in-progress'].includes('newest') && !this.filters['in-progress'].includes('oldest')) {
                 emptyMessage = 'In-progress tasks will appear here sorted by newest first!';
-            } else if (this.filters['in-progress'] === 'oldest') {
+            } else if (this.filters['in-progress'].includes('oldest') && !this.filters['in-progress'].includes('newest')) {
                 emptyMessage = 'In-progress tasks will appear here sorted by oldest first!';
             } else {
-                emptyMessage = `No ${this.filters['in-progress']} tasks found in progress.`;
+                const filterNames = this.filters['in-progress'].join(', ');
+                emptyMessage = `No ${filterNames} tasks found in progress.`;
             }
             inProgressTasksContainer.innerHTML = `
                 <div class="empty-state">
@@ -799,22 +827,25 @@ class ESIFilter {
             // Update completed task count
             const completedCount = completedTasks.length;
             const totalCompletedCount = allCompletedTasks.length;
-            const completedCountText = this.filters.completed === 'all' || this.filters.completed === 'newest' || this.filters.completed === 'oldest'
+            const completedCountText = (this.filters.completed.includes('newest') && this.filters.completed.length === 1) ||
+                (this.filters.completed.includes('oldest') && this.filters.completed.length === 1)
                 ? (completedCount === 1 ? '1 completed' : `${completedCount} completed`)
                 : `${completedCount} of ${totalCompletedCount} completed`;
             completedTaskCount.textContent = completedCountText;
             
             // Clear and render completed tasks
             completedTasksContainer.innerHTML = '';
-            if (completedTasks.length === 0 && this.filters.completed !== 'all' && this.filters.completed !== 'newest' && this.filters.completed !== 'oldest') {
+            if (completedTasks.length === 0 && 
+                !(this.filters.completed.includes('newest') && this.filters.completed.length === 1) && 
+                !(this.filters.completed.includes('oldest') && this.filters.completed.length === 1)) {
                 // Show empty state when filter returns no results
-                const filterDisplayName = this.filters.completed === 'time-sensitive' 
+                const filterDisplayName = this.filters.completed.includes('time-sensitive') 
                     ? 'time-sensitive' 
-                    : this.filters.completed === 'newest'
+                    : this.filters.completed.includes('newest')
                     ? 'newest'
-                    : this.filters.completed === 'oldest'
+                    : this.filters.completed.includes('oldest')
                     ? 'oldest'
-                    : this.filters.completed;
+                    : this.filters.completed.join(', ');
                 completedTasksContainer.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">🔍</div>

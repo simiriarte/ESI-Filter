@@ -381,14 +381,17 @@ header h1 {
 
 .filter-option .checkmark {
     display: none;
-    margin-right: 8px;
-    color: #3b82f6;
-    font-weight: bold;
-    font-size: 0.875rem;
+    margin-right: 6px;
+    color: #9ca3af;
+    font-weight: normal;
+    font-size: 0.75rem;
+    opacity: 0.7;
 }
 
 .filter-option.selected .checkmark {
     display: inline;
+    color: #6b7280;
+    opacity: 1;
 }
 
 /* Legacy dropdown styles - keeping for potential fallback */
