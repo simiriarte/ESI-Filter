@@ -3,11 +3,11 @@ class ESIFilter {
     constructor() {
         console.log('ESIFilter constructor called'); // Debug log
         this.tasks = [];
-        // Initialize filter state for each column
+        // Initialize filter state for each column - newest is now the default
         this.filters = {
-            prioritized: 'all',
-            'in-progress': 'all',
-            completed: 'all'
+            prioritized: 'newest',
+            'in-progress': 'newest',
+            completed: 'newest'
         };
         this.loadTasksFromStorage();
         this.initializeEventListeners();
@@ -122,15 +122,37 @@ class ESIFilter {
     }
 
     filterTasks(tasks, filterValue) {
+        let filteredTasks = tasks;
+        
         if (filterValue === 'all') {
-            return tasks;
-        }
-        if (filterValue === 'time-sensitive') {
+            filteredTasks = tasks;
+        } else if (filterValue === 'time-sensitive') {
             // Filter tasks by time-sensitive status
-            return tasks.filter(task => task.isTimeSensitive === true);
+            filteredTasks = tasks.filter(task => task.isTimeSensitive === true);
+        } else if (filterValue === 'newest' || filterValue === 'oldest') {
+            // For newest/oldest, we return all tasks but they will be sorted by creation date
+            filteredTasks = tasks;
+        } else {
+            // Filter tasks by leverage value, only including tasks that have the specified leverage
+            filteredTasks = tasks.filter(task => task.leverage === filterValue);
         }
-        // Filter tasks by leverage value, only including tasks that have the specified leverage
-        return tasks.filter(task => task.leverage === filterValue);
+        
+        // Sort by creation date if newest or oldest filter is active
+        if (filterValue === 'newest') {
+            filteredTasks = [...filteredTasks].sort((a, b) => {
+                const dateA = new Date(a.dateCreated || a.createdAt || 0);
+                const dateB = new Date(b.dateCreated || b.createdAt || 0);
+                return dateB - dateA; // Most recent first
+            });
+        } else if (filterValue === 'oldest') {
+            filteredTasks = [...filteredTasks].sort((a, b) => {
+                const dateA = new Date(a.dateCreated || a.createdAt || 0);
+                const dateB = new Date(b.dateCreated || b.createdAt || 0);
+                return dateA - dateB; // Oldest first
+            });
+        }
+        
+        return filteredTasks;
     }
 
     updateFilterDropdowns() {
@@ -192,6 +214,14 @@ class ESIFilter {
             
             // Set badge text and class based on filter
             switch(filterValue) {
+                case 'newest':
+                    badge.textContent = 'New';
+                    badge.classList.remove('time-sensitive');
+                    break;
+                case 'oldest':
+                    badge.textContent = 'Old';
+                    badge.classList.remove('time-sensitive');
+                    break;
                 case '10x':
                     badge.textContent = '10x';
                     badge.classList.remove('time-sensitive');
@@ -675,7 +705,7 @@ class ESIFilter {
         // Update prioritized task count
         const prioritizedCount = prioritizedTasks.length;
         const totalPrioritizedCount = allPrioritizedTasks.length;
-        const prioritizedCountText = this.filters.prioritized === 'all' 
+        const prioritizedCountText = this.filters.prioritized === 'all' || this.filters.prioritized === 'newest' || this.filters.prioritized === 'oldest'
             ? (prioritizedCount === 1 ? '1 task' : `${prioritizedCount} tasks`)
             : `${prioritizedCount} of ${totalPrioritizedCount} tasks`;
         taskCount.textContent = prioritizedCountText;
@@ -690,6 +720,10 @@ class ESIFilter {
                 emptyMessage = 'Rated tasks will appear here prioritized by ESI score!';
             } else if (this.filters.prioritized === 'time-sensitive') {
                 emptyMessage = 'No time-sensitive tasks found in prioritized tasks.';
+            } else if (this.filters.prioritized === 'newest') {
+                emptyMessage = 'Rated tasks will appear here sorted by newest first!';
+            } else if (this.filters.prioritized === 'oldest') {
+                emptyMessage = 'Rated tasks will appear here sorted by oldest first!';
             } else {
                 emptyMessage = `No ${this.filters.prioritized} tasks found in prioritized tasks.`;
             }
@@ -716,7 +750,7 @@ class ESIFilter {
         // Update in-progress task count and container
         const inProgressCount = inProgressTasks.length;
         const totalInProgressCount = allInProgressTasks.length;
-        const inProgressCountText = this.filters['in-progress'] === 'all'
+        const inProgressCountText = this.filters['in-progress'] === 'all' || this.filters['in-progress'] === 'newest' || this.filters['in-progress'] === 'oldest'
             ? (inProgressCount === 1 ? '1 task' : `${inProgressCount} tasks`)
             : `${inProgressCount} of ${totalInProgressCount} tasks`;
         inProgressTaskCount.textContent = inProgressCountText;
@@ -731,6 +765,10 @@ class ESIFilter {
                 emptyMessage = 'Click "Start" on a task to begin working on it!';
             } else if (this.filters['in-progress'] === 'time-sensitive') {
                 emptyMessage = 'No time-sensitive tasks found in progress.';
+            } else if (this.filters['in-progress'] === 'newest') {
+                emptyMessage = 'In-progress tasks will appear here sorted by newest first!';
+            } else if (this.filters['in-progress'] === 'oldest') {
+                emptyMessage = 'In-progress tasks will appear here sorted by oldest first!';
             } else {
                 emptyMessage = `No ${this.filters['in-progress']} tasks found in progress.`;
             }
@@ -784,17 +822,21 @@ class ESIFilter {
             // Update completed task count
             const completedCount = completedTasks.length;
             const totalCompletedCount = allCompletedTasks.length;
-            const completedCountText = this.filters.completed === 'all'
+            const completedCountText = this.filters.completed === 'all' || this.filters.completed === 'newest' || this.filters.completed === 'oldest'
                 ? (completedCount === 1 ? '1 completed' : `${completedCount} completed`)
                 : `${completedCount} of ${totalCompletedCount} completed`;
             completedTaskCount.textContent = completedCountText;
             
             // Clear and render completed tasks
             completedTasksContainer.innerHTML = '';
-            if (completedTasks.length === 0 && this.filters.completed !== 'all') {
+            if (completedTasks.length === 0 && this.filters.completed !== 'all' && this.filters.completed !== 'newest' && this.filters.completed !== 'oldest') {
                 // Show empty state when filter returns no results
                 const filterDisplayName = this.filters.completed === 'time-sensitive' 
                     ? 'time-sensitive' 
+                    : this.filters.completed === 'newest'
+                    ? 'newest'
+                    : this.filters.completed === 'oldest'
+                    ? 'oldest'
                     : this.filters.completed;
                 completedTasksContainer.innerHTML = `
                     <div class="empty-state">
