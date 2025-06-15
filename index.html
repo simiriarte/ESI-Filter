@@ -22,14 +22,17 @@
         <!-- Tab Navigation -->
         <nav class="app-tabs">
             <div class="tab-container">
-                <button class="tab-btn active" onclick="switchTab('esi-filter')" data-tab="esi-filter">
-                    <span class="tab-icon">📊</span>
-                    ESI Filter
+                <button class="btn-brain-dump" onclick="openBrainDumpModal()">
+                    🧠 Brain Dump
                 </button>
-                <button class="tab-btn" onclick="switchTab('pain-cave')" data-tab="pain-cave">
-                    <span class="tab-icon">🔥</span>
-                    Pain Cave
-                </button>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('esi-filter')" data-tab="esi-filter">
+                        ESI Filter
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('pain-cave')" data-tab="pain-cave">
+                        Pain Cave
+                    </button>
+                </div>
             </div>
         </nav>
 
@@ -37,11 +40,6 @@
         <div id="esi-filter-content" class="tab-content active">
             <div class="container">
                 <header>
-                    <div class="header-actions">
-                        <button class="btn-brain-dump" onclick="openBrainDumpModal()">
-                            🧠 Brain Dump
-                        </button>
-                    </div>
                 </header>
 
                 <main class="main-grid">
@@ -66,6 +64,7 @@
                             </svg>
                                         </button>
                                                                 <div id="prioritized-filter-menu" class="filter-menu hidden">
+                            <div class="filter-option selected" data-value="highest-priority"><span class="checkmark">✓</span>Highest Priority</div>
                             <div class="filter-option" data-value="newest"><span class="checkmark">✓</span>Newest</div>
                             <div class="filter-option" data-value="oldest"><span class="checkmark">✓</span>Oldest</div>
                             <div class="filter-option" data-value="10x"><span class="checkmark">✓</span>10x Tasks</div>
@@ -110,6 +109,7 @@
                             </svg>
                                         </button>
                                                                 <div id="in-progress-filter-menu" class="filter-menu hidden">
+                            <div class="filter-option selected" data-value="highest-priority"><span class="checkmark">✓</span>Highest Priority</div>
                             <div class="filter-option" data-value="newest"><span class="checkmark">✓</span>Newest</div>
                             <div class="filter-option" data-value="oldest"><span class="checkmark">✓</span>Oldest</div>
                             <div class="filter-option" data-value="10x"><span class="checkmark">✓</span>10x Tasks</div>
@@ -157,6 +157,7 @@
                             </svg>
                                     </button>
                                                         <div id="completed-filter-menu" class="filter-menu hidden">
+                        <div class="filter-option selected" data-value="highest-priority"><span class="checkmark">✓</span>Highest Priority</div>
                         <div class="filter-option" data-value="newest"><span class="checkmark">✓</span>Newest</div>
                         <div class="filter-option" data-value="oldest"><span class="checkmark">✓</span>Oldest</div>
                         <div class="filter-option" data-value="10x"><span class="checkmark">✓</span>10x Tasks</div>

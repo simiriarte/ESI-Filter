@@ -11,7 +11,7 @@
     --primary-color: #1abc9c;
     --secondary-color: #f0c808;
     --accent-color: #e26d5a;
-    --background-color: #fcf8ee;
+    --background-color: #f7f1e2;
     --text-color: #1a1a1a;
     --font-heading: 'Bobby Jones Soft', 'Figtree', sans-serif;
     --font-body: 'Figtree', sans-serif;
@@ -695,7 +695,8 @@ header h1 {
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-right: 1rem;
-    cursor: help;
+    cursor: pointer;
+    transition: all 0.1s ease;
 }
 
 .task-metrics-row {
@@ -973,7 +974,8 @@ header h1 {
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-right: 1rem;
-    cursor: help;
+    cursor: pointer;
+    transition: all 0.1s ease;
 }
 
 .task-row {
@@ -2632,13 +2634,33 @@ header h1 {
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(255, 137, 0, 0.2);
+    box-shadow: none;
+}
+
+.tab-container .btn-brain-dump {
+    background: #5b5167;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    box-shadow: none;
 }
 
 .btn-brain-dump:hover {
     background: #e67500;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(255, 137, 0, 0.3);
+}
+
+.tab-container .btn-brain-dump:hover {
+    background: rgba(26, 188, 156, 0.3);
+    color: white;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Brain dump modal styles */
@@ -2728,8 +2750,7 @@ header h1 {
 
 /* Tab Navigation Styles */
 .app-tabs {
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+    background: #5b5167;
     padding: 0;
     position: sticky;
     top: 0;
@@ -2740,19 +2761,26 @@ header h1 {
 .tab-container {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
+.tab-buttons {
+    display: flex;
+    align-items: center;
+}
+
 .tab-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 12px 20px;
     background: none;
     border: none;
-    color: #666;
+    color: white;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -2763,14 +2791,14 @@ header h1 {
 }
 
 .tab-btn:hover {
-    background: rgba(0, 122, 204, 0.1);
-    color: #007acc;
+    background: rgba(26, 188, 156, 0.3);
+    color: white;
 }
 
 .tab-btn.active {
-    background: white;
-    color: #007acc;
-    border-bottom: 2px solid #007acc;
+    background: #5b5167;
+    color: white;
+    border-bottom: none;
 }
 
 .tab-btn.active::after {
@@ -2780,7 +2808,7 @@ header h1 {
     left: 0;
     right: 0;
     height: 2px;
-    background: #007acc;
+    background: none;
 }
 
 .tab-icon {
