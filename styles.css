@@ -1945,6 +1945,26 @@ header h1 {
     box-shadow: 0 2px 8px rgba(0, 151, 242, 0.3);
 }
 
+/* Time tracking display */
+.task-time-display {
+    font-size: 0.75rem;
+    color: #0097f2;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    opacity: 0.9;
+}
+
+.task-time-display svg {
+    flex-shrink: 0;
+}
+
+.task-time-display.completed {
+    color: #059669;
+}
+
 /* Responsive adjustments for dual metrics */
 @media (max-width: 768px) {
     .task-metrics-dual {

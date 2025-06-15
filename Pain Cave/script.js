@@ -1,3 +1,6 @@
+// Add immediate script loading check
+console.log('Pain Cave script loaded!', new Date().toLocaleTimeString());
+
 class PomodoroTimer {
     constructor() {
         this.secondsElapsed = 0;
@@ -21,12 +24,24 @@ class PomodoroTimer {
         this.soundEnabled = true;
         this.volume = 0.5;
         
+        // Task tracking properties
+        this.currentTaskId = null; // ID of the task being worked on
+        this.currentTaskName = ''; // Name of the task being worked on
+        this.taskStartTime = null; // When work on current task started
+        
         // DOM Elements
         this.timeDisplay = document.querySelector('.time-display');
         this.breakCountdown = document.getElementById('break-countdown');
         this.breakTimer = document.querySelector('.break-timer');
         this.toggleButton = document.getElementById('toggle');
         this.resetButton = document.getElementById('reset');
+        
+        // Debug: Check if elements are found
+        console.log('Elements found:', {
+            toggleButton: !!this.toggleButton,
+            resetButton: !!this.resetButton,
+            toggleButtonText: this.toggleButton ? this.toggleButton.textContent : 'not found'
+        });
         this.soundToggle = document.getElementById('sound-toggle');
         this.volumeSlider = document.getElementById('volume-slider');
         this.collapseToggle = document.getElementById('collapse-toggle');
@@ -60,7 +75,10 @@ class PomodoroTimer {
         this.magicalSound.volume = this.volume;
         
         // Event Listeners
-        this.toggleButton.addEventListener('click', () => this.toggle());
+        this.toggleButton.addEventListener('click', () => {
+            console.log('Toggle button clicked!');
+            this.toggle();
+        });
         this.resetButton.addEventListener('click', () => this.reset());
         this.collapseToggle.addEventListener('click', () => this.toggleCollapse());
         this.restModeButton.addEventListener('click', () => {
@@ -342,6 +360,13 @@ class PomodoroTimer {
     }
     
     toggle() {
+        console.log('Toggle function called - Current state:', {
+            isRunning: this.isRunning,
+            isRestMode: this.isRestMode,
+            currentTaskId: this.currentTaskId,
+            taskStartTime: this.taskStartTime
+        });
+        
         if (this.isRestMode) {
             // Enter pain cave from rest mode
             this.isRestMode = false;
@@ -383,6 +408,12 @@ class PomodoroTimer {
             // Save the intention before entering Pain Cave
             this.intention = this.intentionInput.value.trim();
             
+            // Start task time tracking if we have a task
+            if (this.currentTaskId) {
+                this.taskStartTime = Date.now();
+                console.log('Started tracking time for task:', this.currentTaskName);
+            }
+            
             // Enter pain cave
             this.start();
             this.caveImage.src = 'images/PAIN CAVE.png';
@@ -401,7 +432,82 @@ class PomodoroTimer {
             this.updateIntentionDisplay();
         } else {
             // Exit pain cave
+            console.log('Entering exit pain cave logic');
             this.pause();
+            
+            // Save task time if we have a task
+            if (this.currentTaskId && this.taskStartTime) {
+                const timeSpent = Math.floor((Date.now() - this.taskStartTime) / 1000);
+                console.log('Saving time for task:', this.currentTaskName, 'Time spent:', timeSpent);
+                
+                // Send time back to main app - try multiple approaches
+                const timeUpdate = {
+                    taskId: this.currentTaskId,
+                    timeSpent: timeSpent,
+                    timestamp: Date.now()
+                };
+                
+                let communicationSuccessful = false;
+                
+                // Method 1: Try direct global function call
+                try {
+                    if (window.parent && window.parent.updateTaskTimeFromPainCave) {
+                        console.log('Attempting direct global function call...');
+                        const result = window.parent.updateTaskTimeFromPainCave(this.currentTaskId, timeSpent);
+                        if (result) {
+                            console.log('Direct global function call successful!');
+                            communicationSuccessful = true;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Direct global function call failed:', e.message);
+                }
+                
+                // Method 2: Try direct window.parent access
+                if (!communicationSuccessful) {
+                    try {
+                        if (window.parent && window.parent !== window && window.parent.esiFilter) {
+                            console.log('Attempting direct esiFilter access...');
+                            window.parent.esiFilter.updateTaskTime(this.currentTaskId, timeSpent);
+                            console.log('Direct esiFilter access successful!');
+                            communicationSuccessful = true;
+                        }
+                    } catch (e) {
+                        console.log('Direct esiFilter access failed:', e.message);
+                    }
+                }
+                
+                // Method 3: Try postMessage (always try this as backup)
+                try {
+                    console.log('Sending postMessage...');
+                    window.parent.postMessage({
+                        type: 'timeUpdate',
+                        data: timeUpdate
+                    }, '*');
+                    console.log('PostMessage sent successfully');
+                } catch (e) {
+                    console.error('PostMessage failed:', e);
+                }
+                
+                // Method 4: Try localStorage as final fallback
+                try {
+                    localStorage.setItem('painCaveTimeUpdate', JSON.stringify(timeUpdate));
+                    console.log('Stored in localStorage as fallback:', timeUpdate);
+                } catch (e) {
+                    console.error('localStorage fallback failed:', e);
+                }
+                
+                // Method 5: Try setting a flag that can be checked by main app
+                try {
+                    window.name = `painCaveUpdate:${JSON.stringify(timeUpdate)}`;
+                    console.log('Set window.name as communication method');
+                } catch (e) {
+                    console.error('window.name method failed:', e);
+                }
+                
+                this.taskStartTime = null;
+            }
+            
             // Save the current time before exiting
             this.savedTime = this.secondsElapsed;
             this.toggleButton.textContent = 'Enter Pain Cave';
@@ -612,6 +718,11 @@ class PomodoroTimer {
         this.intention = '';
         this.intentionInput.value = '';
         this.updateIntentionDisplay(); // Use the method to properly update the display
+        
+        // Reset task tracking
+        this.currentTaskId = null;
+        this.currentTaskName = '';
+        this.taskStartTime = null;
     }
     
     updateDisplay() {
@@ -679,20 +790,81 @@ class PomodoroTimer {
     // Check for task from ESI Filter and auto-populate
     checkForESITask() {
         console.log('checkForESITask running');
+        console.log('localStorage contents:', {
+            painCaveTaskData: localStorage.getItem('painCaveTaskData'),
+            painCaveTask: localStorage.getItem('painCaveTask')
+        });
+        
+        // Check for new task data structure first
+        const painCaveTaskData = localStorage.getItem('painCaveTaskData');
+        if (painCaveTaskData) {
+            console.log('Found painCaveTaskData:', painCaveTaskData);
+            try {
+                const taskData = JSON.parse(painCaveTaskData);
+                console.log('Parsed task data:', taskData);
+                this.currentTaskId = taskData.id;
+                this.currentTaskName = taskData.name;
+                this.intentionInput.value = taskData.name;
+                this.intention = taskData.name;
+                this.updateIntentionDisplay();
+                localStorage.removeItem('painCaveTaskData');
+                console.log('ESI Filter task loaded successfully:', taskData);
+                return;
+            } catch (e) {
+                console.error('Error parsing task data:', e);
+            }
+        }
+        
+        // Fallback to old structure for compatibility
         const painCaveTask = localStorage.getItem('painCaveTask');
         if (painCaveTask) {
+            console.log('Found legacy painCaveTask:', painCaveTask);
             this.intentionInput.value = painCaveTask;
             this.intention = painCaveTask;
             this.updateIntentionDisplay();
             localStorage.removeItem('painCaveTask');
-            console.log('ESI Filter task loaded:', painCaveTask);
+            console.log('ESI Filter task loaded (legacy):', painCaveTask);
+        } else {
+            console.log('No task data found in localStorage');
         }
     }
 }
 
 // Initialize the timer when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new PomodoroTimer();
+    console.log('DOMContentLoaded event fired');
+    console.log('Document ready state:', document.readyState);
+    
+    // Check if basic elements exist
+    const toggleButton = document.getElementById('toggle');
+    const resetButton = document.getElementById('reset');
+    const timeDisplay = document.querySelector('.time-display');
+    
+    console.log('Basic elements check:', {
+        toggleButton: toggleButton ? 'found' : 'NOT FOUND',
+        resetButton: resetButton ? 'found' : 'NOT FOUND',
+        timeDisplay: timeDisplay ? 'found' : 'NOT FOUND',
+        toggleButtonText: toggleButton ? toggleButton.textContent : 'no button'
+    });
+    
+    if (!toggleButton) {
+        console.error('CRITICAL: Toggle button not found! Check HTML structure.');
+        return;
+    }
+    
+    console.log('About to create PomodoroTimer instance...');
+    try {
+        const timer = new PomodoroTimer();
+        console.log('PomodoroTimer instance created successfully');
+        
+        // Test the toggle button click directly
+        toggleButton.addEventListener('click', () => {
+            console.log('DIRECT toggle button click detected!');
+        });
+        
+    } catch (error) {
+        console.error('Error creating PomodoroTimer:', error);
+    }
 });
 
 // Set break button width to match main buttons

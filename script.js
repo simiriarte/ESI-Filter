@@ -87,7 +87,9 @@ class ESIFilter {
             notes: "",
             actualEnergy: null,
             actualSimplicity: null,
-            actualImpact: null
+            actualImpact: null,
+            timeSpent: 0, // Total time spent on task in seconds
+            lastPainCaveStart: null // Timestamp when pain cave was last entered
         }));
         
         console.log('New tasks created:', newTasks); // Debug log
@@ -273,12 +275,16 @@ class ESIFilter {
             
             // Only allow entering Pain Cave for in-progress tasks
             if (task.status === 'in-progress') {
-                // Save the task name to localStorage
-                const taskName = task.title || task.name;
-                localStorage.setItem('painCaveTask', taskName);
+                // Save the task data to localStorage for Pain Cave
+                const taskData = {
+                    id: task.id,
+                    name: task.title || task.name,
+                    timeSpent: task.timeSpent || 0
+                };
+                localStorage.setItem('painCaveTaskData', JSON.stringify(taskData));
                 
-                // Open Pain Cave in new window
-                window.open('https://simiriarte.github.io/stuffthatsticks-Pain-Cave/', '_blank');
+                // Switch to Pain Cave tab instead of opening new window
+                switchTab('pain-cave');
             }
         }
     }
@@ -928,6 +934,10 @@ class ESIFilter {
                                 year: '2-digit'
                             })}
                         </div>` : ''}
+                        ${task.timeSpent ? `<div class="task-time-display">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                            ${this.formatTimeSpent(task.timeSpent)}
+                        </div>` : ''}
                     </div>
                 </div>
                 
@@ -1013,6 +1023,10 @@ class ESIFilter {
                                 day: '2-digit',
                                 year: '2-digit'
                             })}
+                        </div>` : ''}
+                        ${task.timeSpent ? `<div style="font-size: 0.75rem; color: #0097f2; font-weight: 600; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                            ${this.formatTimeSpent(task.timeSpent)}
                         </div>` : ''}
                     </div>
                 </div>
@@ -1146,6 +1160,10 @@ class ESIFilter {
             <div class="task-header-compact">
                 <div class="task-name" title="${taskName}">
                     ${taskName}
+                    ${task.timeSpent ? `<div style="font-size: 0.75rem; color: #059669; font-weight: 600; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.25rem;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                        ${this.formatTimeSpent(task.timeSpent)} spent
+                    </div>` : ''}
                     ${task.completedDate ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
                         completed ${task.completedDate}
                     </div>` : ''}
@@ -1581,6 +1599,13 @@ class ESIFilter {
                     if (!task.hasOwnProperty('isTimeSensitive')) {
                         task.isTimeSensitive = false;
                     }
+                    // Add time tracking properties if they don't exist (backward compatibility)
+                    if (!task.hasOwnProperty('timeSpent')) {
+                        task.timeSpent = 0;
+                    }
+                    if (!task.hasOwnProperty('lastPainCaveStart')) {
+                        task.lastPainCaveStart = null;
+                    }
                 });
                 
                 // Ensure tasks are properly sorted
@@ -1907,6 +1932,39 @@ class ESIFilter {
             this.saveTasksToStorage();
         }
     }
+
+    updateTaskTime(taskId, timeSpent) {
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex > -1) {
+            const oldTime = this.tasks[taskIndex].timeSpent || 0;
+            this.tasks[taskIndex].timeSpent = oldTime + timeSpent;
+            console.log(`Updated task time: ${this.tasks[taskIndex].title || this.tasks[taskIndex].name} - Old: ${this.formatTimeSpent(oldTime)}, Added: ${this.formatTimeSpent(timeSpent)}, New Total: ${this.formatTimeSpent(this.tasks[taskIndex].timeSpent)}`);
+            this.saveTasksToStorage();
+            this.renderTasks();
+        } else {
+            console.warn('Task not found for time update:', taskId);
+        }
+    }
+
+    formatTimeSpent(seconds) {
+        if (!seconds || seconds < 1) return '';
+        
+        if (seconds < 60) {
+            return `${seconds}s`;
+        } else if (seconds < 3600) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+        } else {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            let timeString = `${hours}h`;
+            if (minutes > 0) timeString += ` ${minutes}m`;
+            if (remainingSeconds > 0 && hours === 0) timeString += ` ${remainingSeconds}s`;
+            return timeString;
+        }
+    }
 }
 
 // Initialize the application
@@ -1916,7 +1974,22 @@ let esiFilter;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing ESIFilter'); // Debug log
     esiFilter = new ESIFilter();
+    // Make esiFilter globally accessible for iframe communication
+    window.esiFilter = esiFilter;
     console.log('esiFilter created:', esiFilter); // Debug log
+    
+    // Add a global function for Pain Cave to call directly
+    window.updateTaskTimeFromPainCave = function(taskId, timeSpent) {
+        console.log('updateTaskTimeFromPainCave called with:', taskId, timeSpent);
+        if (esiFilter) {
+            esiFilter.updateTaskTime(taskId, timeSpent);
+            console.log('Time update applied via direct function call');
+            return true;
+        } else {
+            console.error('esiFilter not available for direct call');
+            return false;
+        }
+    };
     
     // Add keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -1962,6 +2035,112 @@ document.addEventListener('DOMContentLoaded', () => {
     if (brainDumpText) {
         brainDumpText.focus();
     }
+    
+    // Track processed time updates to prevent duplicates
+    const processedTimeUpdates = new Set();
+    
+    // Function to check for Pain Cave time updates
+    const checkForTimeUpdates = () => {
+        // Method 1: Check localStorage
+        const timeUpdate = localStorage.getItem('painCaveTimeUpdate');
+        if (timeUpdate) {
+            console.log('Found time update in localStorage:', timeUpdate);
+            try {
+                const update = JSON.parse(timeUpdate);
+                
+                // Check if we've already processed this update
+                const updateKey = `${update.taskId}-${update.timestamp}`;
+                if (processedTimeUpdates.has(updateKey)) {
+                    console.log('Skipping duplicate time update:', updateKey);
+                    localStorage.removeItem('painCaveTimeUpdate');
+                    return;
+                }
+                
+                console.log('Processing time update:', update);
+                esiFilter.updateTaskTime(update.taskId, update.timeSpent);
+                processedTimeUpdates.add(updateKey);
+                localStorage.removeItem('painCaveTimeUpdate');
+                console.log('Applied time update from Pain Cave via localStorage');
+                return; // Exit early if we found one
+            } catch (e) {
+                console.error('Error processing time update:', e);
+                localStorage.removeItem('painCaveTimeUpdate');
+            }
+        }
+        
+        // Method 2: Check window.name of iframe
+        try {
+            const iframe = document.querySelector('#pain-cave-content iframe');
+            if (iframe && iframe.contentWindow && iframe.contentWindow.name) {
+                const windowName = iframe.contentWindow.name;
+                if (windowName.startsWith('painCaveUpdate:')) {
+                    console.log('Found time update in iframe window.name:', windowName);
+                    const updateData = windowName.replace('painCaveUpdate:', '');
+                    const update = JSON.parse(updateData);
+                    console.log('Processing time update from window.name:', update);
+                    esiFilter.updateTaskTime(update.taskId, update.timeSpent);
+                    iframe.contentWindow.name = ''; // Clear the flag
+                    console.log('Applied time update from Pain Cave via window.name');
+                }
+            }
+        } catch (e) {
+            console.log('Window.name check failed (this is normal for security reasons):', e.message);
+        }
+    };
+    
+    // Check for Pain Cave time updates periodically (less frequently)
+    setInterval(checkForTimeUpdates, 2000); // Check every 2 seconds instead of 500ms
+    
+    // Also check when window gains focus (user comes back from iframe)
+    window.addEventListener('focus', checkForTimeUpdates);
+    
+    // Check when tab becomes visible (user switches back to this tab)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            console.log('Tab became visible, checking for time updates...');
+            checkForTimeUpdates();
+        }
+    });
+    
+    // Listen for messages from Pain Cave iframe
+    window.addEventListener('message', (event) => {
+        console.log('Received postMessage from:', event.origin, 'Data:', event.data);
+        if (event.data) {
+            switch (event.data.type) {
+                case 'switchTab':
+                    console.log('Switching to tab:', event.data.tab);
+                    switchTab(event.data.tab);
+                    break;
+                case 'timeUpdate':
+                    if (event.data.data && esiFilter) {
+                        const update = event.data.data;
+                        const updateKey = `${update.taskId}-${update.timestamp}`;
+                        
+                        // Check if we've already processed this update
+                        if (processedTimeUpdates.has(updateKey)) {
+                            console.log('Skipping duplicate time update via postMessage:', updateKey);
+                            return;
+                        }
+                        
+                        console.log('Processing time update via postMessage:', update);
+                        esiFilter.updateTaskTime(update.taskId, update.timeSpent);
+                        processedTimeUpdates.add(updateKey);
+                        console.log('Time update applied successfully via postMessage');
+                    } else {
+                        console.warn('Time update received but missing data or esiFilter:', {
+                            hasData: !!event.data.data,
+                            hasEsiFilter: !!esiFilter,
+                            data: event.data.data
+                        });
+                    }
+                    break;
+                default:
+                    console.log('Unknown message type:', event.data.type, 'Full event:', event.data);
+            }
+        } else {
+            console.log('Received postMessage with no data:', event);
+        }
+    });
     
     console.log('ESIFilter initialization complete'); // Debug log
 });
