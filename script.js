@@ -927,16 +927,17 @@ class ESIFilter {
                     <div class="task-name" title="${taskName}">
                         ${taskName}
                         ${priorityText ? `<div style="font-size: 0.8rem; color: ${priorityColor}; font-weight: 500; margin-top: 0.25rem;">${priorityText}</div>` : ''}
-                        ${task.dateCreated ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
-                            added ${new Date(task.dateCreated).toLocaleDateString('en-US', {
+                        ${task.dateCreated || task.timeSpent ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                            ${task.dateCreated ? `<span>added ${new Date(task.dateCreated).toLocaleDateString('en-US', {
                                 month: '2-digit',
                                 day: '2-digit',
                                 year: '2-digit'
-                            })}
-                        </div>` : ''}
-                        ${task.timeSpent ? `<div class="task-time-display">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                            ${this.formatTimeSpent(task.timeSpent)}
+                            })}</span>` : ''}
+                            ${task.dateCreated && task.timeSpent ? `<span style="color: #d1d5db;">|</span>` : ''}
+                            ${task.timeSpent ? `<span style="color: #0097f2; display: flex; align-items: center; gap: 0.25rem;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                                ${this.formatTimeSpent(task.timeSpent)}
+                            </span>` : ''}
                         </div>` : ''}
                     </div>
                 </div>
@@ -1017,16 +1018,17 @@ class ESIFilter {
                 <div class="task-header-compact">
                     <div class="task-name" title="${taskName}">
                         ${taskName}
-                        ${task.dateCreated ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
-                            added ${new Date(task.dateCreated).toLocaleDateString('en-US', {
+                        ${task.dateCreated || task.timeSpent ? `<div style="font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                            ${task.dateCreated ? `<span>added ${new Date(task.dateCreated).toLocaleDateString('en-US', {
                                 month: '2-digit',
                                 day: '2-digit',
                                 year: '2-digit'
-                            })}
-                        </div>` : ''}
-                        ${task.timeSpent ? `<div style="font-size: 0.75rem; color: #0097f2; font-weight: 600; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.25rem;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                            ${this.formatTimeSpent(task.timeSpent)}
+                            })}</span>` : ''}
+                            ${task.dateCreated && task.timeSpent ? `<span style="color: #d1d5db;">|</span>` : ''}
+                            ${task.timeSpent ? `<span style="color: #0097f2; display: flex; align-items: center; gap: 0.25rem;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                                ${this.formatTimeSpent(task.timeSpent)}
+                            </span>` : ''}
                         </div>` : ''}
                     </div>
                 </div>
