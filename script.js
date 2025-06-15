@@ -1920,17 +1920,40 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Add keyboard shortcuts
     document.addEventListener('keydown', (e) => {
+        // Check if brain dump modal is open
+        const brainDumpModal = document.getElementById('brain-dump-modal');
+        const isModalOpen = brainDumpModal && brainDumpModal.style.display !== 'none';
+        
         // Ctrl/Cmd + Enter to submit form
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            const form = document.getElementById('task-form');
-            const submitEvent = new Event('submit');
-            form.dispatchEvent(submitEvent);
+            if (isModalOpen) {
+                // Submit brain dump modal form
+                const modalForm = document.getElementById('brain-dump-modal-form');
+                if (modalForm) {
+                    e.preventDefault();
+                    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                    modalForm.dispatchEvent(submitEvent);
+                }
+            } else {
+                // Submit regular task form (if it exists)
+                const form = document.getElementById('task-form');
+                if (form) {
+                    const submitEvent = new Event('submit');
+                    form.dispatchEvent(submitEvent);
+                }
+            }
         }
         
-        // Escape key to clear form
+        // Escape key to close modal or clear form
         if (e.key === 'Escape') {
-            const form = document.getElementById('task-form');
-            form.reset();
+            if (isModalOpen) {
+                closeBrainDumpModal();
+            } else {
+                const form = document.getElementById('task-form');
+                if (form) {
+                    form.reset();
+                }
+            }
         }
     });
     
@@ -2019,10 +2042,13 @@ Fun fact: The ESI filter was birthed through Simie's inability to prioritize 103
                 </div>
                 
                 <div class="brain-dump-modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeBrainDumpModal()">
+                    <div class="keyboard-shortcut-text">
+                        Add tasks <span class="shortcut-key">${navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}</span>+<span class="shortcut-key">Enter</span>
+                    </div>
+                    <button type="button" class="btn-secondary-compact" onclick="closeBrainDumpModal()">
                         Cancel
                     </button>
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary-compact">
                         Add Tasks
                     </button>
                 </div>
@@ -2040,6 +2066,16 @@ Fun fact: The ESI filter was birthed through Simie's inability to prioritize 103
     // Handle form submission
     const form = modalOverlay.querySelector('#brain-dump-modal-form');
     form.addEventListener('submit', handleModalBrainDumpTasks);
+
+    // Add keyboard shortcut listener specifically for the modal
+    const textarea = modalOverlay.querySelector('#brain-dump-modal-text');
+    textarea.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+            form.dispatchEvent(submitEvent);
+        }
+    });
 
     document.body.appendChild(modalOverlay);
     
