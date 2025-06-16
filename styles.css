@@ -746,6 +746,15 @@ header h1 {
     margin-bottom: 0.75rem;
 }
 
+/* Hide task metrics by default for prioritized and in-progress tasks */
+.task-item .task-metrics-top-right .metric-compact,
+.in-progress-task-item .task-metrics-top-right .metric-compact {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
 .metric-compact {
     display: flex;
     flex-direction: column;
@@ -784,6 +793,21 @@ header h1 {
     min-width: 60px;
     text-align: center;
     margin-left: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.task-score-compact:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Show individual metrics on task hover */
+.task-item:hover .task-metrics-top-right .metric-compact,
+.in-progress-task-item:hover .task-metrics-top-right .metric-compact {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .task-status-row-compact {
