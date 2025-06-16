@@ -1666,9 +1666,6 @@ class ESIFilter {
                 <div class="section-header">
                     <h2>Filter Tasks</h2>
                     <div class="header-controls">
-                        <button class="rate-all-btn-compact" onclick="esiFilter.rateAllTasks()" title="Rate all tasks with complete scores">
-                            Rate All
-                        </button>
                         <div class="task-count">
                             <span id="unrated-task-count">0 unrated</span>
                         </div>
