@@ -911,16 +911,7 @@ class ESIFilter {
                 </div>
                 
                 <div class="delete-btn" onclick="esiFilter.deleteTask(${task.id})" title="Delete task" aria-label="Delete task">
-                    <div class="trash-icon">
-                        <div class="trash-lid"></div>
-                        <div class="trash-body">
-                            <div class="trash-lines">
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                            </div>
-                        </div>
-                    </div>
+                    ×
                 </div>
                 
                 <div class="task-header-compact">
@@ -1003,16 +994,7 @@ class ESIFilter {
                 </div>
                 
                 <div class="delete-btn" onclick="esiFilter.deleteTask(${task.id})" title="Delete task" aria-label="Delete task">
-                    <div class="trash-icon">
-                        <div class="trash-lid"></div>
-                        <div class="trash-body">
-                            <div class="trash-lines">
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                            </div>
-                        </div>
-                    </div>
+                    ×
                 </div>
                 
                 <div class="task-header-compact">
@@ -1235,16 +1217,7 @@ class ESIFilter {
         taskDiv.innerHTML = `
             <div class="task-card">
                 <div class="delete-btn" onclick="esiFilter.deleteTask(${task.id})" title="Delete task" aria-label="Delete task">
-                    <div class="trash-icon">
-                        <div class="trash-lid"></div>
-                        <div class="trash-body">
-                            <div class="trash-lines">
-                                <div class="line"></div>
-                                <div class="line"></div>
-                                <div class="line"></div>
-                            </div>
-                        </div>
-                    </div>
+                    ×
                 </div>
 
                 <div class="unrated-task-header">

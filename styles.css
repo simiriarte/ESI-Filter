@@ -2090,27 +2090,33 @@ header h1 {
 .delete-btn,
 .task-item .delete-btn {
     position: absolute;
-    top: 0.5rem;
+    top: 0.4rem;
     right: 0.5rem;
     cursor: pointer;
     background: transparent;
     border: none;
-    padding: 0.25rem;
+    padding: 0;
     transition: all 0.2s ease;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0.5;
     border-radius: 4px;
     z-index: 10;
+    font-size: 16px;
+    font-weight: bold;
+    color: #6b7280;
+    line-height: 0.8;
+    transform: translateY(-1px);
 }
 
 .delete-btn:hover,
 .task-item .delete-btn:hover {
     opacity: 1;
     transform: scale(1.1);
+    color: #ef4444;
 }
 
 .delete-btn:focus,
@@ -2155,78 +2161,7 @@ header h1 {
     opacity: 1;
 }
 
-.trash-icon {
-    width: 8px;
-    height: 10px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.trash-lid {
-    width: 10px;
-    height: 1.5px;
-    background: #004876;
-    border-radius: 1px;
-    margin-bottom: 1px;
-    position: relative;
-    transition: background 0.2s ease;
-}
-
-.trash-lid::before {
-    content: '';
-    position: absolute;
-    top: -1.5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 1.5px;
-    background: #004876;
-    border-radius: 1px;
-    transition: background 0.2s ease;
-}
-
-.trash-body {
-    width: 7px;
-    height: 7px;
-    background: #004876;
-    border-radius: 0 0 1.5px 1.5px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background 0.2s ease;
-}
-
-.trash-lines {
-    display: flex;
-    gap: 1.5px;
-    height: 6px;
-    align-items: center;
-}
-
-.line {
-    width: 0.8px;
-    height: 4px;
-    background: #0095f27b;
-    border-radius: 0.5px;
-    transition: background 0.2s ease;
-}
-
-.delete-btn:hover .trash-lid,
-.delete-btn:hover .trash-lid::before,
-.delete-btn:hover .trash-body,
-.task-item .delete-btn:hover .trash-lid,
-.task-item .delete-btn:hover .trash-lid::before,
-.task-item .delete-btn:hover .trash-body {
-    background: #ef4444;
-}
-
-.delete-btn:hover .line,
-.task-item .delete-btn:hover .line {
-    background: white;
-}
+/* Delete button now uses simple "×" character - no complex icon needed */
 
 /* Ensure proper alignment of buttons at bottom */
 .add-task-section .card,
