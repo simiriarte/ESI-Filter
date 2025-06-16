@@ -33,7 +33,8 @@ body {
 }
 
 h1, h2, h3 {
-    font-family: var(--font-heading);
+    font-family: var(--font-body);
+    font-weight: 400;
 }
   
 button {
@@ -153,9 +154,9 @@ header {
 }
 
 header h1 {
-    font-size: 2rem;
+    font-size: 1.25rem;
     margin-bottom: 0.25rem;
-    font-weight: 700;
+    font-weight: 400;
     color: #0097f2;
 }
 
@@ -181,12 +182,13 @@ header h1 {
 /* Main Grid Layout - Clean Dynamic Grid */
 .main-grid {
     display: grid;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: start;
-    min-height: 70vh;
+    min-height: 60vh;
     transition: all 0.3s ease;
     overflow-x: visible;
     width: 100%;
+    margin-bottom: 0.25rem;
 }
 
 /* Dynamic layout - Brain Dump on top, then variable columns below */
@@ -254,7 +256,7 @@ header h1 {
     transition: all 0.3s ease;
   
     height: 100%;
-    max-height: 75vh;
+    max-height: 55vh;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -285,6 +287,11 @@ header h1 {
     margin-bottom: 1rem;
     flex-wrap: wrap;
     gap: 0.75rem;
+}
+
+.section-header h2 {
+    font-size: 1rem;
+    font-weight: 400;
 }
 
 .header-controls {
@@ -526,7 +533,8 @@ header h1 {
     overflow-y: auto;
     overflow-x: visible;
     padding: 0.125rem 0.75rem 0.75rem 0.125rem;
-    min-height: 150px;
+    min-height: 200px;
+    max-height: 350px;
     position: relative;
 }
 
@@ -1399,7 +1407,7 @@ header h1 {
     text-transform: uppercase;
     letter-spacing: 0.3px;
     margin-top: 0.25rem;
-    margin-left: 0.5rem;
+    margin-left: 0;
     height: 22px;
     box-sizing: border-box;
     display: inline-flex;
@@ -1476,7 +1484,7 @@ header h1 {
     background: rgba(0, 151, 242, 0.1);
     color: #0097f2;
     border: 1px solid rgba(0, 151, 242, 0.3);
-    margin-left: 0.25rem;
+    margin-left: 0;
     margin-top: 0.25rem;
     opacity: 1;
     height: 22px;
@@ -1537,7 +1545,7 @@ header h1 {
 
 /* Completed Tasks */
 .completed-tasks-section {
-    margin-top: 2rem;
+    margin-top: 0.25rem;
     width: 100%;
 }
 
@@ -1546,7 +1554,7 @@ header h1 {
 }
 
 .completed-tasks-container {
-    min-height: 100px;
+    min-height: 120px;
     max-height: 250px;
     overflow-y: auto;
     padding-right: 0.5rem;
@@ -1818,7 +1826,7 @@ header h1 {
     }
     
     .completed-tasks-section {
-        margin-top: 1rem;
+        margin-top: 0.25rem;
     }
 }
 
@@ -1828,7 +1836,7 @@ header h1 {
     }
     
     header h1 {
-        font-size: 1.75rem;
+        font-size: 1.125rem;
     }
     
     .main-grid.one-column,
@@ -1864,7 +1872,7 @@ header h1 {
     }
     
     .completed-tasks-section {
-        margin-top: 1rem;
+        margin-top: 0.25rem;
     }
 
     .header-controls {

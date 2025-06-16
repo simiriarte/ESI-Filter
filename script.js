@@ -9,6 +9,7 @@ class ESIFilter {
             'in-progress': ['newest'],
             completed: ['newest']
         };
+        this.lastAction = null; // Track last action for undo functionality
         this.loadTasksFromStorage();
         this.initializeEventListeners();
         this.renderTasks();
@@ -43,6 +44,15 @@ class ESIFilter {
                 document.querySelectorAll('.filter-menu').forEach(menu => {
                     menu.classList.add('hidden');
                 });
+            }
+        });
+
+        // Add keyboard event listeners for undo functionality
+        document.addEventListener('keydown', (event) => {
+            // Check if user pressed Ctrl+Z (Windows/Linux) or Cmd+Z (Mac)
+            if ((event.ctrlKey || event.metaKey) && event.key === 'z' && !event.shiftKey) {
+                event.preventDefault();
+                this.handleUndoKeypress();
             }
         });
     }
@@ -254,9 +264,16 @@ class ESIFilter {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
             const task = this.tasks[taskIndex];
+            const previousStatus = task.status;
             
             // Update status based on current state
             if (task.status === 'start') {
+                // Record action for undo
+                this.recordAction('status_change', {
+                    taskId: taskId,
+                    previousStatus: previousStatus
+                });
+                
                 task.status = 'in-progress';
                 this.saveTasksToStorage();
                 this.renderTasks();
@@ -292,9 +309,19 @@ class ESIFilter {
     deleteTask(taskId) {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
+            const task = this.tasks[taskIndex];
+            
+            // Record action for undo
+            this.recordAction('delete', {
+                task: { ...task } // Create a copy of the task
+            });
+            
             this.tasks.splice(taskIndex, 1);
             this.saveTasksToStorage();
             this.renderTasks();
+            
+            const taskName = task.title || task.name;
+            this.showSuccessFeedback(`🗑️ Deleted "${taskName}" (Ctrl+Z to undo)`);
         }
     }
 
@@ -1411,6 +1438,19 @@ class ESIFilter {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
             const task = this.tasks[taskIndex];
+            
+            // Record action for undo
+            this.recordAction('rate', {
+                taskId: taskId,
+                previousEnergy: task.energy,
+                previousSimplicity: task.simplicity,
+                previousImpact: task.impact,
+                previousScore: task.score,
+                previousStatus: task.status,
+                previousLeverage: task.leverage,
+                previousTimeSensitive: task.isTimeSensitive
+            });
+            
             task.energy = energy;
             task.simplicity = simplicity;
             task.impact = impact;
@@ -1430,7 +1470,7 @@ class ESIFilter {
             const taskName = task.title || task.name;
             
             // Show success feedback
-            this.showSuccessFeedback(`✅ Task "${taskName}" rated and added to priority list!`);
+            this.showSuccessFeedback(`✅ Task "${taskName}" rated and added to priority list! (Ctrl+Z to undo)`);
         }
     }
 
@@ -1876,6 +1916,99 @@ class ESIFilter {
             // Show feedback
             const taskName = task.title || task.name;
             this.showSuccessFeedback(`↩️ "${taskName}" moved back to prioritized tasks!`);
+        }
+    }
+
+    handleUndoKeypress() {
+        // Don't trigger undo if user is typing in an input/textarea
+        const activeElement = document.activeElement;
+        if (activeElement && (
+            activeElement.tagName === 'INPUT' || 
+            activeElement.tagName === 'TEXTAREA' || 
+            activeElement.tagName === 'SELECT' ||
+            activeElement.contentEditable === 'true'
+        )) {
+            return;
+        }
+
+        // Don't trigger if a modal is open
+        const modals = document.querySelectorAll('.modal-overlay, .brain-dump-modal-overlay, .reflection-modal-overlay');
+        const isModalOpen = Array.from(modals).some(modal => 
+            modal.style.display !== 'none' && !modal.classList.contains('hidden')
+        );
+        if (isModalOpen) {
+            return;
+        }
+
+        if (!this.lastAction) {
+            this.showSuccessFeedback('⚠️ No action to undo');
+            return;
+        }
+
+        // Perform the undo based on the last action type
+        switch (this.lastAction.type) {
+            case 'status_change':
+                this.undoStatusChange(this.lastAction);
+                break;
+            case 'delete':
+                this.undoDelete(this.lastAction);
+                break;
+            case 'rate':
+                this.undoRate(this.lastAction);
+                break;
+            default:
+                this.showSuccessFeedback('⚠️ Cannot undo this action');
+                return;
+        }
+
+        // Clear the last action after undoing
+        this.lastAction = null;
+    }
+
+    recordAction(type, data) {
+        this.lastAction = {
+            type: type,
+            data: data,
+            timestamp: Date.now()
+        };
+    }
+
+    undoStatusChange(action) {
+        const task = this.tasks.find(t => t.id === action.data.taskId);
+        if (task) {
+            task.status = action.data.previousStatus;
+            this.saveTasksToStorage();
+            this.renderTasks();
+            const taskName = task.title || task.name;
+            this.showSuccessFeedback(`↩️ Undid status change for "${taskName}"`);
+        }
+    }
+
+    undoDelete(action) {
+        // Restore the deleted task
+        this.tasks.push(action.data.task);
+        this.saveTasksToStorage();
+        this.renderTasks();
+        const taskName = action.data.task.title || action.data.task.name;
+        this.showSuccessFeedback(`↩️ Restored deleted task "${taskName}"`);
+    }
+
+    undoRate(action) {
+        const task = this.tasks.find(t => t.id === action.data.taskId);
+        if (task) {
+            // Restore previous ratings
+            task.energy = action.data.previousEnergy;
+            task.simplicity = action.data.previousSimplicity;
+            task.impact = action.data.previousImpact;
+            task.score = action.data.previousScore;
+            task.status = action.data.previousStatus;
+            task.leverage = action.data.previousLeverage;
+            task.isTimeSensitive = action.data.previousTimeSensitive;
+            
+            this.saveTasksToStorage();
+            this.renderTasks();
+            const taskName = task.title || task.name;
+            this.showSuccessFeedback(`↩️ Undid rating for "${taskName}"`);
         }
     }
 
