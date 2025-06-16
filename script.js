@@ -956,7 +956,6 @@ class ESIFilter {
                     </div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
-                            ${task.notes ? '✏️' : '📝'}
                         </button>
                         ${statusButton ? `
                             <button class="status-btn-compact ${statusButton === 'Done!' ? 'done-btn' : ''}" onclick="esiFilter.updateTaskStatus(${task.id})">
@@ -1041,7 +1040,6 @@ class ESIFilter {
                     </div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
-                            ${task.notes ? '✏️' : '📝'}
                         </button>
                         <button class="btn-pain-cave-task" onclick="esiFilter.enterPainCave(${task.id})" title="Enter Pain Cave with this task">
                             🔥
@@ -1183,7 +1181,6 @@ class ESIFilter {
                 </div>
                 <div class="task-actions">
                     <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
-                        ${task.notes ? '✏️' : '📝'}
                     </button>
                     ${hasReflection ? `
                         <button class="analytics-btn has-reflection" onclick="esiFilter.showCompletionReflectionModal(${task.id})" title="Complete reflection">
