@@ -959,8 +959,11 @@ class ESIFilter {
                             ${task.notes ? '✏️' : '📝'}
                         </button>
                         ${statusButton ? `
-                            <button class="status-btn-compact" onclick="esiFilter.updateTaskStatus(${task.id})">
-                                ${statusButton}
+                            <button class="status-btn-compact ${statusButton === 'Done!' ? 'done-btn' : ''}" onclick="esiFilter.updateTaskStatus(${task.id})">
+                                ${statusButton === 'Done!' ? 
+                                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>' :
+                                    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg>'
+                                }
                             </button>
                         ` : ''}
                     </div>
@@ -1043,8 +1046,8 @@ class ESIFilter {
                         <button class="btn-pain-cave-task" onclick="esiFilter.enterPainCave(${task.id})" title="Enter Pain Cave with this task">
                             🔥
                         </button>
-                        <button class="status-btn-compact" onclick="esiFilter.updateTaskStatus(${task.id})">
-                            Done!
+                        <button class="status-btn-compact done-btn" onclick="esiFilter.updateTaskStatus(${task.id})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>
                         </button>
                     </div>
                 </div>
@@ -1297,7 +1300,7 @@ class ESIFilter {
                     </div>
                     <div class="task-actions">
                         <button class="rate-button" onclick="esiFilter.rateTask(${task.id})">
-                            Rate
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg>
                         </button>
                     </div>
                 </div>
