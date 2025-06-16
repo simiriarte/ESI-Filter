@@ -1659,18 +1659,19 @@ class ESIFilter {
             <div class="card">
                 <div class="section-header">
                     <h2>Filter Tasks</h2>
-                    <div class="task-count">
-                        <span id="unrated-task-count">0 unrated</span>
+                    <div class="header-controls">
+                        <button class="rate-all-btn-compact" onclick="esiFilter.rateAllTasks()" title="Rate all tasks with complete scores">
+                            Rate All
+                        </button>
+                        <div class="task-count">
+                            <span id="unrated-task-count">0 unrated</span>
+                        </div>
                     </div>
                 </div>
                 
                 <div id="unrated-tasks-container" class="unrated-tasks-container">
                     <!-- Unrated tasks will be rendered here -->
                 </div>
-                
-                <button class="btn-primary" onclick="esiFilter.rateAllTasks()" title="Rate all tasks with complete scores">
-                    Rate All
-                </button>
             </div>
         `;
         

@@ -294,6 +294,16 @@ header h1 {
     flex-wrap: wrap;
 }
 
+/* Rate All button positioning in header */
+.to-be-rated-section .header-controls {
+    justify-content: flex-start;
+}
+
+/* Ensure Rate All button appears in header controls for to-be-rated section */
+.to-be-rated-section .section-header .header-controls {
+    gap: 0.75rem;
+}
+
 .input-section-header {
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
@@ -724,7 +734,10 @@ header h1 {
     padding-right: 1rem;
     cursor: pointer;
     transition: all 0.1s ease;
+    position: relative;
 }
+
+
 
 .task-metrics-row {
     display: flex;
@@ -1003,7 +1016,10 @@ header h1 {
     padding-right: 1rem;
     cursor: pointer;
     transition: all 0.1s ease;
+    position: relative;
 }
+
+
 
 .task-row {
     display: flex;
@@ -2013,26 +2029,36 @@ header h1 {
     gap: 1rem;
 }
 
+/* Original Rate All button - now hidden */
 .rate-all-btn {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 600;
+    display: none;
+}
+
+/* Compact Rate All button for header */
+.rate-all-btn-compact {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
+    height: 30px;
+    min-width: fit-content;
 }
 
-.rate-all-btn:hover {
-    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+.rate-all-btn-compact:hover {
+    background: #ff8900;
+    color: white;
+    border: 1px solid #ff8900;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px rgba(255, 137, 0, 0.3);
 }
 
-.rate-all-btn:active {
+.rate-all-btn-compact:active {
     transform: translateY(0);
 }
 
@@ -2201,31 +2227,11 @@ header h1 {
 .to-be-rated-section .unrated-tasks-container {
     flex: 1;
     overflow-y: auto;
-    margin-bottom: 1.5rem;
 }
 
-/* Push buttons to bottom */
-.add-task-section .btn-primary,
-.to-be-rated-section .btn-primary {
+/* Push buttons to bottom - only for brain dump section now */
+.add-task-section .btn-primary {
     margin-top: auto;
-}
-
-/* Make Rate All button more subtle by default */
-.to-be-rated-section .btn-primary {
-    background: #f3f4f6;
-    color: #6b7280;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
-    font-weight: 500;
-}
-
-.to-be-rated-section .btn-primary:hover {
-    background: #ff8900;
-    color: white;
-    box-shadow: 0 4px 15px rgba(255, 137, 0, 0.3);
-    border: 1px solid #ff8900;
-    font-weight: 600;
-    transform: translateY(-2px);
 }
 
 /* Pain Cave Button */
