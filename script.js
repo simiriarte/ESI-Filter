@@ -999,6 +999,12 @@ class ESIFilter {
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
                         </button>
+                        <button class="unpack-btn" onclick="esiFilter.openUnpackModal(${task.id})" title="Unpack task">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="7,13 12,18 17,13"/>
+                                <polyline points="7,6 12,11 17,6"/>
+                            </svg>
+                        </button>
                         ${statusButton ? `
                             <button class="status-btn-compact ${statusButton === 'Done!' ? 'done-btn' : ''}" onclick="esiFilter.updateTaskStatus(${task.id})">
                                 ${statusButton === 'Done!' ? 
@@ -1082,6 +1088,12 @@ class ESIFilter {
                     </div>
                     <div class="task-actions">
                         <button class="notes-btn ${task.notes ? 'has-notes' : ''}" onclick="esiFilter.toggleNotes(${task.id})" title="${task.notes ? 'Edit notes' : 'Add notes'}">
+                        </button>
+                        <button class="unpack-btn" onclick="esiFilter.openUnpackModal(${task.id})" title="Unpack task">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="7,13 12,18 17,13"/>
+                                <polyline points="7,6 12,11 17,6"/>
+                            </svg>
                         </button>
                         <button class="btn-pain-cave-task" onclick="esiFilter.enterPainCave(${task.id})" title="Enter Pain Cave with this task">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2155,6 +2167,99 @@ class ESIFilter {
             if (remainingSeconds > 0 && hours === 0) timeString += ` ${remainingSeconds}s`;
             return timeString;
         }
+    }
+
+    openUnpackModal(taskId) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (!task) return;
+        
+        const taskName = task.title || task.name;
+        
+        // Create modal HTML
+        const modalHTML = `
+            <div id="unpack-modal-${taskId}" class="unpack-modal">
+                <div class="unpack-modal-content">
+                    <div class="unpack-header">
+                        <h3>${taskName}</h3>
+                        <button class="close-btn" onclick="esiFilter.closeUnpackModal(${taskId})">×</button>
+                    </div>
+                    <div class="unpack-body">
+                        <label for="unpack-input-${taskId}">What would have to happen for this to be complete?</label>
+                        <textarea id="unpack-input-${taskId}" class="unpack-textarea" placeholder="Break down the steps needed to complete this task...
+
+keep in mind, some subtasks won't appear until you start!"></textarea>
+                    </div>
+                    <div class="unpack-actions">
+                        <button class="btn-secondary-compact" onclick="esiFilter.closeUnpackModal(${taskId})">Cancel</button>
+                        <button class="btn-primary-compact" onclick="esiFilter.saveUnpackedTasks(${taskId})">Unpack</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Show modal
+        const modal = document.getElementById(`unpack-modal-${taskId}`);
+        modal.style.display = 'block';
+        
+        // Focus on textarea
+        setTimeout(() => {
+            document.getElementById(`unpack-input-${taskId}`).focus();
+        }, 100);
+    }
+
+    closeUnpackModal(taskId) {
+        const modal = document.getElementById(`unpack-modal-${taskId}`);
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    saveUnpackedTasks(taskId) {
+        const textarea = document.getElementById(`unpack-input-${taskId}`);
+        const content = textarea.value.trim();
+        
+        if (!content) {
+            this.closeUnpackModal(taskId);
+            return;
+        }
+        
+        // Parse content into individual tasks (split by lines)
+        const subtasks = content.split('\n').filter(line => line.trim());
+        
+        if (subtasks.length === 0) {
+            this.closeUnpackModal(taskId);
+            return;
+        }
+        
+        // Create new tasks from subtasks
+        subtasks.forEach(subtaskText => {
+            const newTask = {
+                id: Date.now() + Math.random(),
+                name: subtaskText.trim(),
+                title: subtaskText.trim(),
+                status: 'unrated',
+                dateCreated: new Date().toISOString(),
+                energy: null,
+                simplicity: null,
+                impact: null,
+                score: null,
+                leverage: null,
+                isTimeSensitive: false,
+                notes: '',
+                timeSpent: 0
+            };
+            this.tasks.push(newTask);
+        });
+        
+        this.saveTasksToStorage();
+        this.renderTasks();
+        this.closeUnpackModal(taskId);
+        
+        // Show success message
+        this.showSuccessFeedback(`✅ Created ${subtasks.length} subtask${subtasks.length === 1 ? '' : 's'}!`);
     }
 }
 
