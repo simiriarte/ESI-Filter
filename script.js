@@ -9,7 +9,8 @@ class ESIFilter {
             'in-progress': ['newest'],
             completed: ['newest']
         };
-        this.lastAction = null; // Track last action for undo functionality
+        this.actionHistory = []; // Track history of actions for undo functionality
+        this.maxUndoHistory = 50; // Limit undo history to prevent memory issues
         this.loadTasksFromStorage();
         this.initializeEventListeners();
         this.renderTasks();
@@ -348,7 +349,21 @@ class ESIFilter {
         // Find and update the task
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
-            this.tasks[taskIndex].notes = textarea.value;
+            const task = this.tasks[taskIndex];
+            const previousNotes = task.notes;
+            const newNotes = textarea.value;
+            
+            // Only record action if notes actually changed
+            if (previousNotes !== newNotes) {
+                // Record action for undo
+                this.recordAction('notes_change', {
+                    taskId: taskId,
+                    previousNotes: previousNotes,
+                    newNotes: newNotes
+                });
+            }
+            
+            task.notes = newNotes;
             this.saveTasksToStorage();
             
             // Hide notes panel
@@ -358,7 +373,7 @@ class ESIFilter {
             this.renderTasks();
             
             // Show success feedback
-            this.showSuccessFeedback('📝 Notes saved!');
+            this.showSuccessFeedback('📝 Notes saved! (Ctrl+Z to undo)');
         }
     }
 
@@ -1328,28 +1343,55 @@ class ESIFilter {
     }
 
     setLeverage(taskId, leverageValue) {
+        // Find the task to track previous value
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex === -1) return;
+        
+        const task = this.tasks[taskIndex];
+        const previousLeverage = task.leverage;
+        
         // Toggle the selected leverage button
         const leverage10xBtn = document.getElementById(`leverage-10x-${taskId}`);
         const leverage2xBtn = document.getElementById(`leverage-2x-${taskId}`);
+        
+        let newLeverage = null;
         
         if (leverageValue === '10x') {
             if (leverage10xBtn.classList.contains('active')) {
                 // If already active, deactivate
                 leverage10xBtn.classList.remove('active');
+                newLeverage = null;
             } else {
                 // Activate 10x and deactivate 2x
                 leverage10xBtn.classList.add('active');
                 leverage2xBtn.classList.remove('active');
+                newLeverage = '10x';
             }
         } else if (leverageValue === '2x') {
             if (leverage2xBtn.classList.contains('active')) {
                 // If already active, deactivate
                 leverage2xBtn.classList.remove('active');
+                newLeverage = null;
             } else {
                 // Activate 2x and deactivate 10x
                 leverage2xBtn.classList.add('active');
                 leverage10xBtn.classList.remove('active');
+                newLeverage = '2x';
             }
+        }
+        
+        // Only record action if leverage actually changed
+        if (previousLeverage !== newLeverage) {
+            // Record action for undo
+            this.recordAction('leverage_change', {
+                taskId: taskId,
+                previousLeverage: previousLeverage,
+                newLeverage: newLeverage
+            });
+            
+            // Update the task
+            task.leverage = newLeverage;
+            this.saveTasksToStorage();
         }
     }
 
@@ -1939,37 +1981,57 @@ class ESIFilter {
             return;
         }
 
-        if (!this.lastAction) {
-            this.showSuccessFeedback('⚠️ No action to undo');
+        if (this.actionHistory.length === 0) {
+            this.showSuccessFeedback('⚠️ No actions to undo');
             return;
         }
 
-        // Perform the undo based on the last action type
-        switch (this.lastAction.type) {
+        // Get the most recent action from history
+        const lastAction = this.actionHistory.pop();
+
+        // Perform the undo based on the action type
+        switch (lastAction.type) {
             case 'status_change':
-                this.undoStatusChange(this.lastAction);
+                this.undoStatusChange(lastAction);
                 break;
             case 'delete':
-                this.undoDelete(this.lastAction);
+                this.undoDelete(lastAction);
                 break;
             case 'rate':
-                this.undoRate(this.lastAction);
+                this.undoRate(lastAction);
+                break;
+            case 'notes_change':
+                this.undoNotesChange(lastAction);
+                break;
+            case 'leverage_change':
+                this.undoLeverageChange(lastAction);
+                break;
+            case 'time_sensitive_change':
+                this.undoTimeSensitiveChange(lastAction);
                 break;
             default:
-                this.showSuccessFeedback('⚠️ Cannot undo this action');
+                this.showSuccessFeedback('⚠️ Cannot undo this action type');
+                // Put the action back since we couldn't process it
+                this.actionHistory.push(lastAction);
                 return;
         }
 
-        // Clear the last action after undoing
-        this.lastAction = null;
+        // Undo completed successfully - no notification needed
     }
 
     recordAction(type, data) {
-        this.lastAction = {
+        const action = {
             type: type,
             data: data,
             timestamp: Date.now()
         };
+        
+        this.actionHistory.push(action);
+        
+        // Limit history size to prevent memory issues
+        if (this.actionHistory.length > this.maxUndoHistory) {
+            this.actionHistory.shift(); // Remove oldest action
+        }
     }
 
     undoStatusChange(action) {
@@ -1978,8 +2040,6 @@ class ESIFilter {
             task.status = action.data.previousStatus;
             this.saveTasksToStorage();
             this.renderTasks();
-            const taskName = task.title || task.name;
-            this.showSuccessFeedback(`↩️ Undid status change for "${taskName}"`);
         }
     }
 
@@ -1988,8 +2048,6 @@ class ESIFilter {
         this.tasks.push(action.data.task);
         this.saveTasksToStorage();
         this.renderTasks();
-        const taskName = action.data.task.title || action.data.task.name;
-        this.showSuccessFeedback(`↩️ Restored deleted task "${taskName}"`);
     }
 
     undoRate(action) {
@@ -2006,8 +2064,33 @@ class ESIFilter {
             
             this.saveTasksToStorage();
             this.renderTasks();
-            const taskName = task.title || task.name;
-            this.showSuccessFeedback(`↩️ Undid rating for "${taskName}"`);
+        }
+    }
+
+    undoNotesChange(action) {
+        const task = this.tasks.find(t => t.id === action.data.taskId);
+        if (task) {
+            task.notes = action.data.previousNotes;
+            this.saveTasksToStorage();
+            this.renderTasks();
+        }
+    }
+
+    undoLeverageChange(action) {
+        const task = this.tasks.find(t => t.id === action.data.taskId);
+        if (task) {
+            task.leverage = action.data.previousLeverage;
+            this.saveTasksToStorage();
+            this.renderTasks();
+        }
+    }
+
+    undoTimeSensitiveChange(action) {
+        const task = this.tasks.find(t => t.id === action.data.taskId);
+        if (task) {
+            task.isTimeSensitive = action.data.previousTimeSensitive;
+            this.saveTasksToStorage();
+            this.renderTasks();
         }
     }
 
@@ -2015,6 +2098,15 @@ class ESIFilter {
         const taskIndex = this.tasks.findIndex(task => task.id === taskId);
         if (taskIndex > -1) {
             const task = this.tasks[taskIndex];
+            const previousTimeSensitive = task.isTimeSensitive;
+            
+            // Record action for undo
+            this.recordAction('time_sensitive_change', {
+                taskId: taskId,
+                previousTimeSensitive: previousTimeSensitive,
+                newTimeSensitive: !previousTimeSensitive
+            });
+            
             task.isTimeSensitive = !task.isTimeSensitive;
             
             // Update toggle visual state

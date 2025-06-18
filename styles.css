@@ -2102,7 +2102,7 @@ header h1 {
 }
 
 .original-side::before {
-    content: "original";
+    content: "";
     color: #3b9901;
 }
 
@@ -2111,7 +2111,7 @@ header h1 {
 }
 
 .actual-side::before {
-    content: "actual";
+    content: "";
     color: #0097f2;
 }
 
@@ -2475,13 +2475,13 @@ header h1 {
 /* Apply base styles to both modals */
 .reflection-modal {
     background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    max-width: 500px;
+    border-radius: 12px;
+    padding: 1rem;
+    max-width: 400px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     animation: slideInUp 0.3s ease;
     position: relative;
     border: 1px solid #e5e7eb;
@@ -2514,21 +2514,20 @@ header h1 {
 /* Scroll indicator */
 .scroll-indicator {
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    width: 32px;
-    height: 32px;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    width: 28px;
+    height: 28px;
     background: rgba(102, 126, 234, 0.8);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 10;
-    animation: bounce 2s infinite;
 }
 
 .scroll-indicator:hover {
@@ -2541,52 +2540,12 @@ header h1 {
     visibility: hidden;
 }
 
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-5px);
-    }
-    60% {
-        transform: translateY(-3px);
-    }
-}
-
 .reflection-modal-header {
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.reflection-modal-header h3 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #3c3c3c;
-    margin-bottom: 0.5rem;
-    text-align: center;
-}
-
-.reflection-modal-header p {
-    color: #6b7280;
-    font-size: 1rem;
-}
-
-.reflection-modal-header .task-subtitle {
-    color: #1f2937;
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin-top: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-left: 4px solid #3b9901;
-    border-radius: 12px;
-    font-style: normal;
-    text-align: center;
+    display: none;
 }
 
 .reflection-content {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 /* Original Ratings Section */
@@ -2638,25 +2597,25 @@ header h1 {
 /* Actual Ratings Section */
 .actual-ratings-section {
     background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
+    padding: 1rem;
+    border-radius: 8px;
     margin-bottom: 1rem;
     border: 1px solid #e5e7eb;
-    border-left: 4px solid #5b5167;
+    border-left: 3px solid #5b5167;
 }
 
 .actual-ratings-section h4 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 1rem;
-    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #6b7280;
+    margin-bottom: 0.75rem;
+    text-align: left;
 }
 
 /* Actual ratings grid - same as original ratings */
 .actual-ratings-grid {
     display: grid;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: 80px 1fr;
     gap: 0.5rem;
     align-items: center;
 }
@@ -2665,9 +2624,9 @@ header h1 {
     background: rgba(91, 81, 103, 0.1);
     color: #5b5167;
     border: 1px solid rgba(91, 81, 103, 0.3);
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
     font-weight: 600;
     text-align: center;
 }
@@ -2679,10 +2638,10 @@ header h1 {
 
 .actual-rating-dropdown {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #5b5167;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.8rem;
     background: white;
     color: #374151;
     font-weight: 500;
@@ -2696,37 +2655,37 @@ header h1 {
 .actual-rating-dropdown:focus {
     outline: none;
     border-color: #5b5167;
-    box-shadow: 0 0 0 3px rgba(91, 81, 103, 0.1);
+    box-shadow: 0 0 0 2px rgba(91, 81, 103, 0.1);
 }
 
 .actual-rating-dropdown option {
     padding: 0.4rem;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 /* Quick reflection section */
 .quick-reflection-section {
-    margin-bottom: 1.5rem;
-    margin-top: 2rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 .quick-reflection-section h4 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #374151;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #6b7280;
     margin-bottom: 0.75rem;
-    text-align: center;
+    text-align: left;
 }
 
 .quick-reflection-textarea {
     width: 100%;
-    min-height: 100px;
-    padding: 1rem;
+    min-height: 80px;
+    padding: 0.75rem;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
     font-family: inherit;
-    line-height: 1.5;
+    line-height: 1.4;
     resize: vertical;
     transition: all 0.2s ease;
     background: white;
@@ -2735,7 +2694,7 @@ header h1 {
 .quick-reflection-textarea:focus {
     outline: none;
     border-color: #ff8900;
-    box-shadow: 0 0 0 3px rgba(255, 137, 0, 0.1);
+    box-shadow: 0 0 0 2px rgba(255, 137, 0, 0.1);
 }
 
 .quick-reflection-textarea::placeholder {
@@ -2747,24 +2706,34 @@ header h1 {
 /* Modal actions */
 .reflection-modal-actions {
     display: flex;
-    gap: 0.75rem;
-    justify-content: center;
+    gap: 12px;
+    justify-content: flex-end;
     margin-top: 1rem;
 }
 
-.btn-secondary {
+/* Reflection modal buttons - unified styling */
+.reflection-modal .btn-secondary,
+.reflection-modal .btn-undo,
+.btn-secondary,
+.btn-undo {
     background: #f3f4f6;
     color: #6b7280;
     border: 1px solid #d1d5db;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    height: 30px;
+    white-space: nowrap;
+    width: auto;
 }
 
-.btn-secondary:hover {
+.reflection-modal .btn-secondary:hover,
+.reflection-modal .btn-undo:hover,
+.btn-secondary:hover,
+.btn-undo:hover {
     background: #e5e7eb;
     color: #374151;
     border-color: #9ca3af;
@@ -2775,39 +2744,22 @@ header h1 {
     background: #ff8900;
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 15px rgba(255, 137, 0, 0.3);
+    box-shadow: none;
+    height: 30px;
+    white-space: nowrap;
     width: auto;
 }
 
 .reflection-modal .btn-primary:hover {
     background: #e67500;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.btn-undo {
-    background: #f3f4f6;
-    color: #6b7280;
-    border: 1px solid #d1d5db;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-undo:hover {
-    background: #e5e7eb;
-    color: #374151;
-    border-color: #9ca3af;
     transform: translateY(-1px);
+    box-shadow: 0 2px 12px rgba(255, 137, 0, 0.3);
 }
 
 /* Header actions styling */
