@@ -2185,9 +2185,7 @@ class ESIFilter {
                     </div>
                     <div class="unpack-body">
                         <label for="unpack-input-${taskId}">What would have to happen for this to be complete?</label>
-                        <textarea id="unpack-input-${taskId}" class="unpack-textarea" placeholder="Break down the steps needed to complete this task...
-
-keep in mind, some subtasks won't appear until you start!"></textarea>
+                        <textarea id="unpack-input-${taskId}" class="unpack-textarea" placeholder="list the steps required to complete this task, but keep in mind you may not know all of them until you start."></textarea>
                     </div>
                     <div class="unpack-actions">
                         <button class="btn-secondary-compact" onclick="esiFilter.closeUnpackModal(${taskId})">Cancel</button>
@@ -2200,9 +2198,7 @@ keep in mind, some subtasks won't appear until you start!"></textarea>
         // Add modal to body
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         
-        // Show modal
-        const modal = document.getElementById(`unpack-modal-${taskId}`);
-        modal.style.display = 'block';
+        // Show modal (no need to set display since it uses flexbox)
         
         // Focus on textarea
         setTimeout(() => {
